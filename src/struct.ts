@@ -575,7 +575,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    * @param structure
    */
   static raw = <S extends { readonly __struct: string }>(structure: S): Buffer =>
-    ((structure as unknown) as { $raw: Buffer }).$raw;
+    (structure as unknown as { $raw: Buffer }).$raw;
 
   /**
    * The current size of the structure in bytes
@@ -1207,7 +1207,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
     R = NativeType<Y>,
     S extends ExtendStruct<T, ClassName, N, R> = ExtendStruct<T, ClassName, N, R>
   >(nameOrAliases: N | N[], info: Omit<PropDesc<Y, R>, 'offset'>): S {
-    const self = (this as unknown) as S;
+    const self = this as unknown as S;
     const names: N[] = Array.isArray(nameOrAliases) ? nameOrAliases : [nameOrAliases];
     const exists = names.filter(name => self.props.has(name));
     if (exists.length > 0) throw TypeError(`Property ${exists.join(', ')} already exists.`);
@@ -1258,7 +1258,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
     Y extends UnsignedIntegerTypes,
     S extends ExtendStruct<T, ClassName, N, number> = ExtendStruct<T, ClassName, N, number>
   >(type: Y, fields: Record<N, BitMask>): S {
-    const self = (this as unknown) as S;
+    const self = this as unknown as S;
     Object.entries<BitMask>(fields).forEach(([name, mask]) => {
       if (self.props.has(name as N)) throw TypeError(`Property ${name} already exists`);
       self.props.set(name as N, {
