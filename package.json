@@ -44,7 +44,7 @@
     "prepare-release": "run-s reset-hard test cov:html doc:html version doc:publish"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "dependencies": {},
   "devDependencies": {

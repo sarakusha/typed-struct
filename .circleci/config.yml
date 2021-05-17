@@ -1,9 +1,9 @@
 # https://circleci.com/docs/2.0/language-javascript/
 version: 2
 jobs:
-  'node-10':
+  'node-12':
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:12
     steps:
       - checkout
       # Download and cache dependencies
@@ -32,9 +32,9 @@ jobs:
       - run: yarn test
       - run: yarn run cov:send
       - run: yarn run cov:html
-  'node-12':
+  'node-14':
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:14
     steps:
       - checkout
       - restore_cache:
@@ -95,6 +95,6 @@ workflows:
   version: 2
   build:
     jobs:
-      - 'node-10'
       - 'node-12'
+      - 'node-14'
       - 'node-latest'
