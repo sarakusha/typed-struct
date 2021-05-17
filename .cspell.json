@@ -3,8 +3,12 @@
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/master/cspell.schema.json",
   "language": "en",
   "words": [
-    "bitjson",
-    "bitauth",
+    "structs",
+    "alloc",
+    "instanceof",
+    "typeof",
+    "quux",
+    "struct",
     "cimg",
     "circleci",
     "codecov",
@@ -21,7 +25,8 @@
     "sandboxed",
     "transpiled",
     "typedoc",
-    "untracked"
+    "untracked",
+    "deserialization"
   ],
   "flagWords": [],
   "ignorePaths": [
