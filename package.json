@@ -1,13 +1,19 @@
 {
   "name": "typed-struct",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Factory of structures. You can define your data structure by chaining the appropriate method calls.",
   "main": "build/main/struct.js",
   "typings": "build/main/struct.d.ts",
   "module": "build/module/struct.js",
   "repository": "https://github.com/sarakusha/typed-struct",
   "license": "MIT",
-  "keywords": ["struct", "typescript", "serialize", "deserialize", "buffer"],
+  "keywords": [
+    "struct",
+    "typescript",
+    "serialize",
+    "deserialize",
+    "buffer"
+  ],
   "scripts": {
     "build": "run-p build:*",
     "build:main": "tsc -p tsconfig.json",
@@ -35,7 +41,7 @@
     "doc:publish": "gh-pages -m \"[ci skip] Updates\" -d build/docs",
     "version": "standard-version",
     "reset-hard": "git clean -dfx && git reset --hard && yarn",
-    "prepare-release": "run-s reset-hard test cov:check doc:html version doc:publish"
+    "prepare-release": "run-s reset-hard test cov:html doc:html version doc:publish"
   },
   "engines": {
     "node": ">=10"
