@@ -33,7 +33,7 @@
     "watch:test": "jest src --watch",
     "cov": "jest src --coverage",
     "cov:view": "run-s build cov && open-cli coverage/index.html",
-    "cov:send": "run-s cov && bash <(curl -s https://codecov.io/bash)",
+    "cov:send": "run-s cov && curl -s https://codecov.io/bash | bash",
     "doc": "run-s doc:html && open-cli build/docs/index.html",
     "doc:html": "typedoc src/ --exclude **/*.spec.ts --out build/docs",
     "doc:json": "typedoc src/ --exclude **/*.spec.ts --json build/docs/typedoc.json",
