@@ -1,100 +1,18 @@
-# https://circleci.com/docs/2.0/language-javascript/
-version: 2
+version: 2.1
+orbs:
+  node: circleci/node@4.3.0
 jobs:
-  'node-12':
-    docker:
-      - image: circleci/node:12
+  test-and-cov:
+    executor:
+      name: node/default
     steps:
       - checkout
-      # Download and cache dependencies
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Dependencies
-          command: yarn install --frozen-lockfile --cache-folder ~/.cache/yarn
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-#      - restore_cache:
-#          keys:
-#            - v1-dependencies-{{ checksum "package.json" }}
-#            # fallback to using the latest cache if no exact match is found
-#            - v1-dependencies-
-#      - run: npm install
-#      - save_cache:
-#          paths:
-#            - node_modules
-#          key: v1-dependencies-{{ checksum "package.json" }}
-      - run: yarn test
+      - node/install-packages:
+          pkg-manager: yarn
+      - run: yarn run test
       - run: yarn run cov:send
-      - run: yarn run cov:html
-  'node-14':
-    docker:
-      - image: circleci/node:14
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Dependencies
-          command: yarn install --frozen-lockfile --cache-folder ~/.cache/yarn
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-#      - restore_cache:
-#          keys:
-#            - v1-dependencies-{{ checksum "package.json" }}
-#            - v1-dependencies-
-#      - run: npm install
-#      - save_cache:
-#          paths:
-#            - node_modules
-#          key: v1-dependencies-{{ checksum "package.json" }}
-      - run: yarn test
-      - run: yarn run cov:send
-      - run: yarn run cov:html
-  'node-latest':
-    docker:
-      - image: circleci/node:latest
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Dependencies
-          command: yarn install --frozen-lockfile --cache-folder ~/.cache/yarn
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-#      - restore_cache:
-#          keys:
-#            - v1-dependencies-{{ checksum "package.json" }}
-#            - v1-dependencies-
-#      - run: npm install
-#      - save_cache:
-#          paths:
-#            - node_modules
-#          key: v1-dependencies-{{ checksum "package.json" }}
-      - run: yarn test
-      - run: yarn run cov:send
-      - run: yarn run cov:html
-
 workflows:
-  version: 2
-  build:
+  test-app:
     jobs:
-      - 'node-12'
-      - 'node-14'
-      - 'node-latest'
+      - test-and-cov
+

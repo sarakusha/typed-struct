@@ -4,6 +4,8 @@ A TypeScript utility library for creating objects that store
 their properties in a buffer for serialization/deserialization
 similar to structures in C.
 
+[![codecov](https://codecov.io/gh/sarakusha/typed-struct/branch/main/graph/badge.svg?token=6F26I7FO73)](https://codecov.io/gh/sarakusha/typed-struct)
+[![CircleCI](https://circleci.com/gh/sarakusha/typed-struct.svg?style=shield)](https://circleci.com/gh/sarakusha/typed-struct)
 ## Getting started
 
 Using npm:
@@ -82,8 +84,8 @@ const Foo = new Struct('Foo')
   .compile();
 
 const foo = new Foo();
-expect(foo.bar).toHaveLength(10);
-expect(foo.bar).toBeInstanceOf(Uint16Array);
+expect(foo.items).toHaveLength(10);
+expect(foo.items).toBeInstanceOf(Uint16Array);
 expect(Foo.raw(foo)).toHaveLength(20);
 
 // If the byte order in the system is different from that used in the data,
