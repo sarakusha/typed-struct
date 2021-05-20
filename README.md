@@ -43,7 +43,7 @@ to validate that your code is working correctly.
 ### Create a data structure by chaining the appropriate method calls
 
 ```ts
-import Struct from './src/struct';
+import Struct from 'typed-struct';
 
 const MyStructure = new Struct('MyStructure') // give a name to the constructor
   .Int8('foo')        // signed 8-bit integer field `foo`
@@ -77,7 +77,7 @@ expect(item2.bar).toBe(0x3322);
 ```
 ### Typed arrays
 ```ts
-import Struct from './struct';
+import Struct from 'typed-struct';
 
 const Foo = new Struct('Foo')
   .UInt16Array('items', 10)
@@ -335,7 +335,7 @@ export const PREAMBLE = 0x1234;
  * Package.baseSize = 9 - minimal structure size
  */
 export const Package = new Struct('Package')
-  .UInt16LE('header', PREAMBLE)
+  .UInt16BE('header', PREAMBLE)
   .UInt8('source')
   .UInt8('destination')
   .UInt8('command', typed<Command>())
@@ -373,6 +373,9 @@ import { crc16 } from 'crc';
 
 import { Package, PREAMBLE } from './Package';
 
+const preambleBuf = Buffer.alloc(2);
+preambleBuf.writeInt16BE(PREAMBLE);
+
 const empty = Buffer.alloc(0);
 
 const lengthOffset = Package.getOffsetOf('length');
@@ -403,7 +406,7 @@ export default class Decoder extends Transform {
   }
 
   private recognize(data: Buffer): Buffer {
-    const start = data.indexOf(PREAMBLE);
+    const start = data.indexOf(preambleBuf);
     if (start === -1) return empty;
     const frame = data.slice(start);
     if (frame.length < lengthOffset + 2) return frame;
@@ -476,22 +479,30 @@ import { Package, Command } from './Package';
 
 // ...
 
-const serial = new SerialPort(path);
-
 const decoder = new Decoder();
 const encoder = new Encoder();
+let connected = false;
+
+const serial = new SerialPort(path, { baudRate: 115200 }, err => {
+  if (err) {
+    console.error(`error while open ${path}`)
+  } else {
+    // create a pipeline
+    pump(encoder, serial, decoder, err => {
+      connected = false;
+      console.log('pipe finished', err);
+    });
+    connected = true;
+  }
+});
 
 decoder.on('data', (res: Package) => {
   // Processing the package
 });
 
-// create a pipeline
-pump(encoder, serial, decoder, err => {
-  console.log('pipe finished', err);
-});
-
 // Example function for sending data
-function send(data: Buffer, src: number, dest: number): void {
+async function send(data: Buffer, src: number, dest: number): Promise<void> {
+  if (!connected) throw new Error('Connection closed');
   
   // Create a packet with the specified buffer size
   const pkg = new Package(data.length + Package.baseSize);
@@ -503,8 +514,16 @@ function send(data: Buffer, src: number, dest: number): void {
   pkg.command = Command.Write;
   
   // Sending a package
-  encoder.write(pkg);
+  if (!encoder.write(pkg)) {
+    await new Promise(resolve => encoder.once('drain', resolve));
+  }
 }
+
+const release = () => {
+  serial.isOpen && serial.close();
+}
+process.on('SIGINT', release);
+process.on('SIGTERM', release);
 ```
 
 ## License

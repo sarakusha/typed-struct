@@ -1,11 +1,15 @@
 {
   "name": "typed-struct",
   "version": "1.0.7",
-  "description": "Factory of structures. You can define your data structure by chaining the appropriate method calls.",
+  "description": "A TypeScript utility library for creating objects that store their properties in a buffer for serialization/deserialization similar to structures in C",
   "main": "build/main/struct.js",
   "typings": "build/main/struct.d.ts",
   "module": "build/module/struct.js",
   "repository": "https://github.com/sarakusha/typed-struct",
+  "author": {
+    "email": "sarakusha@gmail.com",
+    "name": "Andrei Sarakeev"
+  },
   "license": "MIT",
   "keywords": [
     "struct",
@@ -31,16 +35,16 @@
     "diff-integration-tests": "mkdir -p diff && rm -rf diff/test && cp -r test diff/test && rm -rf diff/test/test-*/.git && cd diff && git init --quiet && git add -A && git commit --quiet --no-verify --allow-empty -m 'WIP' && echo '\\n\\nCommitted most recent integration test output in the \"diff\" directory. Review the changes with \"cd diff && git diff HEAD\" or your preferred git diff viewer.'",
     "watch:build": "tsc -p tsconfig.json -w",
     "watch:test": "jest src --watch",
-    "cov": "jest src --coverage",
-    "cov:view": "run-s build cov && open-cli coverage/index.html",
-    "cov:send": "run-s cov && curl -s https://codecov.io/bash | bash",
+    "cov": "run-s build cov:html && open-cli coverage/index.html",
+    "cov:html": "jest src --coverage --coverageReporters=html",
+    "cov:lcov": "jest src --coverage --coverageReporters=lcov",
+    "cov:send": "run-s cov:lcov && curl -s https://codecov.io/bash | bash",
     "doc": "run-s doc:html && open-cli build/docs/index.html",
     "doc:html": "typedoc src/ --exclude **/*.spec.ts --out build/docs",
     "doc:json": "typedoc src/ --exclude **/*.spec.ts --json build/docs/typedoc.json",
     "doc:publish": "gh-pages -m \"[ci skip] Updates\" -d build/docs",
-    "version": "standard-version",
-    "reset-hard": "git clean -dfx && git reset --hard && yarn",
-    "prepare-release": "run-s reset-hard test cov:html doc:html version doc:publish"
+    "release:version": "standard-version",
+    "release:publish": "git push --follow-tags origin main && yarn publish"
   },
   "engines": {
     "node": ">=12"
