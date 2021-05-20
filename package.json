@@ -6,6 +6,7 @@
   "typings": "build/main/struct.d.ts",
   "module": "build/module/struct.js",
   "repository": "https://github.com/sarakusha/typed-struct",
+  "homepage": "https://sarakusha.github.io/typed-struct/",
   "author": {
     "email": "sarakusha@gmail.com",
     "name": "Andrei Sarakeev"
