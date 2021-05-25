@@ -515,6 +515,24 @@ export interface StructType<T, ClassName extends string> {
    */
   raw(instance: T & { readonly __struct: ClassName }): Buffer;
   raw(instance: T): Buffer | undefined;
+
+  /**
+   * Creates a POJO from a buffer.
+   * POJO - **P**lain **O**ld **J**avaScript **O**bject is an object that only contains data,
+   * as opposed to methods or internal state.
+   * @param raw - underlying buffer or an `array` of bytes in the range 0 – 255
+   * @param freeze - freeze the created object, default `true`
+   */
+  toPOJO(raw: Buffer | number[], freeze?: boolean): T | undefined;
+
+  /**
+   * Creates a POJO from an object.
+   * POJO - **P**lain **O**ld **J**avaScript **O**bject is an object that only contains data,
+   * as opposed to methods or internal state.
+   * @param instance - the source object
+   * @param freeze - freeze the created object, default `true`
+   */
+  toPOJO(instance: T & { readonly __struct: ClassName }, freeze?: boolean): T;
 }
 
 const nameIt = <C extends new (...args: any[]) => any>(name: string, superClass: C) =>
@@ -1188,6 +1206,37 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
         swap(name, Struct.raw(instance));
 
       static raw = (instance: T & { readonly __struct: ClassName }): Buffer => Struct.raw(instance);
+
+      static toPOJO(raw: Buffer | number[], freeze?: boolean): T | undefined;
+
+      static toPOJO(instance: T & { readonly __struct: ClassName }, freeze?: boolean): T;
+
+      static toPOJO(
+        rawOrInstance: Buffer | number[] | (T & { readonly __struct: ClassName }),
+        freeze = true
+      ): T | undefined {
+        let instance: T & { readonly __struct: ClassName };
+        if (Buffer.isBuffer(rawOrInstance)) {
+          try {
+            instance = new Structure(rawOrInstance) as T & { readonly __struct: ClassName };
+          } catch {
+            return undefined;
+          }
+        } else if (Array.isArray(rawOrInstance)) {
+          try {
+            instance = new Structure(rawOrInstance) as T & { readonly __struct: ClassName };
+          } catch {
+            return undefined;
+          }
+        } else {
+          instance = rawOrInstance;
+        }
+        const res = Object.assign(Object.create(null), instance);
+        if (freeze) {
+          Object.freeze(res);
+        }
+        return res;
+      }
     }
 
     return (className ? nameIt(className, Structure) : Structure) as StructType<T, ClassName>;

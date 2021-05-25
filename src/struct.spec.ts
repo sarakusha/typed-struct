@@ -646,5 +646,21 @@ describe('Struct', () => {
     test('Undefined offset', () => {
       expect(new Struct().Int8('bar').getOffsetOf('foo' as any)).toBeUndefined();
     });
+    test('POJO', () => {
+      const Foo = new Struct('Foo').Int8('bar').compile();
+      const raw = [0xff];
+      const pojo1 = Foo.toPOJO(raw);
+      expect(pojo1 && Object.getPrototypeOf(pojo1)).toBeNull();
+      expect(pojo1).toEqual({ bar: -1 });
+      expect(Object.isFrozen(pojo1)).toBe(true);
+      const foo = new Foo(raw);
+      const pojo2 = Foo.toPOJO(foo, false);
+      expect(pojo2).toEqual(pojo1);
+      expect(Object.isFrozen(pojo2)).toBe(false);
+      const pojo3 = Foo.toPOJO(Buffer.from(raw));
+      expect(pojo3).toEqual(pojo1);
+      expect(Foo.toPOJO([])).toBeUndefined();
+      expect(Foo.toPOJO(Buffer.alloc(0))).toBeUndefined();
+    });
   });
 });
