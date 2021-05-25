@@ -1,6 +1,6 @@
 {
   "name": "typed-struct",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "A TypeScript utility library for creating objects that store their properties in a buffer for serialization/deserialization similar to structures in C",
   "main": "build/main/struct.js",
   "typings": "build/main/struct.d.ts",

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/sarakusha/typed-struct/compare/v1.0.9...v1.1.0) (2021-05-25)
+
+
+### Features
+
+* added arrays of variable length ([c883602](https://github.com/sarakusha/typed-struct/commit/c8836020d85b46f3e9d9acc323c3785beb9b7dda))
+* added static method toPOJO ([bf16d94](https://github.com/sarakusha/typed-struct/commit/bf16d948117faaae1bdd2de25781cf1fe2107752))
+
 ### [1.0.9](https://github.com/sarakusha/typed-struct/compare/v1.0.8...v1.0.9) (2021-05-20)
 
 ### [1.0.8](https://github.com/sarakusha/typed-struct/compare/v1.0.7...v1.0.8) (2021-05-20)
