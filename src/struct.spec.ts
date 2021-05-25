@@ -186,6 +186,9 @@ describe('Struct', () => {
         data.s8[i] = rnd();
       });
       expect(data.s8).toEqual(s8);
+      const Tailed = new Struct('Tailed').Int8Array('data').compile();
+      const tailed = new Tailed(8);
+      expect(tailed.data).toHaveLength(8);
     });
     test('array u8', () => {
       expect(u8).toEqual(data.u8);
@@ -194,6 +197,9 @@ describe('Struct', () => {
         data.u8[i] = rnd();
       });
       expect(data.u8).toEqual(u8);
+      const Tailed = new Struct('Tailed').UInt8Array('data').compile();
+      const tailed = new Tailed(8);
+      expect(tailed.data).toHaveLength(8);
     });
     test('array s16', () => {
       expect(s16).toEqual(data.s16);
@@ -202,6 +208,9 @@ describe('Struct', () => {
         data.s16[i] = rnd();
       });
       expect(data.s16).toEqual(s16);
+      const Tailed = new Struct('Tailed').Int16Array('data').compile();
+      const tailed = new Tailed(8);
+      expect(tailed.data).toHaveLength(4);
     });
     test('array u16', () => {
       expect(u16).toEqual(data.u16);
@@ -210,6 +219,9 @@ describe('Struct', () => {
         data.u16[i] = rnd();
       });
       expect(data.u16).toEqual(u16);
+      const Tailed = new Struct('Tailed').UInt16Array('data').compile();
+      const tailed = new Tailed(8);
+      expect(tailed.data).toHaveLength(4);
     });
     test('array s32', () => {
       expect(s32).toEqual(data.s32);
@@ -218,6 +230,9 @@ describe('Struct', () => {
         data.s32[i] = rnd();
       });
       expect(data.s32).toEqual(s32);
+      const Tailed = new Struct('Tailed').Int32Array('data').compile();
+      const tailed = new Tailed(8);
+      expect(tailed.data).toHaveLength(2);
     });
     test('array u32', () => {
       expect(u32).toEqual(data.u32);
@@ -226,6 +241,9 @@ describe('Struct', () => {
         data.u32[i] = rnd();
       });
       expect(data.u32).toEqual(u32);
+      const Tailed = new Struct('Tailed').UInt32Array('data').compile();
+      const tailed = new Tailed(8);
+      expect(tailed.data).toHaveLength(2);
     });
     test('array f32', () => {
       expect(f32).toEqual(data.f32);
@@ -234,6 +252,9 @@ describe('Struct', () => {
         data.f32[i] = rnd();
       });
       expect(data.f32).toEqual(f32);
+      const Tailed = new Struct('Tailed').Float32Array('data').compile();
+      const tailed = new Tailed(8);
+      expect(tailed.data).toHaveLength(2);
     });
     test('array f64', () => {
       expect(f64).toEqual(data.f64);
@@ -242,23 +263,59 @@ describe('Struct', () => {
         data.f64[i] = rnd();
       });
       expect(data.f64).toEqual(f64);
+      const Tailed = new Struct('Tailed').Float64Array('data').compile();
+      const tailed = new Tailed(8);
+      expect(tailed.data).toHaveLength(1);
     });
   });
+  test('struct array', () => {
+    const Point = new Struct('Point').Int8('x').Int8('y').compile();
+    const Vector = new Struct('Vector').StructArray('points', Point, 2).compile();
+    const vector = new Vector([10, 20, 30, 40]);
+    const Polygon = new Struct('Polygon').StructArray('vertices', Point).compile();
+    const polygon = new Polygon([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    expect(Vector.baseSize).toBe(4);
+    expect(vector.points).toHaveLength(2);
+    expect(vector).toEqual({ points: [new Point([10, 20]), new Point([30, 40])] });
+    expect(polygon.vertices).toHaveLength(5);
+  });
   test('custom type', () => {
-    const Custom = new Struct('DateHolder')
-      .Custom(
-        'date',
-        8,
-        (type, buf): Date => new Date(buf.readDoubleLE() * 1000),
-        (type, buf, value): boolean => buf.writeDoubleLE(value.getTime() / 1000) > 0
-      )
-      .compile();
+    const getter = jest.fn(
+      (type: string, buf: Buffer): Date => new Date(buf.readDoubleLE() * 1000)
+    );
+    const setter = jest.fn(
+      (type: string, buf: Buffer, value: Date) => buf.writeDoubleLE(value.getTime() / 1000) > 0
+    );
+    const Custom = new Struct('DateHolder').Custom(['date', 'value'], 8, getter, setter).compile();
     const custom = new Custom();
     const date = new Date();
     custom.date = date;
     expect(custom.date).toEqual(date);
+    expect(getter.mock.calls).toHaveLength(1);
+    expect(setter.mock.calls).toHaveLength(1);
+    expect(getter.mock.calls[0][0]).toBe('date');
+    expect(setter.mock.calls[0][0]).toBe('date');
     const rawCustom = Custom.raw(custom);
     expect(rawCustom.readDoubleLE() * 1000).toBe(date.getTime());
+  });
+  test('Unknown custom', () => {
+    const Custom = new Struct('Custom')
+      .Custom(
+        'unknown',
+        1,
+        () => undefined,
+        () => false
+      )
+      .compile();
+    const custom = new Custom();
+    expect(() => custom.unknown).toThrow(new TypeError('Unknown type "unknown"'));
+    expect(() => (custom.unknown = undefined)).toThrow(new TypeError('Unknown type "unknown"'));
+  });
+  test('empty custom', () => {
+    const Trivial = new Struct('Trivial').Custom('value').compile();
+    const trivial = new Trivial(10);
+    expect(trivial.value).toHaveLength(10);
+    expect(trivial.value).toBeInstanceOf(Buffer);
   });
   test('BCD', () => {
     const BCD = new Struct('BCD').BCD('value').compile();
@@ -339,7 +396,7 @@ describe('Struct', () => {
       b: value,
     });
   });
-  test('undo', () => {
+  test('Unit', () => {
     const Abc = new Struct().Int16LE('s16').Int8('a').back().UInt8('b').compile();
     const abc = new Abc();
     abc.a = -1;
@@ -347,8 +404,34 @@ describe('Struct', () => {
     expect(abc.a).toBe(-1);
     expect(abc.b).toBe(255);
   });
+  test('Invalid argument: back', () => {
+    expect(() => {
+      new Struct().Int8('foo').back(2).compile();
+    }).toThrow(new TypeError('Invalid argument: back. Expected 0..1'));
+  });
   test('typed', () => {
     expect(typed()).toBeUndefined();
+  });
+  test('offsets', () => {
+    const Foo = new Struct('Foo')
+      .Int8('offset0')
+      .UInt16BE('offset1')
+      .UInt32LE('offset3')
+      .back()
+      .UInt32BE('offset_3')
+      .back(0)
+      .UInt8('offset_0')
+      .seek(0)
+      .UInt8('offset7')
+      .compile();
+    expect(Foo.getOffsets()).toEqual({
+      offset0: 0,
+      offset1: 1,
+      offset3: 3,
+      offset_3: 3,
+      offset_0: 0,
+      offset7: 7,
+    });
   });
   test('constant value', () => {
     const value = 0x1234;
@@ -367,14 +450,6 @@ describe('Struct', () => {
     }).toThrow(new TypeError('Buffer size must be at least 4 (3)'));
   });
   describe('swap', () => {
-    test('throws "Unknown property name test"', () => {
-      expect(() => {
-        const Test = new Struct('Test').UInt32LE('a').compile();
-        const test = new Test();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        Test.swap(test, 'test' as any);
-      }).toThrow('Unknown property name "test"');
-    });
     test('swap16 property', () => {
       const Uint16 = new Struct('Uint16').UInt16LE('value').compile();
       const uint16 = new Uint16();
@@ -438,6 +513,7 @@ describe('Struct', () => {
     test('mask', () => {
       expect(getMask(1, 4, 8)).toBe(0x78);
       expect(getMask(0, 8, 8)).toBe(0xff);
+      expect(() => getMask(0, 10, 8)).toThrow(new TypeError('Invalid params'));
     });
     test('32 bit', () => {
       const Bits32 = new Struct('Bits32').Bits32({ value: [0, 32] }).compile();
@@ -534,6 +610,41 @@ describe('Struct', () => {
       });
       value.g = 0;
       expect(Bits32.raw(value)).toEqual(Buffer.from([0xab, 0xcd, 0xe8, 0x02]));
+    });
+    test('throws "Unknown property name test"', () => {
+      expect(() => {
+        const Test = new Struct('Test').UInt32LE('a').compile();
+        const test = new Test();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        Test.swap(test, 'test' as any);
+      }).toThrow('Unknown property name "test"');
+    });
+    test('Property already exists', () => {
+      expect(() => {
+        new Struct().Int8('foo').UInt8('foo').compile();
+      }).toThrow(new TypeError('Property "foo" already exists'));
+    });
+    test('Tail buffer', () => {
+      expect(() => {
+        new Struct().Buffer('data').Int8('value').compile();
+      }).toThrow(new TypeError('Invalid property "value". The tail buffer already created'));
+    });
+    test('crc should be the last field after the buffer', () => {
+      expect(() => {
+        new Struct().Int8('foo').CRC8('bar').compile();
+      }).toThrow(TypeError('CRC field must follow immediately after the buffer field'));
+      expect(() => {
+        new Struct().Buffer('data', -2).CRC16LE('crc').compile();
+      }).not.toThrow();
+      expect(() => {
+        new Struct().Buffer('data', -3).CRC16LE('crc');
+      }).toThrow(new TypeError('Invalid tail buffer length. Expected -2'));
+    });
+    test('Struct size', () => {
+      expect(new Struct().UInt32LE('data').getSize()).toBe(4);
+    });
+    test('Undefined offset', () => {
+      expect(new Struct().Int8('bar').getOffsetOf('foo' as any)).toBeUndefined();
     });
   });
 });
