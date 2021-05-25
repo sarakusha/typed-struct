@@ -148,7 +148,7 @@ const setBits = (
 const getUnsigned = (value: number, size: number): number =>
   (size < 32 ? value & ((1 << size) - 1) : value) >>> 0;
 
-const getSize = (type?: PropType | string): number | undefined => {
+const getSize = (type?: PropType | string): 1 | 2 | 4 | 8 | undefined => {
   switch (type) {
     case PropType.Int8:
     case PropType.UInt8:
@@ -184,6 +184,7 @@ const encodeMaskedValue = (
 const getValue = (info: PropDesc<SimpleTypes>, data: Buffer): number | boolean | undefined => {
   // if (!isSimpleType(info)) throw new TypeError('Invalid type');
   const { len, offset, type, mask, be, tail } = info;
+  /* istanbul ignore next */
   if ((len && len > 0) || tail) throw new TypeError('Array not allowed');
 
   switch (type) {
@@ -191,6 +192,7 @@ const getValue = (info: PropDesc<SimpleTypes>, data: Buffer): number | boolean |
       // offset may be negative
       return decodeMaskedValue(data.slice(offset).readUInt8(), 8, mask);
     case PropType.Int8:
+      /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Signed types do not support bit masks');
       return data.readInt8(offset);
     case PropType.UInt16:
@@ -201,6 +203,7 @@ const getValue = (info: PropDesc<SimpleTypes>, data: Buffer): number | boolean |
         mask
       );
     case PropType.Int16:
+      /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Signed types do not support bit masks');
       return be ? data.readInt16BE(offset) : data.readInt16LE(offset);
     case PropType.UInt32:
@@ -211,12 +214,15 @@ const getValue = (info: PropDesc<SimpleTypes>, data: Buffer): number | boolean |
         mask
       );
     case PropType.Int32:
+      /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Signed types do not support bit masks');
       return be ? data.readInt32BE(offset) : data.readInt32LE(offset);
     case PropType.Float32:
+      /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Float type do not support bit masks');
       return be ? data.readFloatBE(offset) : data.readFloatLE(offset);
     case PropType.Float64:
+      /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Double type do not support bit masks');
       return be ? data.readDoubleBE(offset) : data.readDoubleLE(offset);
     case PropType.Boolean8:
@@ -227,6 +233,7 @@ const getValue = (info: PropDesc<SimpleTypes>, data: Buffer): number | boolean |
       return !!decodeMaskedValue(data.readUInt32LE(offset), 32, mask);
     case PropType.BCD:
       return Math.floor(data[0] / 16) * 10 + (data[0] % 16);
+    /* istanbul ignore next */
     default:
       return undefined;
   }
@@ -236,11 +243,12 @@ const setValue = (info: PropDesc<SimpleTypes>, data: Buffer, value: number | boo
   // if (!isSimpleType(info)) throw new TypeError('Invalid type');
   const { mask, ...other } = info;
   const { len, offset, type, be, tail } = other;
+  /* istanbul ignore next */
   if ((len && len > 0) || tail) throw new TypeError('Array not allowed');
 
-  const encode = (val: unknown, size: BitMaskSize): number => {
+  const encode = <V extends number | boolean>(val: V, size: BitMaskSize): number => {
     const numValue = Number(val);
-    if (Number.isNaN(numValue)) throw new TypeError('Numeric value expected');
+    // if (Number.isNaN(numValue)) throw new TypeError('Numeric value expected');
     return encodeMaskedValue(getValue(other, data) as number, numValue, size, mask);
   };
   switch (type) {
@@ -249,6 +257,7 @@ const setValue = (info: PropDesc<SimpleTypes>, data: Buffer, value: number | boo
       data.slice(offset).writeUInt8(encode(value, 8));
       return true;
     case PropType.Int8:
+      /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Signed types do not support bit masks');
       data.writeInt8(Number(value), offset);
       return true;
@@ -258,6 +267,7 @@ const setValue = (info: PropDesc<SimpleTypes>, data: Buffer, value: number | boo
       else data.slice(offset).writeUInt16LE(encode(value, 16));
       return true;
     case PropType.Int16:
+      /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Signed types do not support bit masks');
       if (be) data.writeInt16BE(Number(value), offset);
       else data.writeInt16LE(Number(value), offset);
@@ -268,16 +278,19 @@ const setValue = (info: PropDesc<SimpleTypes>, data: Buffer, value: number | boo
       else data.slice(offset).writeUInt32LE(encode(value, 32));
       return true;
     case PropType.Int32:
+      /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Signed types do not support bit masks');
       if (be) data.writeInt32BE(Number(value), offset);
       else data.writeInt32LE(Number(value), offset);
       return true;
     case PropType.Float32:
+      /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Float type do not support bit masks');
       if (be) data.writeFloatBE(Number(value), offset);
       else data.writeFloatLE(Number(value), offset);
       return true;
     case PropType.Float64:
+      /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Double type do not support bit masks');
       if (be) data.writeDoubleBE(Number(value), offset);
       else data.writeDoubleLE(Number(value), offset);
@@ -300,6 +313,7 @@ const setValue = (info: PropDesc<SimpleTypes>, data: Buffer, value: number | boo
     case PropType.BCD:
       data.writeUInt8(Math.floor(Number(value) / 10) * 16 + (Number(value) % 10), offset);
       return true;
+    /* istanbul ignore next */
     default:
       return false;
   }
@@ -364,8 +378,8 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
   const desc: PropertyDescriptor = { enumerable: true };
 
   if (typeof info.type === 'string') {
-    const { len, getter, setter, offset, type } = info;
-    const buf = data.slice(offset, offset + (len ?? 0));
+    const { len, getter, setter, offset, type, tail } = info;
+    const buf = data.slice(offset, tail ? undefined : offset + (len ?? 0));
     if (getter) {
       desc.get = () => getter(type, buf) ?? throwUnknownType(type);
     }
@@ -905,7 +919,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   Int8Array = <N extends string>(
     name: N | N[],
-    length: number
+    length?: number
   ): ExtendStruct<T, ClassName, N, Int8Array> => this.createTypedArray(name, PropType.Int8, length);
 
   /**
@@ -915,7 +929,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   UInt8Array = <N extends string>(
     name: N | N[],
-    length: number
+    length?: number
   ): ExtendStruct<T, ClassName, N, Uint8Array> =>
     this.createTypedArray(name, PropType.UInt8, length);
 
@@ -926,7 +940,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   Int16Array = <N extends string>(
     name: N | N[],
-    length: number
+    length?: number
   ): ExtendStruct<T, ClassName, N, Int16Array> =>
     this.createTypedArray(name, PropType.Int16, length);
 
@@ -937,7 +951,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   UInt16Array = <N extends string>(
     name: N | N[],
-    length: number
+    length?: number
   ): ExtendStruct<T, ClassName, N, Uint16Array> =>
     this.createTypedArray(name, PropType.UInt16, length);
 
@@ -949,7 +963,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   Int32Array = <N extends string>(
     name: N | N[],
-    length: number
+    length?: number
   ): ExtendStruct<T, ClassName, N, Int32Array> =>
     this.createTypedArray(name, PropType.Int32, length);
 
@@ -960,7 +974,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   UInt32Array = <N extends string>(
     name: N | N[],
-    length: number
+    length?: number
   ): ExtendStruct<T, ClassName, N, Uint32Array> =>
     this.createTypedArray(name, PropType.UInt32, length);
 
@@ -971,7 +985,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   Float32Array = <N extends string>(
     name: N | N[],
-    length: number
+    length?: number
   ): ExtendStruct<T, ClassName, N, Float32Array> =>
     this.createTypedArray(name, PropType.Float32, length);
 
@@ -982,7 +996,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   Float64Array = <N extends string>(
     name: N | N[],
-    length: number
+    length?: number
   ): ExtendStruct<T, ClassName, N, Float64Array> =>
     this.createTypedArray(name, PropType.Float64, length);
 
@@ -995,11 +1009,12 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   StructArray = <N extends string, S, StructClass extends string>(
     name: N | N[],
     struct: StructType<S, StructClass>,
-    length: number
+    length?: number
   ): ExtendStruct<T, ClassName, N, S[]> =>
     this.createProp<N, PropType.Struct, S[]>(name, {
       type: PropType.Struct,
       len: length,
+      tail: length === undefined,
       struct: struct,
     });
 
@@ -1020,7 +1035,8 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   ): ExtendStruct<T, ClassName, N, ReturnType> =>
     this.createProp(name, {
       type: Array.isArray(name) ? name[0] : name,
-      len: size || this.size - this.position,
+      len: size,
+      tail: size === undefined,
       getter,
       setter,
     });
@@ -1193,6 +1209,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
         return raw.slice(offset, end).swap32();
       case 8:
         return raw.slice(offset, end).swap64();
+      /* istanbul ignore next */
       default:
         throw new TypeError(
           `Invalid type ${typeof type === 'number' ? PropType[type] : type} for field ${name}`
@@ -1209,10 +1226,10 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   >(nameOrAliases: N | N[], info: Omit<PropDesc<Y, R>, 'offset'>): S {
     const self = this as unknown as S;
     const names: N[] = Array.isArray(nameOrAliases) ? nameOrAliases : [nameOrAliases];
-    const exists = names.filter(name => self.props.has(name));
-    if (exists.length > 0) throw TypeError(`Property ${exists.join(', ')} already exists.`);
+    const [exists] = names.filter(name => self.props.has(name));
+    if (exists !== undefined) throw TypeError(`Property "${exists}" already exists`);
     if (this.tailed && !isCrc(info))
-      throw TypeError(`Invalid property ${names[0]}. Tail buffer already created.`);
+      throw TypeError(`Invalid property "${names[0]}". The tail buffer already created`);
     const itemSize = info.struct?.baseSize ?? getSize(info.type) ?? 1;
     if (info.tail) this.tailed = true;
     if (isCrc(info)) {
@@ -1245,11 +1262,12 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   >(
     name: N | N[],
     type: Y,
-    length: number
+    length?: number
   ): S =>
     this.createProp<N, Y, A, S>(name, {
       type,
       len: length,
+      tail: length === undefined,
     });
 
   /** @hidden */
