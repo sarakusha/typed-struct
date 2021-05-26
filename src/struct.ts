@@ -1269,6 +1269,8 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
       }
     }
 
+    Structure.prototype.toString = () => `[object ${className}]`;
+
     return (className ? nameIt(className, Structure) : Structure) as StructType<T, ClassName>;
   }
 

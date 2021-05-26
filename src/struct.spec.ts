@@ -679,5 +679,10 @@ describe('Struct', () => {
       expect(Foo.toPOJO([])).toBeUndefined();
       expect(Foo.toPOJO(Buffer.alloc(0))).toBeUndefined();
     });
+    test('toString', () => {
+      const Foo = new Struct('Foo').compile();
+      const foo = new Foo();
+      expect(foo.toString()).toBe('[object Foo]');
+    });
   });
 });
