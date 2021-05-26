@@ -1,6 +1,6 @@
 # typed-struct
 
-A TypeScript utility library for creating objects that store
+A JavaScript utility library (written in TypeScript) for creating objects that store
 their properties in a buffer for serialization/deserialization
 similar to structures in C.
 
@@ -38,6 +38,8 @@ The generated structures will be strongly typed,
 which will provide better documentation and allow TypeScript
 to validate that your code is working correctly.
 
+##[API](https://sarakusha.github.io/typed-struct/)
+
 ## Examples
 
 ### Create a data structure by chaining the appropriate method calls
@@ -55,6 +57,7 @@ expect(MyStructure.baseSize).toBe(3);
 // creates an instance
 const item1 = new MyStructure();
 expect(item1.constructor.name).toBe('MyStructure');
+expect(item1.toString()).toBe('[object MyStructure]');
 
 // get the underlying buffer
 const raw = MyStructure.raw(item1);
@@ -160,7 +163,7 @@ const BirthCertificate = new Struct('BirthCertificate')
     'birthday',
     8, // size
     // getter, must return property value or `undefined` for unknown type
-    (type, buf): Date => new Date(buf.readDoubleLE() * 1000),
+    (type, buf) => new Date(buf.readDoubleLE() * 1000),
     // setter, must return `false` for unknown type or `true` if everything is ok
     (type, buf, value) => buf.writeDoubleLE(value.getTime() / 1000) > 0
   )
@@ -205,7 +208,7 @@ expect(() => {
 // ... but
 req.header = 0xDEADBEEF;
 ```
-### Enumerated fields
+### Enumerated fields (Typescript)
 ```ts
 import Struct, { typed } from 'typed-struct';
 
