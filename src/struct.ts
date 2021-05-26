@@ -333,8 +333,8 @@ function defineProps<T>(obj: unknown, props: PropertyMap<T>, data: Buffer): T {
   return obj as T;
 }
 
-const throwUnknownType = (type: PropType | string) => {
-  throw TypeError(`Unknown type "${typeof type === 'number' ? PropType[type] : type}"`);
+const throwUnknownType = (type: string) => {
+  throw TypeError(`Unknown type "${type}"`);
 };
 
 const getTypedArrayConstructor = (
@@ -397,11 +397,11 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
         : data.slice(info.offset, info.len && info.len > 0 ? info.offset + info.len : info.len);
     } else {
       info.value === undefined || setValue(info, data, info.value); // initialize
-      desc.get = () => getValue(info, data) ?? throwUnknownType(info.type);
+      desc.get = () => getValue(info, data); // ?? throwUnknownType(info.type);
       desc.set = value => {
         if (info.value !== undefined && value !== info.value)
           throw new TypeError(`Invalid value, expected ${info.value}`);
-        else setValue(info, data, value) || throwUnknownType(info.type);
+        else setValue(info, data, value); // || throwUnknownType(info.type);
       };
     }
   } else if (info.struct) {
@@ -534,6 +534,36 @@ export interface StructType<T, ClassName extends string> {
    */
   toPOJO(instance: T & { readonly __struct: ClassName }, freeze?: boolean): T;
 }
+
+const isSimple = (value: unknown): value is number | boolean | null | undefined =>
+  value === undefined || value === null || ['number', 'boolean'].includes(typeof value);
+
+const isIterable = (arr: unknown): arr is Iterable<unknown> => Symbol.iterator in Object(arr);
+
+const isObject = (obj: unknown): obj is Record<string, unknown> =>
+  Object.prototype.toString.call(obj) === '[object Object]';
+
+const deepClone = <T extends Record<string, unknown>>(obj: T): Partial<T> => {
+  const clone = Object.create(null);
+  Object.entries(obj).forEach(([name, value]) => {
+    if (isSimple(value)) {
+      clone[name] = value;
+    } else if (isIterable(value)) {
+      clone[name] = [...value];
+    } else if (isObject(value)) {
+      clone[name] = deepClone(value);
+    } else {
+      try {
+        const str = JSON.stringify(value);
+        if (str !== undefined) clone[name] = str;
+      } catch (err) {
+        /* istanbul ignore next */
+        console.warn(`error while serialize ${name}: ${err.message}`);
+      }
+    }
+  });
+  return clone;
+};
 
 const nameIt = <C extends new (...args: any[]) => any>(name: string, superClass: C) =>
   ({
@@ -1231,11 +1261,11 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
         } else {
           instance = rawOrInstance;
         }
-        const res = Object.assign(Object.create(null), instance);
+        const pojo = deepClone(instance);
         if (freeze) {
-          Object.freeze(res);
+          Object.freeze(pojo);
         }
-        return res;
+        return pojo as T;
       }
     }
 
