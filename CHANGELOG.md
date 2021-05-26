@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/sarakusha/typed-struct/compare/v1.1.0...v1.1.1) (2021-05-26)
+
+
+### Bug Fixes
+
+* assignment replaced with deep cloning in `toPOJO` ([d1aff45](https://github.com/sarakusha/typed-struct/commit/d1aff45b8f13e4696c8ba56b1ab3365e63c8dcbc))
+* toString() implemented ([c836faa](https://github.com/sarakusha/typed-struct/commit/c836faabe0b3f6e6c3a600abac51fe2ff00c87ba))
+
 ## [1.1.0](https://github.com/sarakusha/typed-struct/compare/v1.0.9...v1.1.0) (2021-05-25)
 
 
