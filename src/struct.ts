@@ -2,6 +2,63 @@
 
 export type ExtractType<C> = C extends new () => infer T ? Omit<T, '__struct'> : never;
 
+type FilterFlags<Base, Condition> = {
+  [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
+};
+
+type FilterNames<Base, Condition> = FilterFlags<Base, Condition>[keyof Base];
+
+type OmitType<Base, Condition> = Omit<Base, FilterNames<Base, Condition>>;
+
+/** Cosmetic use only makes the tooltips expand the type can be removed */
+// eslint-disable-next-line @typescript-eslint/ban-types
+type Id<T> = {} & { [P in keyof T]: T[P] };
+
+type ReplaceDistributive<Base, Condition, Target> = Base extends any
+  ? Base extends Condition
+    ? Target
+    : Base extends Record<PropertyKey, unknown>
+    ? Id<ReplaceRecursively<Base, Condition, Target>>
+    : Base
+  : never;
+
+type ReplaceDistributiveNot<Base, Condition, Target> = Base extends any
+  ? Base extends Condition
+    ? Base
+    : Base extends Record<PropertyKey, unknown>
+    ? Id<ReplaceRecursively<Base, Condition, Target, true>>
+    : Target
+  : never;
+
+type ReplaceRecursively<Base, Condition, Target, Not extends boolean = false> = {
+  [P in keyof Base]: Not extends false
+    ? ReplaceDistributive<Base[P], Condition, Target>
+    : ReplaceDistributiveNot<Base[P], Condition, Target>;
+};
+
+type OmitTypeDistributive<Base, Condition> = Base extends any
+  ? Base extends Record<PropertyKey, unknown>
+    ? Id<OmitTypeRecursively<Base, Condition>>
+    : Base
+  : never;
+
+type OmitTypeRecursively<Base, Condition> = OmitType<
+  {
+    [P in keyof Base]: OmitTypeDistributive<Base[P], Condition>;
+  },
+  Condition
+>;
+
+type POJO<T> = Id<
+  ReplaceRecursively<
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    ReplaceRecursively<OmitTypeRecursively<T, Function>, Iterable<number>, number[]>,
+    number | boolean | null | undefined | number[],
+    string,
+    true
+  >
+>;
+
 /**
  * Predefined property types
  */
@@ -520,19 +577,25 @@ export interface StructType<T, ClassName extends string> {
    * Creates a POJO from a buffer.
    * POJO - **P**lain **O**ld **J**avaScript **O**bject is an object that only contains data,
    * as opposed to methods or internal state.
+   * The POJO `prototype` is `Object.prototype` and all numeric iterable types
+   * (buffer, typed arrays) are replaced with `number[]`, all custom types other than
+   * `number`, `boolean` and numeric iterables are replaced with `string` using `JSON.stringify`.
    * @param raw - underlying buffer or an `array` of bytes in the range 0 – 255
    * @param freeze - freeze the created object, default `true`
    */
-  toPOJO(raw: Buffer | number[], freeze?: boolean): T | undefined;
+  toPOJO(raw: Buffer | number[], freeze?: boolean): POJO<T> | undefined;
 
   /**
    * Creates a POJO from an object.
    * POJO - **P**lain **O**ld **J**avaScript **O**bject is an object that only contains data,
    * as opposed to methods or internal state.
+   * The POJO `prototype` is `Object.prototype` and all numeric iterable types
+   * (buffer, typed arrays) are replaced with `number[]`, all custom types other than
+   * `number`, `boolean` and numeric iterables are replaced with `string` using `JSON.stringify`.
    * @param instance - the source object
    * @param freeze - freeze the created object, default `true`
    */
-  toPOJO(instance: T & { readonly __struct: ClassName }, freeze?: boolean): T;
+  toPOJO(instance: T & { readonly __struct: ClassName }, freeze?: boolean): POJO<T>;
 }
 
 const isSimple = (value: unknown): value is number | boolean | null | undefined =>
@@ -540,11 +603,11 @@ const isSimple = (value: unknown): value is number | boolean | null | undefined 
 
 const isIterable = (arr: unknown): arr is Iterable<unknown> => Symbol.iterator in Object(arr);
 
-const isObject = (obj: unknown): obj is Record<string, unknown> =>
+const isObject = (obj: unknown): obj is Record<PropertyKey, unknown> =>
   Object.prototype.toString.call(obj) === '[object Object]';
 
-const deepClone = <T extends Record<string, unknown>>(obj: T): Partial<T> => {
-  const clone = Object.create(null);
+const deepClone = <T>(obj: T): POJO<T> => {
+  const clone: any = {};
   Object.entries(obj).forEach(([name, value]) => {
     if (isSimple(value)) {
       clone[name] = value;
@@ -910,7 +973,11 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   BCD = <N extends string, R extends number>(
     name: N | N[],
     value?: R
-  ): ExtendStruct<T, ClassName, N, R> => this.createProp(name, { type: PropType.BCD, value });
+  ): ExtendStruct<T, ClassName, N, R> =>
+    this.createProp(name, {
+      type: PropType.BCD,
+      value,
+    });
 
   /**
    * defines nested structure
@@ -1197,7 +1264,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    * Create structure constructor
    * @param className - Constructor name
    */
-  compile(className: string | undefined = this.defaultClassName): StructType<T, ClassName> {
+  compile(className: string | undefined = this.defaultClassName): StructType<Id<T>, ClassName> {
     const { size: baseSize, props, getOffsetOf, getOffsets, swap } = this;
 
     // noinspection JSUnusedGlobalSymbols
@@ -1237,14 +1304,14 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
       static raw = (instance: T & { readonly __struct: ClassName }): Buffer => Struct.raw(instance);
 
-      static toPOJO(raw: Buffer | number[], freeze?: boolean): T | undefined;
+      static toPOJO(raw: Buffer | number[], freeze?: boolean): POJO<T> | undefined;
 
-      static toPOJO(instance: T & { readonly __struct: ClassName }, freeze?: boolean): T;
+      static toPOJO(instance: T & { readonly __struct: ClassName }, freeze?: boolean): POJO<T>;
 
       static toPOJO(
         rawOrInstance: Buffer | number[] | (T & { readonly __struct: ClassName }),
         freeze = true
-      ): T | undefined {
+      ): POJO<T> | undefined {
         let instance: T & { readonly __struct: ClassName };
         if (Buffer.isBuffer(rawOrInstance)) {
           try {
@@ -1261,11 +1328,11 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
         } else {
           instance = rawOrInstance;
         }
-        const pojo = deepClone(instance);
+        const pojo = deepClone(instance as T);
         if (freeze) {
           Object.freeze(pojo);
         }
-        return pojo as T;
+        return pojo;
       }
     }
 
