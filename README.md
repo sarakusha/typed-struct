@@ -1,6 +1,6 @@
 # typed-struct
 
-A JavaScript utility library (written in TypeScript) for creating objects that store
+A JavaScript utility library (written in TypeScript) for creating objects and classes that store
 their properties in a buffer for serialization/deserialization
 similar to structures in C.
 
@@ -52,15 +52,16 @@ const MyStructure = new Struct('MyStructure') // give a name to the constructor
   .UInt16LE('bar')    // unsigned, little-endian 16-bit integer field `bar`
   .compile();         // create a constructor for the structure, called last
 
-expect(MyStructure.baseSize).toBe(3);
-
-// creates an instance
-const item1 = new MyStructure();
+// You can use the compiled constructor as if you had made a class.
+// If you are using a typescript, you will also get
+// the exact type of the generated structure
+const item1 = new MyStructure();      // creates an instance
 expect(item1.constructor.name).toBe('MyStructure');
 expect(item1.toString()).toBe('[object MyStructure]');
 
-// get the underlying buffer
-const raw = MyStructure.raw(item1);
+// This class has useful static properties and methods.
+const raw = MyStructure.raw(item1);   // get the underlying buffer
+expect(MyStructure.baseSize).toBe(3); // the minimum base size of the structure
 expect(raw.length).toBe(MyStructure.baseSize);
 
 // Changing the properties of the structure
@@ -315,6 +316,59 @@ const Bar = new Struct('Bar')
   .compile();
 
 expect(Bar.baseSize).toBe(4);  
+```
+
+### Plain Old JavaScript Object
+e.g.
+```ts
+const Model = new Struct('Model')
+  .Int8('foo')
+  .UInt8Array('bars', 4)
+  .Struct('nested', new Struct().UInt8Array('values', 4).compile())
+  .compile();
+
+const model = new Model([0x10, 1, 2, 3, 4, 0x20, 5, 6, 7, 8]);
+```
+Let's see what the `model` is
+```ts
+console.log(model);
+```
+output: (`$raw` is a hidden property and is shown for clarity)
+```
+Model {
+  foo: [Getter/Setter],
+  bars: Uint8Array(4) [ 1, 2, 3, 4 ],
+  nested: Nested {
+    value: [Getter/Setter],
+    items: Uint8Array(4) [ 5, 6, 7, 8 ]
+  }
+  $raw: <Buffer 10 01 02 03 04 20 05 06 07 08>
+}
+```
+If you only need a parser, you can avoid overheads like getters and setters
+and hidden buffers by using the static method `toPOJO`.
+
+POJO - **P**lain **O**ld **J**avaScript **O**bject is an object that only contains data,
+as opposed to methods or internal state. The POJO `prototype` is `Object.prototype` and all numeric iterable types
+(buffer, typed arrays) are replaced with `number[]`, all custom types other than
+`number`, `boolean` and numeric iterables are replaced with `string` using `JSON.stringify`.
+
+```ts
+const pojo1 = Model.toPOJO(model)
+// or just like that
+const pojo2 = Model.toPOJO([0x10, 1, 2, 3, 4, 0x20, 5, 6, 7, 8])
+
+expect(pojo1).toEqual(pojo2);
+
+console.log(pojo1);
+```
+output:
+```
+{
+  foo: 16,
+  bars: [ 1, 2, 3, 4 ],
+  nested: { value: 32, items: [ 5, 6, 7, 8 ] }
+}
 ```
 
 ### A typical example of working with binary data via a serial port
