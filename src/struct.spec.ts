@@ -654,18 +654,18 @@ describe('Struct', () => {
         .Boolean8('baz')
         .Int8('bar')
         .UInt8Array('array', 3)
-        .Struct('s', new Struct().Int8('value').compile())
+        .Struct('s', new Struct().Int8Array('values', 2).compile())
         .Buffer('buf', 2)
         .Custom('date', 8, getter, setter)
         .compile();
-      const raw = [0xff, 0xfd, 1, 2, 3, 0xfe, 0xc0, 0xde, 0, 0, 0, 0, 0x02, 0x98, 0x9a, 0x41];
+      const raw = [0xff, 0xfd, 1, 2, 3, 0xfe, 0xfd, 0xc0, 0xde, 0, 0, 0, 0, 0x02, 0x98, 0x9a, 0x41];
       const pojo1 = Foo.toPOJO(raw);
-      expect(pojo1 && Object.getPrototypeOf(pojo1)).toBeNull();
+      expect(pojo1 && Object.getPrototypeOf(pojo1)).toBe(Object.prototype);
       expect(pojo1).toEqual({
         baz: true,
         bar: -3,
         array: [1, 2, 3],
-        s: { value: -2 },
+        s: { values: [-2, -3] },
         buf: [0xc0, 0xde],
         date: '"1973-07-15T00:00:00.000Z"',
       });
