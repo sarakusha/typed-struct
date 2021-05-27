@@ -324,7 +324,7 @@ e.g.
 const Model = new Struct('Model')
   .Int8('foo')
   .UInt8Array('bars', 4)
-  .Struct('nested', new Struct().UInt8Array('values', 4).compile())
+  .Struct('nested', new Struct().Int8('value').UInt8Array('items', 4).compile())
   .compile();
 
 const model = new Model([0x10, 1, 2, 3, 4, 0x20, 5, 6, 7, 8]);
