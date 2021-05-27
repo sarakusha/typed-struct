@@ -61,7 +61,7 @@
 				<a href="#typed-struct" id="typed-struct" style="color: inherit; text-decoration: none;">
 					<h1>typed-struct</h1>
 				</a>
-				<p>A TypeScript utility library for creating objects that store
+				<p>A JavaScript utility library (written in TypeScript) for creating objects and classes that store
 					their properties in a buffer for serialization/deserialization
 				similar to structures in C.</p>
 				<p><a href="https://codecov.io/gh/sarakusha/typed-struct"><img src="https://codecov.io/gh/sarakusha/typed-struct/branch/main/graph/badge.svg?token=6F26I7FO73" alt="codecov"></a>
@@ -93,6 +93,9 @@
 				<p>The generated structures will be strongly typed,
 					which will provide better documentation and allow TypeScript
 				to validate that your code is working correctly.</p>
+				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
+					<h2><a href="https://sarakusha.github.io/typed-struct/">API</a></h2>
+				</a>
 				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
 					<h2>Examples</h2>
 				</a>
@@ -106,14 +109,16 @@
 <span style="color: #000000">  .</span><span style="color: #795E26">UInt16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;bar&#039;</span><span style="color: #000000">)    </span><span style="color: #008000">// unsigned, little-endian 16-bit integer field `bar`</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">compile</span><span style="color: #000000">();         </span><span style="color: #008000">// create a constructor for the structure, called last</span>
 
-<span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">MyStructure</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">);</span>
-
-<span style="color: #008000">// creates an instance</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">item1</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MyStructure</span><span style="color: #000000">();</span>
+<span style="color: #008000">// You can use the compiled constructor as if you had made a class.</span>
+<span style="color: #008000">// If you are using a typescript, you will also get</span>
+<span style="color: #008000">// the exact type of the generated structure</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">item1</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MyStructure</span><span style="color: #000000">();      </span><span style="color: #008000">// creates an instance</span>
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">item1</span><span style="color: #000000">.</span><span style="color: #001080">constructor</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;MyStructure&#039;</span><span style="color: #000000">);</span>
+<span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">item1</span><span style="color: #000000">.</span><span style="color: #795E26">toString</span><span style="color: #000000">()).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;[object MyStructure]&#039;</span><span style="color: #000000">);</span>
 
-<span style="color: #008000">// get the underlying buffer</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">raw</span><span style="color: #000000"> = </span><span style="color: #001080">MyStructure</span><span style="color: #000000">.</span><span style="color: #795E26">raw</span><span style="color: #000000">(</span><span style="color: #001080">item1</span><span style="color: #000000">);</span>
+<span style="color: #008000">// This class has useful static properties and methods.</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">raw</span><span style="color: #000000"> = </span><span style="color: #001080">MyStructure</span><span style="color: #000000">.</span><span style="color: #795E26">raw</span><span style="color: #000000">(</span><span style="color: #001080">item1</span><span style="color: #000000">);   </span><span style="color: #008000">// get the underlying buffer</span>
+<span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">MyStructure</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">); </span><span style="color: #008000">// the minimum base size of the structure</span>
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">raw</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #001080">MyStructure</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">);</span>
 
 <span style="color: #008000">// Changing the properties of the structure</span>
@@ -218,7 +223,7 @@
 <span style="color: #000000">    </span><span style="color: #A31515">&#039;birthday&#039;</span><span style="color: #000000">,</span>
 <span style="color: #000000">    </span><span style="color: #098658">8</span><span style="color: #000000">, </span><span style="color: #008000">// size</span>
 <span style="color: #000000">    </span><span style="color: #008000">// getter, must return property value or `undefined` for unknown type</span>
-<span style="color: #000000">    (</span><span style="color: #001080">type</span><span style="color: #000000">, </span><span style="color: #001080">buf</span><span style="color: #000000">): </span><span style="color: #267F99">Date</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">(</span><span style="color: #001080">buf</span><span style="color: #000000">.</span><span style="color: #795E26">readDoubleLE</span><span style="color: #000000">() * </span><span style="color: #098658">1000</span><span style="color: #000000">),</span>
+<span style="color: #000000">    (</span><span style="color: #001080">type</span><span style="color: #000000">, </span><span style="color: #001080">buf</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">(</span><span style="color: #001080">buf</span><span style="color: #000000">.</span><span style="color: #795E26">readDoubleLE</span><span style="color: #000000">() * </span><span style="color: #098658">1000</span><span style="color: #000000">),</span>
 <span style="color: #000000">    </span><span style="color: #008000">// setter, must return `false` for unknown type or `true` if everything is ok</span>
 <span style="color: #000000">    (</span><span style="color: #001080">type</span><span style="color: #000000">, </span><span style="color: #001080">buf</span><span style="color: #000000">, </span><span style="color: #001080">value</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">buf</span><span style="color: #000000">.</span><span style="color: #795E26">writeDoubleLE</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000">.</span><span style="color: #795E26">getTime</span><span style="color: #000000">() / </span><span style="color: #098658">1000</span><span style="color: #000000">) &gt; </span><span style="color: #098658">0</span>
 <span style="color: #000000">  )</span>
@@ -265,8 +270,8 @@
 <span style="color: #008000">// ... but</span>
 <span style="color: #001080">req</span><span style="color: #000000">.</span><span style="color: #001080">header</span><span style="color: #000000"> = </span><span style="color: #098658">0xDEADBEEF</span><span style="color: #000000">;</span>
 </code></pre>
-				<a href="#enumerated-fields" id="enumerated-fields" style="color: inherit; text-decoration: none;">
-					<h3>Enumerated fields</h3>
+				<a href="#enumerated-fields-typescript" id="enumerated-fields-typescript" style="color: inherit; text-decoration: none;">
+					<h3>Enumerated fields (Typescript)</h3>
 				</a>
 				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #001080">Struct</span><span style="color: #000000">, { </span><span style="color: #001080">typed</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;typed-struct&#039;</span><span style="color: #000000">;</span>
 
@@ -375,6 +380,53 @@
 <span style="color: #000000">  .</span><span style="color: #795E26">compile</span><span style="color: #000000">();</span>
 
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">Bar</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #098658">4</span><span style="color: #000000">);  </span>
+</code></pre>
+				<a href="#plain-old-javascript-object" id="plain-old-javascript-object" style="color: inherit; text-decoration: none;">
+					<h3>Plain Old JavaScript Object</h3>
+				</a>
+				<p>e.g.</p>
+				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Model</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Model&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">Int8</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;foo&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">UInt8Array</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;bars&#039;</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;nested&#039;</span><span style="color: #000000">, </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">().</span><span style="color: #795E26">UInt8Array</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;values&#039;</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">).</span><span style="color: #795E26">compile</span><span style="color: #000000">())</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">compile</span><span style="color: #000000">();</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">model</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Model</span><span style="color: #000000">([</span><span style="color: #098658">0x10</span><span style="color: #000000">, </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">0x20</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">8</span><span style="color: #000000">]);</span>
+</code></pre>
+				<p>Let&#39;s see what the <code>model</code> is</p>
+				<pre><code class="language-ts"><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">model</span><span style="color: #000000">);</span>
+</code></pre>
+				<p>output: (<code>$raw</code> is a hidden property and is shown for clarity)</p>
+				<pre><code><span style="color: #001080">Model</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  foo: [</span><span style="color: #001080">Getter</span><span style="color: #000000">/</span><span style="color: #001080">Setter</span><span style="color: #000000">],</span>
+<span style="color: #000000">  bars: </span><span style="color: #267F99">Uint8Array</span><span style="color: #000000">(</span><span style="color: #098658">4</span><span style="color: #000000">) [ </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000"> ],</span>
+<span style="color: #000000">  nested: </span><span style="color: #001080">Nested</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    value: [</span><span style="color: #001080">Getter</span><span style="color: #000000">/</span><span style="color: #001080">Setter</span><span style="color: #000000">],</span>
+<span style="color: #000000">    items: </span><span style="color: #267F99">Uint8Array</span><span style="color: #000000">(</span><span style="color: #098658">4</span><span style="color: #000000">) [ </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">8</span><span style="color: #000000"> ]</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">  $raw: &lt;</span><span style="color: #267F99">Buffer</span><span style="color: #000000"> </span><span style="color: #098658">10</span><span style="color: #000000"> </span><span style="color: #098658">01</span><span style="color: #000000"> </span><span style="color: #098658">02</span><span style="color: #000000"> </span><span style="color: #098658">03</span><span style="color: #000000"> </span><span style="color: #098658">04</span><span style="color: #000000"> </span><span style="color: #098658">20</span><span style="color: #000000"> </span><span style="color: #098658">05</span><span style="color: #000000"> </span><span style="color: #098658">06</span><span style="color: #000000"> </span><span style="color: #098658">07</span><span style="color: #000000"> </span><span style="color: #098658">08</span><span style="color: #000000">&gt;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>If you only need a parser, you can avoid overheads like getters and setters
+				and hidden buffers by using the static method <code>toPOJO</code>.</p>
+				<p>POJO - <strong>P</strong>lain <strong>O</strong>ld <strong>J</strong>avaScript <strong>O</strong>bject is an object that only contains data,
+					as opposed to methods or internal state. The POJO <code>prototype</code> is <code>Object.prototype</code> and all numeric iterable types
+					(buffer, typed arrays) are replaced with <code>number[]</code>, all custom types other than
+				<code>number</code>, <code>boolean</code> and numeric iterables are replaced with <code>string</code> using <code>JSON.stringify</code>.</p>
+				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pojo1</span><span style="color: #000000"> = </span><span style="color: #001080">Model</span><span style="color: #000000">.</span><span style="color: #795E26">toPOJO</span><span style="color: #000000">(</span><span style="color: #001080">model</span><span style="color: #000000">)</span>
+<span style="color: #008000">// or just like that</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pojo2</span><span style="color: #000000"> = </span><span style="color: #001080">Model</span><span style="color: #000000">.</span><span style="color: #795E26">toPOJO</span><span style="color: #000000">([</span><span style="color: #098658">0x10</span><span style="color: #000000">, </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000">, </span><span style="color: #098658">0x20</span><span style="color: #000000">, </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">8</span><span style="color: #000000">])</span>
+
+<span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">pojo1</span><span style="color: #000000">).</span><span style="color: #795E26">toEqual</span><span style="color: #000000">(</span><span style="color: #001080">pojo2</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">pojo1</span><span style="color: #000000">);</span>
+</code></pre>
+				<p>output:</p>
+				<pre><code><span style="color: #000000">{</span>
+<span style="color: #000000">  foo: </span><span style="color: #098658">16</span><span style="color: #000000">,</span>
+<span style="color: #000000">  bars: [ </span><span style="color: #098658">1</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">4</span><span style="color: #000000"> ],</span>
+<span style="color: #000000">  nested: { value: </span><span style="color: #098658">32</span><span style="color: #000000">, items: [ </span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">8</span><span style="color: #000000"> ] }</span>
+<span style="color: #000000">}</span>
 </code></pre>
 				<a href="#a-typical-example-of-working-with-binary-data-via-a-serial-port" id="a-typical-example-of-working-with-binary-data-via-a-serial-port" style="color: inherit; text-decoration: none;">
 					<h3>A typical example of working with binary data via a serial port</h3>
