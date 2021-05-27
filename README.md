@@ -38,7 +38,7 @@ The generated structures will be strongly typed,
 which will provide better documentation and allow TypeScript
 to validate that your code is working correctly.
 
-##[API](https://sarakusha.github.io/typed-struct/)
+## [API](https://sarakusha.github.io/typed-struct/)
 
 ## Examples
 

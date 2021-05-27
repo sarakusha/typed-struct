@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/sarakusha/typed-struct/compare/v1.1.1...v1.1.2) (2021-05-27)
+
+
+### Bug Fixes
+
+* clarified the return type of POJO and prototype changed to Object.prototype ([5404ed6](https://github.com/sarakusha/typed-struct/commit/5404ed66a8c215966800a8d9308edb244644fc63))
+
 ### [1.1.1](https://github.com/sarakusha/typed-struct/compare/v1.1.0...v1.1.1) (2021-05-26)
 
 
