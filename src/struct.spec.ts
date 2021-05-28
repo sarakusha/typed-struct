@@ -646,7 +646,7 @@ describe('Struct', () => {
     test('Undefined offset', () => {
       expect(new Struct().Int8('bar').getOffsetOf('foo' as any)).toBeUndefined();
     });
-    test('POJO', () => {
+    test('JSON', () => {
       const getter = (type: string, buf: Buffer): Date => new Date(buf.readDoubleLE() * 1000);
       const setter = (type: string, buf: Buffer, value: Date) =>
         buf.writeDoubleLE(value.getTime() / 1000) > 0;
@@ -659,30 +659,31 @@ describe('Struct', () => {
         .Custom('date', 8, getter, setter)
         .compile();
       const raw = [0xff, 0xfd, 1, 2, 3, 0xfe, 0xfd, 0xc0, 0xde, 0, 0, 0, 0, 0x02, 0x98, 0x9a, 0x41];
-      const pojo1 = Foo.toPOJO(raw);
-      expect(pojo1 && Object.getPrototypeOf(pojo1)).toBe(Object.prototype);
-      expect(pojo1).toEqual({
+      const foo = new Foo(raw);
+      const json = foo.toJSON();
+      expect(Object.getPrototypeOf(json)).toBe(Object.prototype);
+      expect(json).toEqual({
         baz: true,
         bar: -3,
         array: [1, 2, 3],
         s: { values: [-2, -3] },
         buf: [0xc0, 0xde],
-        date: '"1973-07-15T00:00:00.000Z"',
+        date: foo.date.toJSON(),
       });
-      expect(Object.isFrozen(pojo1)).toBe(true);
-      const foo = new Foo(raw);
-      const pojo2 = Foo.toPOJO(foo, false);
-      expect(pojo2).toEqual(pojo1);
-      expect(Object.isFrozen(pojo2)).toBe(false);
-      const pojo3 = Foo.toPOJO(Buffer.from(raw));
-      expect(pojo3).toEqual(pojo1);
-      expect(Foo.toPOJO([])).toBeUndefined();
-      expect(Foo.toPOJO(Buffer.alloc(0))).toBeUndefined();
     });
     test('toString', () => {
       const Foo = new Struct('Foo').compile();
       const foo = new Foo();
       expect(foo.toString()).toBe('[object Foo]');
+      const Model = new Struct('Model')
+        .Int8('foo')
+        .UInt8Array('bars', 4)
+        .Struct('nested', new Struct('Nested').Int8('value').Buffer('items', 4).compile())
+        .compile();
+
+      const model = new Model([0x10, 1, 2, 3, 4, 0x20, 5, 6, 7, 8]);
+      console.log(model);
+      console.log(model.toJSON());
     });
   });
 });

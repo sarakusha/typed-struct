@@ -318,13 +318,13 @@ const Bar = new Struct('Bar')
 expect(Bar.baseSize).toBe(4);  
 ```
 
-### Plain Old JavaScript Object
+### JSON
 e.g.
 ```ts
 const Model = new Struct('Model')
   .Int8('foo')
   .UInt8Array('bars', 4)
-  .Struct('nested', new Struct().Int8('value').UInt8Array('items', 4).compile())
+  .Struct('nested', new Struct('Nested').Int8('value').Buffer('items', 4).compile())
   .compile();
 
 const model = new Model([0x10, 1, 2, 3, 4, 0x20, 5, 6, 7, 8]);
@@ -340,27 +340,20 @@ Model {
   bars: Uint8Array(4) [ 1, 2, 3, 4 ],
   nested: Nested {
     value: [Getter/Setter],
-    items: Uint8Array(4) [ 5, 6, 7, 8 ]
+    items: <Buffer 05 06 07 08>
   }
   $raw: <Buffer 10 01 02 03 04 20 05 06 07 08>
 }
 ```
 If you only need a parser, you can avoid overheads like getters and setters
-and hidden buffers by using the static method `toPOJO`.
-
-POJO - **P**lain **O**ld **J**avaScript **O**bject is an object that only contains data,
-as opposed to methods or internal state. The POJO `prototype` is `Object.prototype` and all numeric iterable types
-(buffer, typed arrays) are replaced with `number[]`, all custom types other than
-`number`, `boolean` and numeric iterables are replaced with `string` using `JSON.stringify`.
+and hidden buffers by using the method `toJSON`. The result contains only data,
+as opposed to methods or internal state. Its `prototype` is `Object.prototype` 
+and all numeric iterable types (buffer, typed arrays) are replaced with `number[]`,
+all custom types other than `number`, `boolean` and numeric iterables are replaced
+with the result of executing `toJSON` or `toString` methods.
 
 ```ts
-const pojo1 = Model.toPOJO(model)
-// or just like that
-const pojo2 = Model.toPOJO([0x10, 1, 2, 3, 4, 0x20, 5, 6, 7, 8])
-
-expect(pojo1).toEqual(pojo2);
-
-console.log(pojo1);
+console.log(model.toJSON());
 ```
 output:
 ```
@@ -370,7 +363,6 @@ output:
   nested: { value: 32, items: [ 5, 6, 7, 8 ] }
 }
 ```
-
 ### A typical example of working with binary data via a serial port
 
 Package.ts

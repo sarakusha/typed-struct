@@ -1,6 +1,6 @@
 /* eslint-disable no-bitwise,max-classes-per-file,no-use-before-define,object-shorthand,@typescript-eslint/no-explicit-any */
 
-export type ExtractType<C> = C extends new () => infer T ? Omit<T, '__struct'> : never;
+export type ExtractType<C> = C extends new () => infer T ? Omit<T, '__struct' | 'toJSON'> : never;
 
 type FilterFlags<Base, Condition> = {
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
@@ -10,7 +10,7 @@ type FilterNames<Base, Condition> = FilterFlags<Base, Condition>[keyof Base];
 
 type OmitType<Base, Condition> = Omit<Base, FilterNames<Base, Condition>>;
 
-/** Cosmetic use only makes the tooltips expand the type can be removed */
+/** Cosmetic use only, makes the tooltips expand the type, can be removed */
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Id<T> = {} & { [P in keyof T]: T[P] };
 
@@ -51,10 +51,14 @@ type OmitTypeRecursively<Base, Condition> = OmitType<
 
 type POJO<T> = Id<
   ReplaceRecursively<
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    ReplaceRecursively<OmitTypeRecursively<T, Function>, Iterable<number>, number[]>,
-    number | boolean | null | undefined | number[],
-    string,
+    ReplaceRecursively<
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      ReplaceRecursively<OmitTypeRecursively<T, Function | undefined>, Iterable<number>, number[]>,
+      Date,
+      string
+    >,
+    string | number | boolean | null | number[],
+    unknown,
     true
   >
 >;
@@ -158,7 +162,7 @@ type PropDesc<T extends PropType | string = PropType | string, R = NativeType<T>
   /** Big-Endian, default Little-Endian */
   be?: boolean;
   /** nested struct */
-  struct?: StructType<unknown, string>;
+  struct?: StructConstructor<unknown, string>;
   /** make a buffer from the remaining bytes */
   tail?: boolean;
   /** constant */
@@ -509,16 +513,24 @@ const isCrc = (info: {
 }): info is { len: number; type?: PropType } =>
   info.len === -1 && typeof info.type !== 'string' && info.type !== PropType.Buffer;
 
+type StructInstance<T, ClassName extends string> = Id<
+  T & {
+    /**
+     * fake field `__struct` is only used as a type guard and should not be used
+     */
+    readonly __struct: ClassName;
+    toJSON(): POJO<T>;
+  }
+>;
+
 /**
  * Ready-made constructor for custom structure
  */
-export interface StructType<T, ClassName extends string> {
+export interface StructConstructor<T, ClassName extends string> {
   /** Prototype */
-  prototype: T;
+  readonly prototype: T & { toJSON(): POJO<T> };
   /** The minimum base size of the structure. */
   readonly baseSize: number;
-  // /** contains a tail buffer that takes up all the remaining space */
-  // readonly tailed: boolean;
   /**
    * Structure constructor.
    * Allocates a new `Buffer` of [[baseSize]] bytes and uses that as the underlying buffer
@@ -526,21 +538,21 @@ export interface StructType<T, ClassName extends string> {
    * Use the static method `YourStructureName.raw(instance)` to access the underlying buffer.
    * @return fake field `__struct` is only used as a type guard and should not be used
    */
-  new (): T & { readonly __struct: ClassName };
+  new (): StructInstance<T, ClassName>;
   /**
    * Structure constructor.
    * Allocates a new `Buffer` of `size` bytes and uses that as the underlying buffer
    * @param size - Size must be at least [[baseSize]]
    * @return fake field `__struct` is only used as a type guard and should not be used
    */
-  new (size: number): T & { readonly __struct: ClassName };
+  new (size: number): StructInstance<T, ClassName>;
   /**
    * Structure constructor.
    * @param raw - use this buffer as an underlying. Buffer length must be at least [[baseSize]]
    * @param clone - create a copy of `raw` to store changes
    * @return fake field `__struct` is only used as a type guard and should not be used
    */
-  new (raw: Buffer, clone?: boolean): T & { readonly __struct: ClassName };
+  new (raw: Buffer, clone?: boolean): StructInstance<T, ClassName>;
 
   /**
    * Structure constructor.
@@ -549,7 +561,7 @@ export interface StructType<T, ClassName extends string> {
    * @param array
    * @return fake field `__struct` is only used as a type guard and should not be used
    */
-  new (array: number[]): T & { readonly __struct: ClassName };
+  new (array: number[]): StructInstance<T, ClassName>;
   /**
    * Returns the offset in bytes from the beginning of the structure of the specified field
    * @param name - field name
@@ -565,39 +577,14 @@ export interface StructType<T, ClassName extends string> {
    * @param instance - the object
    * @param name - property name
    */
-  swap(instance: T & { readonly __struct: ClassName }, name: keyof T): Buffer;
+  swap(instance: StructInstance<T, ClassName>, name: keyof T): Buffer;
   /**
    * Returns the underlying buffer if the object is a typed structure
    * @param instance - the object from which to get the underlying buffer
    */
-  raw(instance: T & { readonly __struct: ClassName }): Buffer;
+  raw(instance: StructInstance<T, ClassName>): Buffer;
   raw(instance: T): Buffer | undefined;
-
-  /**
-   * Creates a POJO from a buffer.
-   * POJO - **P**lain **O**ld **J**avaScript **O**bject is an object that only contains data,
-   * as opposed to methods or internal state.
-   * The POJO `prototype` is `Object.prototype` and all numeric iterable types
-   * (buffer, typed arrays) are replaced with `number[]`, all custom types other than
-   * `number`, `boolean` and numeric iterables are replaced with `string` using `JSON.stringify`.
-   * @param raw - underlying buffer or an `array` of bytes in the range 0 – 255
-   * @param freeze - freeze the created object, default `true`
-   */
-  toPOJO(raw: Buffer | number[], freeze?: boolean): POJO<T> | undefined;
-
-  /**
-   * Creates a POJO from an object.
-   * POJO - **P**lain **O**ld **J**avaScript **O**bject is an object that only contains data,
-   * as opposed to methods or internal state.
-   * The POJO `prototype` is `Object.prototype` and all numeric iterable types
-   * (buffer, typed arrays) are replaced with `number[]`, all custom types other than
-   * `number`, `boolean` and numeric iterables are replaced with `string` using `JSON.stringify`.
-   * @param instance - the source object
-   * @param freeze - freeze the created object, default `true`
-   */
-  toPOJO(instance: T & { readonly __struct: ClassName }, freeze?: boolean): POJO<T>;
 }
-
 const isSimple = (value: unknown): value is number | boolean | null | undefined =>
   value === undefined || value === null || ['number', 'boolean'].includes(typeof value);
 
@@ -617,8 +604,8 @@ const deepClone = <T>(obj: T): POJO<T> => {
       clone[name] = deepClone(value);
     } else {
       try {
-        const str = JSON.stringify(value);
-        if (str !== undefined) clone[name] = str;
+        const v = typeof value.toJSON === 'function' ? value.toJSON() : value.toString();
+        if (v !== undefined) clone[name] = v;
       } catch (err) {
         /* istanbul ignore next */
         console.warn(`error while serialize ${name}: ${err.message}`);
@@ -986,7 +973,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   Struct = <N extends string, S, StructClass extends string>(
     name: N | N[],
-    struct: StructType<S, StructClass>
+    struct: StructConstructor<S, StructClass>
   ): ExtendStruct<T, ClassName, N, S> =>
     this.createProp<N, PropType.Struct, S, ExtendStruct<T, ClassName, N, S>>(name, {
       type: PropType.Struct,
@@ -1123,7 +1110,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   StructArray = <N extends string, S, StructClass extends string>(
     name: N | N[],
-    struct: StructType<S, StructClass>,
+    struct: StructConstructor<S, StructClass>,
     length?: number
   ): ExtendStruct<T, ClassName, N, S[]> =>
     this.createProp<N, PropType.Struct, S[]>(name, {
@@ -1264,7 +1251,9 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    * Create structure constructor
    * @param className - Constructor name
    */
-  compile(className: string | undefined = this.defaultClassName): StructType<Id<T>, ClassName> {
+  compile(
+    className: string | undefined = this.defaultClassName
+  ): StructConstructor<Id<T>, ClassName> {
     const { size: baseSize, props, getOffsetOf, getOffsets, swap } = this;
 
     // noinspection JSUnusedGlobalSymbols
@@ -1299,46 +1288,21 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
         defineProps(this, props, $raw);
       }
 
-      static swap = (instance: T & { readonly __struct: ClassName }, name: keyof T): Buffer =>
+      static swap = (instance: StructInstance<T, ClassName>, name: keyof T): Buffer =>
         swap(name, Struct.raw(instance));
 
-      static raw = (instance: T & { readonly __struct: ClassName }): Buffer => Struct.raw(instance);
+      static raw = (instance: StructInstance<T, ClassName>): Buffer => Struct.raw(instance);
 
-      static toPOJO(raw: Buffer | number[], freeze?: boolean): POJO<T> | undefined;
-
-      static toPOJO(instance: T & { readonly __struct: ClassName }, freeze?: boolean): POJO<T>;
-
-      static toPOJO(
-        rawOrInstance: Buffer | number[] | (T & { readonly __struct: ClassName }),
-        freeze = true
-      ): POJO<T> | undefined {
-        let instance: T & { readonly __struct: ClassName };
-        if (Buffer.isBuffer(rawOrInstance)) {
-          try {
-            instance = new Structure(rawOrInstance) as T & { readonly __struct: ClassName };
-          } catch {
-            return undefined;
-          }
-        } else if (Array.isArray(rawOrInstance)) {
-          try {
-            instance = new Structure(rawOrInstance) as T & { readonly __struct: ClassName };
-          } catch {
-            return undefined;
-          }
-        } else {
-          instance = rawOrInstance;
-        }
-        const pojo = deepClone(instance as T);
-        if (freeze) {
-          Object.freeze(pojo);
-        }
-        return pojo;
+      toJSON(): POJO<T> {
+        return deepClone(this as unknown as T);
       }
     }
 
     Structure.prototype.toString = () => `[object ${className}]`;
-
-    return (className ? nameIt(className, Structure) : Structure) as StructType<T, ClassName>;
+    return (className ? nameIt(className, Structure) : Structure) as StructConstructor<
+      T,
+      ClassName
+    >;
   }
 
   /** @hidden */
