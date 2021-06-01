@@ -283,6 +283,12 @@ describe('Struct', () => {
     expect(vector.points).toBe(vector.points);
     expect(vector).toEqual({ points: [new Point([-1, 20]), new Point([30, -2])] });
     expect(polygon.vertices).toHaveLength(5);
+    expect(() => (vector.points[0] = new Point([1, 2]))).toThrow(
+      "Cannot assign to read only property '0' of object '[object Array]'"
+    );
+    expect(() => vector.points.push(new Point([1, 2]))).toThrow(
+      new TypeError('Cannot add property 2, object is not extensible')
+    );
   });
   test('custom type', () => {
     const getter = jest.fn(

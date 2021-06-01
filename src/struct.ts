@@ -526,6 +526,7 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
         const start = offset + S.baseSize * i;
         (value as unknown[]).push(new S(data.slice(start, start + S.baseSize)));
       }
+      Object.freeze(value);
     } else {
       value = new S(data.slice(offset, offset + S.baseSize));
     }
