@@ -56,6 +56,9 @@
     "node": ">=12"
   },
   "dependencies": {},
+  "optionalDependencies": {
+    "iconv-lite": "^0.6.3"
+  },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
