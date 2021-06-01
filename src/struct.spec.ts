@@ -1,5 +1,6 @@
 /* eslint-disable no-bitwise */
 
+import { inspect } from 'util';
 import Struct, { ExtractType, getMask, PropType, typed } from './struct';
 
 const random = (offset: number, length: number): number =>
@@ -276,7 +277,11 @@ describe('Struct', () => {
     const polygon = new Polygon([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(Vector.baseSize).toBe(4);
     expect(vector.points).toHaveLength(2);
-    expect(vector).toEqual({ points: [new Point([10, 20]), new Point([30, 40])] });
+    vector.points[0].x = -1;
+    vector.points[1].y = -2;
+    expect(Vector.raw(vector)).toEqual(Buffer.from([0xff, 20, 30, 0xfe]));
+    expect(vector.points).toBe(vector.points);
+    expect(vector).toEqual({ points: [new Point([-1, 20]), new Point([30, -2])] });
     expect(polygon.vertices).toHaveLength(5);
   });
   test('custom type', () => {
@@ -611,79 +616,120 @@ describe('Struct', () => {
       value.g = 0;
       expect(Bits32.raw(value)).toEqual(Buffer.from([0xab, 0xcd, 0xe8, 0x02]));
     });
-    test('throws "Unknown property name test"', () => {
-      expect(() => {
-        const Test = new Struct('Test').UInt32LE('a').compile();
-        const test = new Test();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        Test.swap(test, 'test' as any);
-      }).toThrow('Unknown property name "test"');
+  });
+  test('throws "Unknown property name test"', () => {
+    expect(() => {
+      const Test = new Struct('Test').UInt32LE('a').compile();
+      const test = new Test();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Test.swap(test, 'test' as any);
+    }).toThrow('Unknown property name "test"');
+  });
+  test('Property already exists', () => {
+    expect(() => {
+      new Struct().Int8('foo').UInt8('foo').compile();
+    }).toThrow(new TypeError('Property "foo" already exists'));
+  });
+  test('Tail buffer', () => {
+    expect(() => {
+      new Struct().Buffer('data').Int8('value').compile();
+    }).toThrow(new TypeError('Invalid property "value". The tail buffer already created'));
+  });
+  test('crc should be the last field after the buffer', () => {
+    expect(() => {
+      new Struct().Int8('foo').CRC8('bar').compile();
+    }).toThrow(TypeError('CRC field must follow immediately after the buffer field'));
+    expect(() => {
+      new Struct().Buffer('data', -2).CRC16LE('crc').compile();
+    }).not.toThrow();
+    expect(() => {
+      new Struct().Buffer('data', -3).CRC16LE('crc');
+    }).toThrow(new TypeError('Invalid tail buffer length. Expected -2'));
+  });
+  test('Struct size', () => {
+    expect(new Struct().UInt32LE('data').getSize()).toBe(4);
+  });
+  test('Undefined offset', () => {
+    expect(new Struct().Int8('bar').getOffsetOf('foo' as any)).toBeUndefined();
+  });
+  test('JSON', () => {
+    const getter = (type: string, buf: Buffer): Date => new Date(buf.readDoubleLE() * 1000);
+    const setter = (type: string, buf: Buffer, value: Date) =>
+      buf.writeDoubleLE(value.getTime() / 1000) > 0;
+    const Foo = new Struct('Foo')
+      .Boolean8('baz')
+      .Int8('bar')
+      .UInt8Array('array', 3)
+      .Struct('s', new Struct().Int8Array('values', 2).compile())
+      .Buffer('buf', 2)
+      .Custom('date', 8, getter, setter)
+      .compile();
+    const raw = [0xff, 0xfd, 1, 2, 3, 0xfe, 0xfd, 0xc0, 0xde, 0, 0, 0, 0, 0x02, 0x98, 0x9a, 0x41];
+    const foo = new Foo(raw);
+    const json = foo.toJSON();
+    expect(Object.getPrototypeOf(json)).toBe(Object.prototype);
+    expect(json).toEqual({
+      baz: true,
+      bar: -3,
+      array: [1, 2, 3],
+      s: { values: [-2, -3] },
+      buf: [0xc0, 0xde],
+      date: foo.date.toJSON(),
     });
-    test('Property already exists', () => {
-      expect(() => {
-        new Struct().Int8('foo').UInt8('foo').compile();
-      }).toThrow(new TypeError('Property "foo" already exists'));
-    });
-    test('Tail buffer', () => {
-      expect(() => {
-        new Struct().Buffer('data').Int8('value').compile();
-      }).toThrow(new TypeError('Invalid property "value". The tail buffer already created'));
-    });
-    test('crc should be the last field after the buffer', () => {
-      expect(() => {
-        new Struct().Int8('foo').CRC8('bar').compile();
-      }).toThrow(TypeError('CRC field must follow immediately after the buffer field'));
-      expect(() => {
-        new Struct().Buffer('data', -2).CRC16LE('crc').compile();
-      }).not.toThrow();
-      expect(() => {
-        new Struct().Buffer('data', -3).CRC16LE('crc');
-      }).toThrow(new TypeError('Invalid tail buffer length. Expected -2'));
-    });
-    test('Struct size', () => {
-      expect(new Struct().UInt32LE('data').getSize()).toBe(4);
-    });
-    test('Undefined offset', () => {
-      expect(new Struct().Int8('bar').getOffsetOf('foo' as any)).toBeUndefined();
-    });
-    test('JSON', () => {
-      const getter = (type: string, buf: Buffer): Date => new Date(buf.readDoubleLE() * 1000);
-      const setter = (type: string, buf: Buffer, value: Date) =>
-        buf.writeDoubleLE(value.getTime() / 1000) > 0;
-      const Foo = new Struct('Foo')
-        .Boolean8('baz')
-        .Int8('bar')
-        .UInt8Array('array', 3)
-        .Struct('s', new Struct().Int8Array('values', 2).compile())
-        .Buffer('buf', 2)
-        .Custom('date', 8, getter, setter)
-        .compile();
-      const raw = [0xff, 0xfd, 1, 2, 3, 0xfe, 0xfd, 0xc0, 0xde, 0, 0, 0, 0, 0x02, 0x98, 0x9a, 0x41];
-      const foo = new Foo(raw);
-      const json = foo.toJSON();
-      expect(Object.getPrototypeOf(json)).toBe(Object.prototype);
-      expect(json).toEqual({
-        baz: true,
-        bar: -3,
-        array: [1, 2, 3],
-        s: { values: [-2, -3] },
-        buf: [0xc0, 0xde],
-        date: foo.date.toJSON(),
-      });
-    });
-    test('toString', () => {
-      const Foo = new Struct('Foo').compile();
-      const foo = new Foo();
-      expect(foo.toString()).toBe('[object Foo]');
-      const Model = new Struct('Model')
-        .Int8('foo')
-        .UInt8Array('bars', 4)
-        .Struct('nested', new Struct('Nested').Int8('value').Buffer('items', 4).compile())
-        .compile();
-
-      const model = new Model([0x10, 1, 2, 3, 4, 0x20, 5, 6, 7, 8]);
-      console.log(model);
-      console.log(model.toJSON());
-    });
+  });
+  test('toString', () => {
+    const Foo = new Struct('Foo').compile();
+    const foo = new Foo();
+    expect(foo.toString()).toBe('[object Foo]');
+  });
+  test('string', () => {
+    const Text = new Struct('Text')
+      .String('title', 'win1251', 20)
+      .String('author')
+      .CRC8('crc')
+      .compile();
+    const text = new Text(30);
+    text.title = 'Привет User';
+    text.author = 'Andrei';
+    expect(text.title).toHaveLength(11);
+    expect(text.author).toHaveLength(6);
+    expect(Text.raw(text)).toEqual(
+      Buffer.from('cff0e8e2e5f22055736572000000000000000000416e6472656900000000', 'hex')
+    );
+    expect(text.title).toBe('Привет User');
+    text.title = 'A'.repeat(20);
+    expect(text.title).toHaveLength(20);
+    expect(() => {
+      text.title = 'E'.repeat(21);
+    }).toThrow('String is too long');
+    expect(() => {
+      text.author = 'Андрей';
+    }).toThrow('String is too long');
+  });
+  test('string array', () => {
+    const Text = new Struct('Text').StringArray('lines', { length: 20, rows: 5 }).compile();
+    expect(Text.baseSize).toBe(100);
+    const text = new Text();
+    expect(text.lines).toHaveLength(5);
+    const expected: string[] = [];
+    for (let i = 0; i < text.lines.length; i += 1) {
+      const line = `line ${i}`;
+      expected[i] = line;
+      text.lines[i] = line;
+    }
+    expect(text.lines).toEqual(expected);
+    expect([...text.lines]).toEqual(expected);
+    expect(text.toJSON()).toEqual({ lines: expected });
+    expect(text.lines).toBe(text.lines);
+    expect(text.lines[0]).toBe(text.lines[0]);
+    const raw = Text.raw(text);
+    raw[0] = 'L'.charCodeAt(0);
+    expected[0] = 'Line 0';
+    expect(text.lines).toEqual(expected);
+    expect(() => {
+      (text.lines as any)[6] = 'Lorem ipsum';
+    }).toThrow(new TypeError('Cannot add property 6, object is not extensible'));
+    expect(Object.isExtensible(text.lines)).toBe(false);
+    expect(inspect(expected)).toBe(inspect(text.lines));
   });
 });

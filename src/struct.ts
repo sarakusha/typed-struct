@@ -1,6 +1,28 @@
 /* eslint-disable no-bitwise,max-classes-per-file,no-use-before-define,object-shorthand,@typescript-eslint/no-explicit-any */
+import { inspect } from 'util';
+
+import type { decode as Decode, encode as Encode } from 'iconv-lite';
+
+// const inspect: symbol = Symbol.for('nodejs.util.inspect.custom');
 
 export type ExtractType<C> = C extends new () => infer T ? Omit<T, '__struct' | 'toJSON'> : never;
+
+let iconvDecode: typeof Decode | undefined;
+let iconvEncode: typeof Encode | undefined;
+
+// eslint-disable-next-line import/no-extraneous-dependencies
+import('iconv-lite')
+  .then(({ encode, decode }) => {
+    iconvEncode = encode;
+    iconvDecode = decode;
+  })
+  .catch(
+    /* istanbul ignore next */
+    () => {
+      iconvEncode = undefined;
+      iconvDecode = undefined;
+    }
+  );
 
 type FilterFlags<Base, Condition> = {
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
@@ -57,7 +79,7 @@ type POJO<T> = Id<
       Date,
       string
     >,
-    string | number | boolean | null | number[],
+    string | number | boolean | null | number[] | string[],
     unknown,
     true
   >
@@ -95,6 +117,8 @@ export enum PropType {
   Struct,
   /** Buffer type */
   Buffer,
+  String,
+  StringArray,
 }
 
 /**
@@ -129,6 +153,8 @@ type NativeType<T extends PropType | string> = T extends NumericTypes
   ? number
   : T extends BooleanTypes
   ? boolean
+  : T extends PropType.String
+  ? string
   : T extends PropType.Buffer
   ? Buffer
   : any;
@@ -145,7 +171,10 @@ export type Getter<R> = (type: string, buffer: Buffer) => R | undefined;
 export type Setter<R> = (type: string, buffer: Buffer, value: R) => boolean;
 
 const isSimpleType = (desc: PropDesc): desc is PropDesc<SimpleTypes, number | boolean> =>
-  desc.struct === undefined && typeof desc.type !== 'string';
+  desc.struct === undefined &&
+  typeof desc.type !== 'string' &&
+  desc.type !== PropType.String &&
+  desc.type !== PropType.StringArray;
 
 /**
  * Property description type
@@ -155,7 +184,7 @@ type PropDesc<T extends PropType | string = PropType | string, R = NativeType<T>
   type: T;
   /** offset in bytes from the beginning of the buffer */
   offset: number;
-  /** array or buffer length */
+  /** array, buffer or string length */
   len?: number;
   /** start bit and bit field length */
   mask?: BitMask;
@@ -171,6 +200,10 @@ type PropDesc<T extends PropType | string = PropType | string, R = NativeType<T>
   getter?: Getter<R>;
   /** custom setter */
   setter?: Setter<R>;
+  /** iconv-lite encoding if installed or BufferEncoding */
+  encoding?: string;
+  /** Length of a string in an array of strings */
+  size?: number;
 };
 
 type PropertyMap<T> = Map<keyof Required<T>, PropDesc>;
@@ -435,6 +468,23 @@ const getTypedArrayConstructor = (
   }
 };
 
+const getString = (buf: Buffer, encoding: string): string => {
+  let end: number | undefined = buf.indexOf(0);
+  if (end < 0) end = buf.length;
+  return iconvDecode
+    ? iconvDecode(buf.slice(0, end), encoding)
+    : buf.toString(encoding as BufferEncoding, 0, end);
+};
+
+const setString = (buf: Buffer, encoding: string, value: string): void => {
+  const encoded = iconvEncode
+    ? iconvEncode(value, encoding)
+    : Buffer.from(value, encoding as BufferEncoding);
+  if (encoded.length > buf.length) throw new TypeError(`String is too long`);
+  encoded.copy(buf);
+  buf.fill(0, encoded.length);
+};
+
 const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
   const desc: PropertyDescriptor = { enumerable: true };
 
@@ -480,6 +530,58 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
       value = new S(data.slice(offset, offset + S.baseSize));
     }
     desc.value = value;
+  } else if (info.type === PropType.String) {
+    const { len, offset, encoding = 'utf-8' } = info;
+    const buf = data.slice(offset, len && len > 0 ? offset + len : len);
+    desc.get = () => getString(buf, encoding);
+    desc.set = (newValue: string) => setString(buf, encoding, newValue);
+  } else if (info.type === PropType.StringArray) {
+    const { len, offset, encoding = 'utf-8', size } = info;
+    /* istanbul ignore next */
+    if (!len || !size) throw new TypeError('Invalid descriptor');
+    const getBuf = (index: number): Buffer => {
+      if (Number.isInteger(index) && index >= 0 && index < len) {
+        const start = offset + index * size;
+        return data.slice(start, start + size);
+      }
+      /* istanbul ignore next */
+      throw RangeError(`The argument must be between 0 and ${len - 1}`);
+    };
+    const target = [...Array(len)];
+    Object.defineProperties(target, {
+      length: { value: len },
+      [inspect.custom]: {
+        value: (...args: Parameters<typeof inspect>) =>
+          inspect(
+            target.map((_, index) => getString(getBuf(index), encoding)),
+            ...args.slice(1)
+          ),
+      },
+      [Symbol.iterator]: {
+        value: function* iterator() {
+          for (let i = 0; i < len; i += 1) {
+            const buf = getBuf(i);
+            if (buf) yield getString(buf, encoding);
+          }
+        },
+      },
+    });
+    [...Array(len)].forEach((_, index) => {
+      Object.defineProperty(target, index.toString(), {
+        get() {
+          const buf = getBuf(index);
+          return buf && getString(buf, encoding);
+        },
+        set(value) {
+          const buf = getBuf(index);
+          buf && setString(buf, encoding, value);
+        },
+        enumerable: true,
+        configurable: false,
+      });
+    });
+    Object.preventExtensions(target);
+    desc.value = target;
   }
   return desc;
 };
@@ -511,15 +613,18 @@ const isCrc = (info: {
   len?: number;
   type?: PropType | string;
 }): info is { len: number; type?: PropType } =>
-  info.len === -1 && typeof info.type !== 'string' && info.type !== PropType.Buffer;
+  info.len === -1 &&
+  typeof info.type !== 'string' &&
+  info.type !== PropType.Buffer &&
+  info.type !== PropType.String;
 
 type StructInstance<T, ClassName extends string> = Id<
   T & {
+    toJSON(): POJO<T>;
     /**
      * fake field `__struct` is only used as a type guard and should not be used
      */
     readonly __struct: ClassName;
-    toJSON(): POJO<T>;
   }
 >;
 
@@ -585,8 +690,8 @@ export interface StructConstructor<T, ClassName extends string> {
   raw(instance: StructInstance<T, ClassName>): Buffer;
   raw(instance: T): Buffer | undefined;
 }
-const isSimple = (value: unknown): value is number | boolean | null | undefined =>
-  value === undefined || value === null || ['number', 'boolean'].includes(typeof value);
+const isSimpleOrString = (value: unknown): value is number | boolean | string | null | undefined =>
+  value === undefined || value === null || ['number', 'boolean', 'string'].includes(typeof value);
 
 const isIterable = (arr: unknown): arr is Iterable<unknown> => Symbol.iterator in Object(arr);
 
@@ -596,7 +701,7 @@ const isObject = (obj: unknown): obj is Record<PropertyKey, unknown> =>
 const deepClone = <T>(obj: T): POJO<T> => {
   const clone: any = {};
   Object.entries(obj).forEach(([name, value]) => {
-    if (isSimple(value)) {
+    if (isSimpleOrString(value)) {
       clone[name] = value;
     } else if (isIterable(value)) {
       clone[name] = [...value];
@@ -638,7 +743,7 @@ const nameIt = <C extends new (...args: any[]) => any>(name: string, superClass:
  * res.error = ErrorType.Success;
  * ```
  */
-export function typed<T extends number>(): T | undefined {
+export function typed<T extends number | string>(): T | undefined {
   return undefined;
 }
 
@@ -1003,7 +1108,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines buffer fields of `length` bytes
-   * @param name - field name
+   * @param name - filed name or aliases
    * @param length - The desired length of the `Buffer`
    */
   Buffer<N extends string>(name: N | N[], length?: number): ExtendStruct<T, ClassName, N, Buffer> {
@@ -1011,6 +1116,43 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
       type: PropType.Buffer,
       tail: length === undefined || length < 0,
       len: length,
+    });
+  }
+
+  String<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, string>;
+
+  String<N extends string>(name: N | N[], length: number): ExtendStruct<T, ClassName, N, string>;
+
+  String<N extends string>(name: N | N[], encoding: string): ExtendStruct<T, ClassName, N, string>;
+
+  String<N extends string>(
+    name: N | N[],
+    length: number,
+    encoding: string
+  ): ExtendStruct<T, ClassName, N, string>;
+
+  String<N extends string>(
+    name: N | N[],
+    encoding: string,
+    length: number
+  ): ExtendStruct<T, ClassName, N, string>;
+
+  String<N extends string>(
+    name: N | N[],
+    arg1?: string | number,
+    arg2?: string | number
+  ): ExtendStruct<T, ClassName, N, string> {
+    let length: number | undefined;
+    let encoding: string | undefined;
+    [arg1, arg2].forEach(arg => {
+      if (typeof arg === 'number') length = arg;
+      if (typeof arg === 'string') encoding = arg;
+    });
+    return this.createProp(name, {
+      type: PropType.String,
+      tail: length === undefined || length < 0,
+      len: length,
+      encoding,
     });
   }
 
@@ -1093,7 +1235,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a Float64Array typed array represents an array of 64-bit floating numbers.
-   * @param name - field name
+   * @param name - field name or aliases
    * @param length - the number of elements
    */
   Float64Array = <N extends string>(
@@ -1104,7 +1246,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines an array of elements of a typed struct
-   * @param name - field name
+   * @param name - field name or aliases
    * @param struct - custom typed struct
    * @param length - the number of elements
    */
@@ -1119,6 +1261,24 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
       tail: length === undefined,
       struct: struct,
     });
+
+  /**
+   *
+   * @param name
+   * @param length
+   * @param rows
+   * @constructor
+   */
+  StringArray<N extends string>(
+    name: N | N[],
+    { length, rows }: { length: number; rows: number }
+  ): ExtendStruct<T, ClassName, N, string[]> {
+    return this.createProp<N, PropType.StringArray, string[]>(name, {
+      type: PropType.StringArray,
+      len: rows,
+      size: length,
+    });
+  }
 
   /**
    * defines a field with custom getter and setter
@@ -1286,6 +1446,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
         }
         Object.defineProperty(this, '$raw', { value: $raw });
         defineProps(this, props, $raw);
+        Object.preventExtensions(this);
       }
 
       static swap = (instance: StructInstance<T, ClassName>, name: keyof T): Buffer =>
@@ -1342,11 +1503,11 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
     if (exists !== undefined) throw TypeError(`Property "${exists}" already exists`);
     if (this.tailed && !isCrc(info))
       throw TypeError(`Invalid property "${names[0]}". The tail buffer already created`);
-    const itemSize = info.struct?.baseSize ?? getSize(info.type) ?? 1;
+    const itemSize = info.struct?.baseSize ?? info.size ?? getSize(info.type) ?? 1;
     if (info.tail) this.tailed = true;
     if (isCrc(info)) {
       const prev = Array.from(self.props.values()).pop();
-      if (!prev || prev.type !== PropType.Buffer)
+      if (!prev || (prev.type !== PropType.Buffer && prev.type !== PropType.String))
         throw new TypeError('CRC field must follow immediately after the buffer field');
       if (prev.len === undefined) {
         prev.len = -itemSize;
