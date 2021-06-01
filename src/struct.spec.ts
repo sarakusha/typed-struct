@@ -677,11 +677,6 @@ describe('Struct', () => {
       date: foo.date.toJSON(),
     });
   });
-  test('toString', () => {
-    const Foo = new Struct('Foo').compile();
-    const foo = new Foo();
-    expect(foo.toString()).toBe('[object Foo]');
-  });
   test('string', () => {
     const Text = new Struct('Text')
       .String('title', 'win1251', 20)
