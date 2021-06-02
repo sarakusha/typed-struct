@@ -3,8 +3,6 @@ import { inspect } from 'util';
 
 import type { decode as Decode, encode as Encode } from 'iconv-lite';
 
-// const inspect: symbol = Symbol.for('nodejs.util.inspect.custom');
-
 export type ExtractType<C> = C extends new () => infer T ? Omit<T, '__struct' | 'toJSON'> : never;
 
 let iconvDecode: typeof Decode | undefined;
@@ -195,7 +193,7 @@ type PropDesc<T extends PropType | string = PropType | string, R = NativeType<T>
   /** make a buffer from the remaining bytes */
   tail?: boolean;
   /** constant */
-  value?: R;
+  literal?: R;
   /** custom getter */
   getter?: Getter<R>;
   /** custom setter */
@@ -507,11 +505,11 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
         ? new TypedArray(data.buffer, data.byteOffset + info.offset, info.len)
         : data.slice(info.offset, info.len && info.len > 0 ? info.offset + info.len : info.len);
     } else {
-      info.value === undefined || setValue(info, data, info.value); // initialize
+      info.literal === undefined || setValue(info, data, info.literal); // initialize
       desc.get = () => getValue(info, data); // ?? throwUnknownType(info.type);
       desc.set = value => {
-        if (info.value !== undefined && value !== info.value)
-          throw new TypeError(`Invalid value, expected ${info.value}`);
+        if (info.literal !== undefined && value !== info.literal)
+          throw new TypeError(`Invalid value, expected ${info.literal}`);
         else setValue(info, data, value); // || throwUnknownType(info.type);
       };
     }
@@ -670,7 +668,7 @@ export interface StructConstructor<T, ClassName extends string> {
   new (array: number[]): StructInstance<T, ClassName>;
   /**
    * Returns the offset in bytes from the beginning of the structure of the specified field
-   * @param name - field name
+   * @param name - The filed name or aliases
    */
   getOffsetOf(name: keyof T): number;
   /**
@@ -802,7 +800,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * Returns the offset in bytes from the beginning of the structure of the specified field
-   * @param name - field name
+   * @param name - The filed name or aliases
    */
   getOffsetOf = (name: keyof T): number | undefined => this.props.get(name)?.offset;
 
@@ -816,265 +814,265 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines signed, 8-bit integer field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Int8 = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
-      value,
+      literal,
       type: PropType.Int8,
     });
 
   /**
    * defines unsigned, 8-bit integer field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   UInt8 = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.UInt8,
-      value,
+      literal,
     });
 
   /**
    * defines signed, little-endian 16-bit integer field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Int16LE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Int16,
-      value,
+      literal,
     });
 
   /**
    * defines unsigned, little-endian 16-bit integer field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   UInt16LE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.UInt16,
-      value,
+      literal,
     });
 
   /**
    * defines signed, little-endian 32-bit integer field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Int32LE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Int32,
-      value,
+      literal,
     });
 
   /**
    * defines unsigned, little-endian 32-bit integer field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   UInt32LE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.UInt32,
-      value,
+      literal,
     });
 
   /**
    * defines signed, big-endian 16-bit integer field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Int16BE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Int16,
-      value,
+      literal,
       be: true,
     });
 
   /**
    * defines unsigned, big-endian 16-bit integer field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   UInt16BE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.UInt16,
-      value,
+      literal,
       be: true,
     });
 
   /**
    * defines signed, big-endian 32-bit integer field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Int32BE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Int32,
-      value,
+      literal,
       be: true,
     });
 
   /**
    * defines unsigned, big-endian 32-bit integer field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   UInt32BE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.UInt32,
-      value,
+      literal,
       be: true,
     });
 
   /**
    * defines 32-bit, little-endian float field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Float32LE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Float32,
-      value,
+      literal,
     });
 
   /**
    * defines 64-bit, little-endian float field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Float64LE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Float64,
-      value,
+      literal,
     });
 
   /**
    * defines 32-bit, big-endian float field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Float32BE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Float32,
-      value,
+      literal,
       be: true,
     });
 
   /**
    * defines 64-bit, big-endian float field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Float64BE = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Float64,
-      value,
+      literal,
       be: true,
     });
 
   /**
    * defines 8-bit boolean field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Boolean8 = <N extends string, R extends boolean>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Boolean8,
-      value,
+      literal,
     });
 
   /**
    * defines 16-bit boolean field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Boolean16 = <N extends string, R extends boolean>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Boolean16,
-      value,
+      literal,
     });
 
   /**
    * defines 32-bit boolean field
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   Boolean32 = <N extends string, R extends boolean>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Boolean32,
-      value,
+      literal,
     });
 
   /**
    * defines a single-byte binary-coded decimal
-   * @param name - filed name or aliases
-   * @param value - constant value
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
    */
   BCD = <N extends string, R extends number>(
     name: N | N[],
-    value?: R
+    literal?: R
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.BCD,
-      value,
+      literal,
     });
 
   /**
    * defines nested structure
-   * @param name - field name or aliases
+   * @param name - The filed name or aliases or aliases
    * @param struct - structure factory
    */
   Struct = <N extends string, S, StructClass extends string>(
@@ -1108,8 +1106,8 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
     this.createBitFields(PropType.UInt32, fields);
 
   /**
-   * defines buffer fields of `length` bytes
-   * @param name - filed name or aliases
+   * defines buffer field of `length` bytes
+   * @param name - The filed name or aliases
    * @param length - The desired length of the `Buffer`
    */
   Buffer<N extends string>(name: N | N[], length?: number): ExtendStruct<T, ClassName, N, Buffer> {
@@ -1159,7 +1157,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a Int8Array typed array represents an array of twos-complement 8-bit signed integers.
-   * @param name - field name
+   * @param name - The filed name or aliases
    * @param length - the number of elements
    */
   Int8Array = <N extends string>(
@@ -1169,7 +1167,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a UInt8Array typed array represents an array of 8-bit unsigned integers.
-   * @param name - field name
+   * @param name - The filed name or aliases
    * @param length - the number of elements
    */
   UInt8Array = <N extends string>(
@@ -1180,7 +1178,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a Int16Array typed array represents an array of twos-complement 16-bit signed integers.
-   * @param name - field name
+   * @param name - The filed name or aliases
    * @param length - the number of elements
    */
   Int16Array = <N extends string>(
@@ -1191,7 +1189,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a Uint16Array typed array represents an array of 16-bit unsigned integers.
-   * @param name - field name
+   * @param name - The filed name or aliases
    * @param length - the number of elements
    */
   UInt16Array = <N extends string>(
@@ -1203,7 +1201,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   /**
    * defines a Int32Array typed array represents an array of twos-complement 32-bit signed
    * integers.
-   * @param name - field name
+   * @param name - The filed name or aliases
    * @param length - the number of elements
    */
   Int32Array = <N extends string>(
@@ -1214,7 +1212,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a Uint32Array typed array represents an array of 32-bit unsigned integers.
-   * @param name - field name
+   * @param name - The filed name or aliases
    * @param length - the number of elements
    */
   UInt32Array = <N extends string>(
@@ -1225,7 +1223,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a Float32Array typed array represents an array of 32-bit floating numbers.
-   * @param name - field name
+   * @param name - The filed name or aliases
    * @param length - the number of elements
    */
   Float32Array = <N extends string>(
@@ -1236,7 +1234,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a Float64Array typed array represents an array of 64-bit floating numbers.
-   * @param name - field name or aliases
+   * @param name - The filed name or aliases or aliases
    * @param length - the number of elements
    */
   Float64Array = <N extends string>(
@@ -1247,7 +1245,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines an array of elements of a typed struct
-   * @param name - field name or aliases
+   * @param name - The filed name or aliases or aliases
    * @param struct - custom typed struct
    * @param length - the number of elements
    */
@@ -1283,7 +1281,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a field with custom getter and setter
-   * @param name - field name
+   * @param name - The filed name or aliases
    * @param size - field size
    * @param getter - a function which serves as a getter for the property, or undefined if there is
    *   no getter.
