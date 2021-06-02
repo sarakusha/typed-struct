@@ -706,6 +706,25 @@ describe('Struct', () => {
     expect(() => {
       text.author = 'Андрей';
     }).toThrow('String is too long');
+    const StringLiteral = new Struct('StringLiteral')
+      .String('value', {
+        length: 16,
+        literal: 'Lorem ipsum',
+      })
+      .compile();
+    const literal = new StringLiteral();
+    expect(literal.value).toBe('Lorem ipsum');
+    expect(() => {
+      (literal.value as any) = 'Bla-bla';
+    }).toThrow(new TypeError('Invalid value, expected "Lorem ipsum"'));
+    expect(() => {
+      literal.value = 'Lorem ipsum';
+    }).not.toThrow();
+    const raw = StringLiteral.raw(literal);
+    expect(raw).toHaveLength(16);
+    const expected = Buffer.alloc(16);
+    Buffer.from('Lorem ipsum').copy(expected);
+    expect(raw).toEqual(expected);
   });
   test('string array', () => {
     const Text = new Struct('Text').StringArray('lines', { length: 20, rows: 5 }).compile();
