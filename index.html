@@ -80,16 +80,17 @@
 				</a>
 				<p>The following types are supported:</p>
 				<ul>
-					<li>Integers (1, 2, 4 bytes)</li>
-					<li>Booleans (1, 2, 4 bytes)</li>
+					<li>Integer (1, 2, 4 bytes)</li>
+					<li>Boolean (1, 2, 4 bytes)</li>
 					<li>Float (4 bytes)</li>
 					<li>Double (8 bytes)</li>
-					<li>Bit fields (1...32 bits)</li>
-					<li>Binary-decoded decimals </li>
-					<li>Buffers</li>
-					<li>Custom types (requires custom getter/setter)</li>
+					<li>Bit fields (1, 2, 4 bytes)</li>
+					<li>Binary-decoded decimal (1 byte)</li>
+					<li>Buffer</li>
+					<li>String (with <a href="https://github.com/ashtuchkin/iconv-lite">iconv-lite</a> encodings)  </li>
+					<li>Custom type (requires custom getter/setter)</li>
 				</ul>
-				<p>Nested types and arrays are also supported.</p>
+				<p>Fixed values, endianness, nested types and arrays are also supported.</p>
 				<p>The generated structures will be strongly typed,
 					which will provide better documentation and allow TypeScript
 				to validate that your code is working correctly.</p>
@@ -102,7 +103,9 @@
 				<a href="#create-a-data-structure-by-chaining-the-appropriate-method-calls" id="create-a-data-structure-by-chaining-the-appropriate-method-calls" style="color: inherit; text-decoration: none;">
 					<h3>Create a data structure by chaining the appropriate method calls</h3>
 				</a>
-				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #001080">Struct</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;typed-struct&#039;</span><span style="color: #000000">;</span>
+				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Struct</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;typed-struct&#039;</span><span style="color: #000000">).</span><span style="color: #001080">default</span><span style="color: #000000">;</span>
+<span style="color: #008000">// or</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #001080">Struct</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;typed-struct&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">MyStructure</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;MyStructure&#039;</span><span style="color: #000000">) </span><span style="color: #008000">// give a name to the constructor</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">Int8</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;foo&#039;</span><span style="color: #000000">)        </span><span style="color: #008000">// signed 8-bit integer field `foo`</span>
@@ -114,7 +117,6 @@
 <span style="color: #008000">// the exact type of the generated structure</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">item1</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MyStructure</span><span style="color: #000000">();      </span><span style="color: #008000">// creates an instance</span>
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">item1</span><span style="color: #000000">.</span><span style="color: #001080">constructor</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;MyStructure&#039;</span><span style="color: #000000">);</span>
-<span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">item1</span><span style="color: #000000">.</span><span style="color: #795E26">toString</span><span style="color: #000000">()).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;[object MyStructure]&#039;</span><span style="color: #000000">);</span>
 
 <span style="color: #008000">// This class has useful static properties and methods.</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">raw</span><span style="color: #000000"> = </span><span style="color: #001080">MyStructure</span><span style="color: #000000">.</span><span style="color: #795E26">raw</span><span style="color: #000000">(</span><span style="color: #001080">item1</span><span style="color: #000000">);   </span><span style="color: #008000">// get the underlying buffer</span>
@@ -152,12 +154,12 @@
 
 <span style="color: #008000">// If the byte order in the system is different from that used in the data,</span>
 <span style="color: #008000">// use `swap` method</span>
-<span style="color: #001080">Foo</span><span style="color: #000000">.</span><span style="color: #795E26">swap</span><span style="color: #000000">(</span><span style="color: #001080">foo</span><span style="color: #000000">.</span><span style="color: #001080">bar</span><span style="color: #000000">);</span>
+<span style="color: #001080">Foo</span><span style="color: #000000">.</span><span style="color: #795E26">swap</span><span style="color: #000000">(</span><span style="color: #001080">foo</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;items&#039;</span><span style="color: #000000">);</span>
 
 <span style="color: #008000">// ...</span>
 
 <span style="color: #008000">// change back</span>
-<span style="color: #001080">Foo</span><span style="color: #000000">.</span><span style="color: #795E26">swap</span><span style="color: #000000">(</span><span style="color: #001080">foo</span><span style="color: #000000">.</span><span style="color: #001080">bar</span><span style="color: #000000">);</span>
+<span style="color: #001080">Foo</span><span style="color: #000000">.</span><span style="color: #795E26">swap</span><span style="color: #000000">(</span><span style="color: #001080">foo</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;items&#039;</span><span style="color: #000000">);</span>
 </code></pre>
 				<a href="#array-of-structures" id="array-of-structures" style="color: inherit; text-decoration: none;">
 					<h3>Array of structures</h3>
@@ -170,6 +172,15 @@
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">baz</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Baz</span><span style="color: #000000">();</span>
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">baz</span><span style="color: #000000">.</span><span style="color: #001080">structs</span><span style="color: #000000">).</span><span style="color: #795E26">toHaveLength</span><span style="color: #000000">(</span><span style="color: #098658">10</span><span style="color: #000000">);</span>
 <span style="color: #001080">baz</span><span style="color: #000000">.</span><span style="color: #001080">structs</span><span style="color: #000000">[</span><span style="color: #098658">3</span><span style="color: #000000">].</span><span style="color: #001080">foo</span><span style="color: #000000"> = </span><span style="color: #098658">123</span><span style="color: #000000">;</span>
+<span style="color: #008000">// but</span>
+<span style="color: #795E26">expect</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #001080">baz</span><span style="color: #000000">.</span><span style="color: #001080">struct</span><span style="color: #000000">[</span><span style="color: #098658">3</span><span style="color: #000000">] = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MyStructure</span><span style="color: #000000">();</span>
+<span style="color: #000000">}).</span><span style="color: #795E26">toThrow</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">TypeError</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Cannot assign to read only property &quot;3&quot;&#039;</span><span style="color: #000000">))</span>
+
+<span style="color: #795E26">expect</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #001080">baz</span><span style="color: #000000">.</span><span style="color: #001080">structs</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MyStructure</span><span style="color: #000000">());</span>
+<span style="color: #000000">}).</span><span style="color: #795E26">toThrow</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">TypedError</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Cannot add property 10, object is not extensible&#039;</span><span style="color: #000000">));</span>
+
 </code></pre>
 				<a href="#nested-types" id="nested-types" style="color: inherit; text-decoration: none;">
 					<h3>Nested types</h3>
@@ -202,7 +213,7 @@
 				</a>
 				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Word</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Word&#039;</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">UInt16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;value&#039;</span><span style="color: #000000">)</span>
-<span style="color: #000000">  </span><span style="color: #008000">// We take a step back or two bytes back, which takes up the previous field</span>
+<span style="color: #000000">  </span><span style="color: #008000">// We take a step back or two bytes back, which the previous field takes up</span>
 <span style="color: #000000">  </span><span style="color: #008000">// you can also use `seek` method with a negative argument</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">back</span><span style="color: #000000">()</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">UInt8</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;low&#039;</span><span style="color: #000000">)</span>
@@ -248,8 +259,8 @@
 <span style="color: #001080">twins</span><span style="color: #000000">.</span><span style="color: #001080">John</span><span style="color: #000000">.</span><span style="color: #001080">birthday</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">(</span><span style="color: #098658">1973</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">15</span><span style="color: #000000">);</span>
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">twins</span><span style="color: #000000">.</span><span style="color: #001080">Jimmy</span><span style="color: #000000">.</span><span style="color: #001080">birthday</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #001080">twins</span><span style="color: #000000">.</span><span style="color: #001080">John</span><span style="color: #000000">.</span><span style="color: #001080">birthday</span><span style="color: #000000">);</span>
 </code></pre>
-				<a href="#constant-fields" id="constant-fields" style="color: inherit; text-decoration: none;">
-					<h3>Constant fields</h3>
+				<a href="#fixed-values" id="fixed-values" style="color: inherit; text-decoration: none;">
+					<h3>Fixed values</h3>
 				</a>
 				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Request</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Request&#039;</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">UInt32BE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;header&#039;</span><span style="color: #000000">, </span><span style="color: #098658">0xDEADBEEF</span><span style="color: #000000">)</span>
@@ -327,6 +338,8 @@
 
 <span style="color: #008000">// Often a checksum is used to verify data,</span>
 <span style="color: #008000">// which is stored in the last bytes of the buffer.</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">crc16</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;crc&#039;</span><span style="color: #000000">;</span>
+
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Exact</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Exact&#039;</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">UInt16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;length&#039;</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">Buffer</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;data&#039;</span><span style="color: #000000">)</span>
@@ -335,13 +348,83 @@
 <span style="color: #000000">  .</span><span style="color: #795E26">compile</span><span style="color: #000000">();</span>
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">Exact</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #098658">4</span><span style="color: #000000">);</span>
 
+<span style="color: #008000">// Create a function for calculating checksum based on an algorithm</span>
+<span style="color: #008000">// typeof crcExact is (instance: Exact, needUpdate = false) =&gt; number</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">crcExact</span><span style="color: #000000"> = </span><span style="color: #001080">Exact</span><span style="color: #000000">.</span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">crc16</span><span style="color: #000000">);</span>
+
 <span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">createExact</span><span style="color: #000000">(</span><span style="color: #001080">data</span><span style="color: #000000">: </span><span style="color: #267F99">Buffer</span><span style="color: #000000">): </span><span style="color: #267F99">Exact</span><span style="color: #000000"> {</span>
 <span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">item</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Exact</span><span style="color: #000000">(</span><span style="color: #001080">Exact</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000"> + </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000">);</span>
 <span style="color: #000000">  </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #795E26">copy</span><span style="color: #000000">(</span><span style="color: #001080">item</span><span style="color: #000000">.</span><span style="color: #001080">data</span><span style="color: #000000">);</span>
 <span style="color: #000000">  </span><span style="color: #001080">item</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> = </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000">;</span>
-<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">raw</span><span style="color: #000000"> = </span><span style="color: #001080">Exact</span><span style="color: #000000">.</span><span style="color: #795E26">raw</span><span style="color: #000000">(</span><span style="color: #001080">item</span><span style="color: #000000">);</span>
-<span style="color: #000000">  </span><span style="color: #001080">item</span><span style="color: #000000">.</span><span style="color: #001080">crc</span><span style="color: #000000"> = </span><span style="color: #795E26">crc16</span><span style="color: #000000">(</span><span style="color: #001080">raw</span><span style="color: #000000">.</span><span style="color: #795E26">slice</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #001080">raw</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> - </span><span style="color: #098658">2</span><span style="color: #000000">));</span>
+<span style="color: #000000">  </span><span style="color: #001080">item</span><span style="color: #000000">.</span><span style="color: #001080">crc</span><span style="color: #000000"> = </span><span style="color: #795E26">crcExact</span><span style="color: #000000">(</span><span style="color: #001080">item</span><span style="color: #000000">);</span>
+<span style="color: #000000">  </span><span style="color: #008000">// or the same thing - calculate and update the field</span>
+<span style="color: #000000">  </span><span style="color: #795E26">crcExact</span><span style="color: #000000">(</span><span style="color: #001080">item</span><span style="color: #000000">, </span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
 <span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">item</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#strings" id="strings" style="color: inherit; text-decoration: none;">
+					<h3>Strings</h3>
+				</a>
+				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Person</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Person&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">String</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;name&#039;</span><span style="color: #000000">, </span><span style="color: #098658">30</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">String</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;surname&#039;</span><span style="color: #000000">, </span><span style="color: #098658">40</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">compile</span><span style="color: #000000">();</span>
+
+<span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">Person</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #098658">70</span><span style="color: #000000">);</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">walterGreen</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Person</span><span style="color: #000000">();</span>
+<span style="color: #001080">walterGreen</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;Walter&#039;</span><span style="color: #000000">;</span>
+<span style="color: #001080">walterGreen</span><span style="color: #000000">.</span><span style="color: #001080">surname</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;Green&#039;</span><span style="color: #000000">;</span>
+</code></pre>
+				<p>You can specify the encoding, the default is UTF8.
+					You can use the encodings supported by <a href="https://nodejs.org/dist/latest-v16.x/docs/api/buffer.html#buffer_buffers_and_character_encodings"><code>Buffer</code></a>
+					or install <a href="https://github.com/ashtuchkin/iconv-lite">iconv-lite</a> package
+				to add support for all encodings defined in this package.</p>
+				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Foo</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Foo&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">  </span><span style="color: #008000">// Specify the desired encoding and size in bytes like this</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">String</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;bar&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;win1251&#039;</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">)</span>
+<span style="color: #000000">  </span><span style="color: #008000">// or so</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">String</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;baz&#039;</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;ucs2&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">  </span><span style="color: #008000">// or even so</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">String</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;quux&#039;</span><span style="color: #000000">, { </span><span style="color: #001080">length:</span><span style="color: #000000"> </span><span style="color: #098658">10</span><span style="color: #000000">, </span><span style="color: #001080">encoding:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;koi8-r&#039;</span><span style="color: #000000">, </span><span style="color: #001080">literal:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Андрей&#039;</span><span style="color: #000000"> })</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">compile</span><span style="color: #000000">();</span>
+</code></pre>
+				<p>If you do not specify the length, then the <code>string field</code> will take up all the remaining space.</p>
+				<a href="#string-arrays" id="string-arrays" style="color: inherit; text-decoration: none;">
+					<h3>String Arrays</h3>
+				</a>
+				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Page</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Page&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">StringArray</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;body&#039;</span><span style="color: #000000">, {</span>
+<span style="color: #000000">    </span><span style="color: #001080">length:</span><span style="color: #000000"> </span><span style="color: #098658">80</span><span style="color: #000000">,        </span><span style="color: #008000">// string length in bytes (required)</span>
+<span style="color: #000000">    </span><span style="color: #001080">lines:</span><span style="color: #000000"> </span><span style="color: #098658">25</span><span style="color: #000000">,         </span><span style="color: #008000">// number of lines (required)</span>
+<span style="color: #000000">    </span><span style="color: #001080">encoding:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;ascii&#039;</span>
+<span style="color: #000000">  })</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">compile</span><span style="color: #000000">();</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">page</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Page</span><span style="color: #000000">();</span>
+<span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">Page</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #098658">80</span><span style="color: #000000"> * </span><span style="color: #098658">25</span><span style="color: #000000">);</span>
+<span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #267F99">Array</span><span style="color: #000000">.</span><span style="color: #795E26">isArray</span><span style="color: #000000">(</span><span style="color: #001080">page</span><span style="color: #000000">.</span><span style="color: #001080">body</span><span style="color: #000000">)).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">body</span><span style="color: #000000"> = </span><span style="color: #001080">page</span><span style="color: #000000">.</span><span style="color: #001080">body</span><span style="color: #000000">;</span>
+<span style="color: #001080">body</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">] = </span><span style="color: #A31515">&#039;Lorem ipsum&#039;</span><span style="color: #000000">;</span>
+<span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">page</span><span style="color: #000000">.</span><span style="color: #001080">body</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">]).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #001080">body</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">]);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">raw</span><span style="color: #000000"> = </span><span style="color: #001080">Page</span><span style="color: #000000">.</span><span style="color: #795E26">raw</span><span style="color: #000000">(</span><span style="color: #001080">page</span><span style="color: #000000">);</span>
+<span style="color: #001080">raw</span><span style="color: #000000">[</span><span style="color: #001080">Page</span><span style="color: #000000">.</span><span style="color: #795E26">getOffsetOf</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;body&#039;</span><span style="color: #000000">)] = </span><span style="color: #A31515">&#039;l&#039;</span><span style="color: #000000">.</span><span style="color: #795E26">charCodeAt</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+<span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">body</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">]).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;lorem ipsum&#039;</span><span style="color: #000000">);</span>
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">page</span><span style="color: #000000">);</span>
+</code></pre>
+				<p>output</p>
+				<pre><code><span style="color: #001080">Page</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  body: [</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&#039;lorem ipsum&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,            </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,            </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,            </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,            </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,            </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,            </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,            </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&#039;&#039;</span>
+<span style="color: #000000">  ]</span>
 <span style="color: #000000">}</span>
 </code></pre>
 				<a href="#bit-fields" id="bit-fields" style="color: inherit; text-decoration: none;">
@@ -411,8 +494,8 @@
 					and hidden buffers by using the method <code>toJSON</code>. The result contains only data,
 					as opposed to methods or internal state. Its <code>prototype</code> is <code>Object.prototype</code>
 					and all numeric iterable types (buffer, typed arrays) are replaced with <code>number[]</code>,
-					all custom types other than <code>number</code>, <code>boolean</code> and numeric iterables are replaced
-				with the result of executing <code>toJSON</code> or <code>toString</code> methods.</p>
+					all custom types other than <code>number</code>, <code>boolean</code>, <code>string</code>, <code>string[]</code> and numeric
+				iterables are replaced with the result of executing <code>toJSON</code> or <code>toString</code> methods.</p>
 				<pre><code class="language-ts"><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">model</span><span style="color: #000000">.</span><span style="color: #795E26">toJSON</span><span style="color: #000000">());</span>
 </code></pre>
 				<p>output:</p>
@@ -662,6 +745,12 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="modules.html#setter" class="tsd-kind-icon">Setter</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#stringarrayopts" class="tsd-kind-icon">String<wbr>Array<wbr>Opts</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#stringopts" class="tsd-kind-icon">String<wbr>Opts</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#getmask" class="tsd-kind-icon">get<wbr>Mask</a>

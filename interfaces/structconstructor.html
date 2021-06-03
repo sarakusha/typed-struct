@@ -111,6 +111,7 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="structconstructor.html#crc" class="tsd-kind-icon">crc</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="structconstructor.html#getoffsetof" class="tsd-kind-icon">get<wbr>Offset<wbr>Of</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="structconstructor.html#getoffsets" class="tsd-kind-icon">get<wbr>Offsets</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="structconstructor.html#raw" class="tsd-kind-icon">raw</a></li>
@@ -135,7 +136,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L533">struct.ts:533</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L642">struct.ts:642</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -152,7 +153,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L541">struct.ts:541</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L650">struct.ts:650</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -176,7 +177,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L548">struct.ts:548</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L657">struct.ts:657</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -205,7 +206,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L555">struct.ts:555</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L664">struct.ts:664</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -235,7 +236,7 @@
 					<div class="tsd-signature tsd-kind-icon">base<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L533">struct.ts:533</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L642">struct.ts:642</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -250,7 +251,7 @@
 					<div class="tsd-signature tsd-kind-icon">prototype<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>toJSON<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L531">struct.ts:531</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L640">struct.ts:640</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -263,6 +264,60 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="crc" class="tsd-anchor"></a>
+					<h3>crc</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">crc<span class="tsd-signature-symbol">(</span>calc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">CalcCRC</span>, previous<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>instance<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{</span><span class="tsd-signature-symbol">[ </span><span class="tsd-signature-type">P</span><span class="tsd-signature-symbol"> in </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>__struct<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">; </span>toJSON<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">P</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> }</span>, needUpdate<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L702">struct.ts:702</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a function to calculate the checksum and update the corresponding field, if any</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>calc: <span class="tsd-signature-type">CalcCRC</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> previous: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span>instance<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{</span><span class="tsd-signature-symbol">[ </span><span class="tsd-signature-type">P</span><span class="tsd-signature-symbol"> in </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>__struct<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">; </span>toJSON<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">P</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> }</span>, needUpdate<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-signature">
+									<ul class="tsd-signatures tsd-kind-type-literal">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>instance<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{</span><span class="tsd-signature-symbol">[ </span><span class="tsd-signature-type">P</span><span class="tsd-signature-symbol"> in </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>__struct<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">; </span>toJSON<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">P</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> }</span>, needUpdate<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>instance: <span class="tsd-signature-symbol">{</span><span class="tsd-signature-symbol">[ </span><span class="tsd-signature-type">P</span><span class="tsd-signature-symbol"> in </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>__struct<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">; </span>toJSON<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">P</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> }</span></h5>
+												</li>
+												<li>
+													<h5><span class="tsd-flag ts-flagOptional">Optional</span> needUpdate: <span class="tsd-signature-type">boolean</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="getoffsetof" class="tsd-anchor"></a>
 					<h3>get<wbr>Offset<wbr>Of</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
@@ -272,7 +327,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L569">struct.ts:569</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L678">struct.ts:678</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -285,7 +340,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">T</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name</p>
 									</div>
 								</li>
 							</ul>
@@ -303,7 +358,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L573">struct.ts:573</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L682">struct.ts:682</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -326,7 +381,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L585">struct.ts:585</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L694">struct.ts:694</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -348,7 +403,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L586">struct.ts:586</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L695">struct.ts:695</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -371,7 +426,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L580">struct.ts:580</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L689">struct.ts:689</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -431,6 +486,9 @@
 								<a href="structconstructor.html#prototype" class="tsd-kind-icon">prototype</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="structconstructor.html#crc" class="tsd-kind-icon">crc</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="structconstructor.html#getoffsetof" class="tsd-kind-icon">get<wbr>Offset<wbr>Of</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
@@ -457,6 +515,12 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="../modules.html#setter" class="tsd-kind-icon">Setter</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../modules.html#stringarrayopts" class="tsd-kind-icon">String<wbr>Array<wbr>Opts</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="../modules.html#stringopts" class="tsd-kind-icon">String<wbr>Opts</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="../modules.html#getmask" class="tsd-kind-icon">get<wbr>Mask</a>

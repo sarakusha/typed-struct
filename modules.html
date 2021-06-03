@@ -86,6 +86,8 @@
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#extracttype" class="tsd-kind-icon">Extract<wbr>Type</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#getter" class="tsd-kind-icon">Getter</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#setter" class="tsd-kind-icon">Setter</a></li>
+								<li class="tsd-kind-type-alias"><a href="modules.html#stringarrayopts" class="tsd-kind-icon">String<wbr>Array<wbr>Opts</a></li>
+								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#stringopts" class="tsd-kind-icon">String<wbr>Opts</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -106,7 +108,7 @@
 					<div class="tsd-signature tsd-kind-icon">Bit<wbr>Mask<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span>offset<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span>length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L114">struct.ts:114</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L138">struct.ts:138</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -132,7 +134,7 @@
 					<div class="tsd-signature tsd-kind-icon">Extract<wbr>Type&lt;C&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">C</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-symbol">new </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-symbol">infer </span> T<span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">Omit</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;__struct&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;toJSON&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L3">struct.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L6">struct.ts:6</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -148,7 +150,7 @@
 					<div class="tsd-signature tsd-kind-icon">Getter&lt;R&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L140">struct.ts:140</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L166">struct.ts:166</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -194,7 +196,7 @@
 					<div class="tsd-signature tsd-kind-icon">Setter&lt;R&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L145">struct.ts:145</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L171">struct.ts:171</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -236,6 +238,76 @@
 						</ul>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="stringarrayopts" class="tsd-anchor"></a>
+					<h3>String<wbr>Array<wbr>Opts</h3>
+					<div class="tsd-signature tsd-kind-icon">String<wbr>Array<wbr>Opts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Id</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Omit</span><span class="tsd-signature-symbol">&lt;</span><a href="modules.html#stringopts" class="tsd-signature-type" data-tsd-kind="Type alias">StringOpts</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;literal&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>lines<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L784">struct.ts:784</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>String array options</p>
+							<ul>
+								<li><strong>rows</strong> - the number of rows in the string array</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
+					<a name="stringopts" class="tsd-anchor"></a>
+					<h3>String<wbr>Opts</h3>
+					<div class="tsd-signature tsd-kind-icon">String<wbr>Opts&lt;R&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>encoding<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L767">struct.ts:767</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>String options.</p>
+						</div>
+					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>R<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> encoding<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The encoding of <code>string</code>. Default: <code>utf8</code>.
+											To use the full set of encodings install
+										<a href="https://github.com/ashtuchkin/iconv-lite">iconv-lite</a> package</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The byte length of a string field</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The fixed value</p>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
@@ -249,7 +321,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L189">struct.ts:189</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L222">struct.ts:222</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -292,7 +364,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L641">struct.ts:641</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L760">struct.ts:760</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -313,7 +385,7 @@
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
 								<li>
-									<h4>T<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h4>
+									<h4>T<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h4>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
@@ -352,6 +424,12 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="modules.html#setter" class="tsd-kind-icon">Setter</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#stringarrayopts" class="tsd-kind-icon">String<wbr>Array<wbr>Opts</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#stringopts" class="tsd-kind-icon">String<wbr>Opts</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#getmask" class="tsd-kind-icon">get<wbr>Mask</a>

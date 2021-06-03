@@ -135,6 +135,8 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="default.html#int32le" class="tsd-kind-icon">Int32LE</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="default.html#int8" class="tsd-kind-icon">Int8</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="default.html#int8array" class="tsd-kind-icon">Int8<wbr>Array</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="default.html#string" class="tsd-kind-icon">String</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="default.html#stringarray" class="tsd-kind-icon">String<wbr>Array</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="default.html#struct" class="tsd-kind-icon">Struct</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="default.html#structarray" class="tsd-kind-icon">Struct<wbr>Array</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="default.html#uint16array" class="tsd-kind-icon">UInt16<wbr>Array</a></li>
@@ -171,7 +173,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L665">struct.ts:665</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L811">struct.ts:811</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -208,13 +210,13 @@
 					<a name="bcd" class="tsd-anchor"></a>
 					<h3>BCD</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">BCD&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">BCD&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L960">struct.ts:960</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1106">struct.ts:1106</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -236,13 +238,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -260,7 +262,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L994">struct.ts:994</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1140">struct.ts:1140</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -297,7 +299,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1001">struct.ts:1001</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1147">struct.ts:1147</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -334,7 +336,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L987">struct.ts:987</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1133">struct.ts:1133</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -365,18 +367,18 @@
 					<a name="boolean16" class="tsd-anchor"></a>
 					<h3>Boolean16</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Boolean16&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Boolean16&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L932">struct.ts:932</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1078">struct.ts:1078</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines 16-bit boolean field</p>
+									<p>defines a 16-bit boolean field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -393,13 +395,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -411,18 +413,18 @@
 					<a name="boolean32" class="tsd-anchor"></a>
 					<h3>Boolean32</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Boolean32&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Boolean32&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L946">struct.ts:946</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1092">struct.ts:1092</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines 32-bit boolean field</p>
+									<p>defines a 32-bit boolean field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -439,13 +441,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -457,18 +459,18 @@
 					<a name="boolean8" class="tsd-anchor"></a>
 					<h3>Boolean8</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Boolean8&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Boolean8&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L918">struct.ts:918</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1064">struct.ts:1064</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines 8-bit boolean field</p>
+									<p>defines a 8-bit boolean field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -485,13 +487,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -509,12 +511,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1009">struct.ts:1009</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1155">struct.ts:1155</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines buffer fields of <code>length</code> bytes</p>
+									<p>defines a buffer field of <code>length</code> bytes</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -528,7 +530,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
@@ -552,7 +554,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1173">struct.ts:1173</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1425">struct.ts:1425</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -572,6 +574,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span></h5>
 									<div class="tsd-comment tsd-typography">
+										<p>The field name</p>
 									</div>
 								</li>
 							</ul>
@@ -589,7 +592,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1162">struct.ts:1162</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1414">struct.ts:1414</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -609,6 +612,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span></h5>
 									<div class="tsd-comment tsd-typography">
+										<p>The field name</p>
 									</div>
 								</li>
 							</ul>
@@ -626,7 +630,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1196">struct.ts:1196</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1448">struct.ts:1448</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -646,6 +650,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span></h5>
 									<div class="tsd-comment tsd-typography">
+										<p>The field name</p>
 									</div>
 								</li>
 							</ul>
@@ -663,7 +668,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1185">struct.ts:1185</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1437">struct.ts:1437</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -683,6 +688,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span></h5>
 									<div class="tsd-comment tsd-typography">
+										<p>The field name</p>
 									</div>
 								</li>
 							</ul>
@@ -700,7 +706,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1151">struct.ts:1151</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1403">struct.ts:1403</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -720,6 +726,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span></h5>
 									<div class="tsd-comment tsd-typography">
+										<p>The field name</p>
 									</div>
 								</li>
 							</ul>
@@ -737,12 +744,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1132">struct.ts:1132</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1384">struct.ts:1384</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines a field with custom getter and setter</p>
+									<p>defines a field with a custom getter and setter</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -759,13 +766,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> size: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field size</p>
+										<p>The field size</p>
 									</div>
 								</li>
 								<li>
@@ -797,12 +804,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1088">struct.ts:1088</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1323">struct.ts:1323</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines a Float32Array typed array represents an array of 32-bit floating numbers.</p>
+									<p>defines a <code>Float32Array</code> typed array represents an array of 32-bit floating numbers.</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -816,7 +823,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
@@ -834,18 +841,18 @@
 					<a name="float32be" class="tsd-anchor"></a>
 					<h3>Float32BE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Float32BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Float32BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L888">struct.ts:888</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1034">struct.ts:1034</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines 32-bit, big-endian float field</p>
+									<p>defines a 32-bit, big-endian float field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -862,13 +869,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -880,18 +887,18 @@
 					<a name="float32le" class="tsd-anchor"></a>
 					<h3>Float32LE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Float32LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Float32LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L860">struct.ts:860</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1006">struct.ts:1006</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines 32-bit, little-endian float field</p>
+									<p>defines a 32-bit, little-endian float field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -908,13 +915,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -932,12 +939,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1099">struct.ts:1099</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1334">struct.ts:1334</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines a Float64Array typed array represents an array of 64-bit floating numbers.</p>
+									<p>defines a <code>Float64Array</code> typed array represents an array of 64-bit floating numbers.</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -951,7 +958,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases or aliases</p>
 									</div>
 								</li>
 								<li>
@@ -969,18 +976,18 @@
 					<a name="float64be" class="tsd-anchor"></a>
 					<h3>Float64BE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Float64BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Float64BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L903">struct.ts:903</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1049">struct.ts:1049</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines 64-bit, big-endian float field</p>
+									<p>defines a 64-bit, big-endian float field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -997,13 +1004,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1015,18 +1022,18 @@
 					<a name="float64le" class="tsd-anchor"></a>
 					<h3>Float64LE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Float64LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Float64LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L874">struct.ts:874</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1020">struct.ts:1020</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines 64-bit, little-endian float field</p>
+									<p>defines a 64-bit, little-endian float field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1043,13 +1050,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1067,12 +1074,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1043">struct.ts:1043</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1278">struct.ts:1278</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines a Int16Array typed array represents an array of twos-complement 16-bit signed integers.</p>
+									<p>defines a <code>Int16Array</code> typed array represents an array of twos-complement 16-bit signed
+									integers.</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1086,7 +1094,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
@@ -1104,18 +1112,18 @@
 					<a name="int16be" class="tsd-anchor"></a>
 					<h3>Int16BE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Int16BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Int16BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L800">struct.ts:800</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L946">struct.ts:946</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines signed, big-endian 16-bit integer field</p>
+									<p>defines a signed, big-endian 16-bit integer field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1132,13 +1140,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1150,18 +1158,18 @@
 					<a name="int16le" class="tsd-anchor"></a>
 					<h3>Int16LE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Int16LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Int16LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L744">struct.ts:744</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L890">struct.ts:890</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines signed, little-endian 16-bit integer field</p>
+									<p>defines a signed, little-endian 16-bit integer field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1178,13 +1186,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1202,12 +1210,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1066">struct.ts:1066</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1301">struct.ts:1301</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines a Int32Array typed array represents an array of twos-complement 32-bit signed
+									<p>defines a <code>Int32Array</code> typed array represents an array of twos-complement 32-bit signed
 									integers.</p>
 								</div>
 							</div>
@@ -1222,7 +1230,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
@@ -1240,18 +1248,18 @@
 					<a name="int32be" class="tsd-anchor"></a>
 					<h3>Int32BE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Int32BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Int32BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L830">struct.ts:830</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L976">struct.ts:976</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines signed, big-endian 32-bit integer field</p>
+									<p>defines a signed, big-endian 32-bit integer field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1268,13 +1276,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1286,18 +1294,18 @@
 					<a name="int32le" class="tsd-anchor"></a>
 					<h3>Int32LE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Int32LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Int32LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L772">struct.ts:772</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L918">struct.ts:918</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines signed, little-endian 32-bit integer field</p>
+									<p>defines a signed, little-endian 32-bit integer field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1314,13 +1322,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1332,18 +1340,18 @@
 					<a name="int8" class="tsd-anchor"></a>
 					<h3>Int8</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Int8&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">Int8&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L716">struct.ts:716</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L862">struct.ts:862</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines signed, 8-bit integer field</p>
+									<p>defines a signed, 8-bit integer field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1360,13 +1368,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1384,12 +1392,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1022">struct.ts:1022</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1256">struct.ts:1256</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines a Int8Array typed array represents an array of twos-complement 8-bit signed integers.</p>
+									<p>defines a <code>Int8Array</code> typed array represents an array of twos-complement 8-bit signed
+									integers.</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1403,7 +1412,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
@@ -1418,21 +1427,325 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-					<a name="struct" class="tsd-anchor"></a>
-					<h3>Struct</h3>
+					<a name="string" class="tsd-anchor"></a>
+					<h3>String</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">Struct&lt;N, S, StructClass&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, struct<span class="tsd-signature-symbol">: </span><a href="../interfaces/structconstructor.html" class="tsd-signature-type" data-tsd-kind="Interface">StructConstructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">StructClass</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">String&lt;N&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">String&lt;N&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">String&lt;N&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, encoding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">String&lt;N&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, encoding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">String&lt;N&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, encoding<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">String&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, opts<span class="tsd-signature-symbol">: </span><a href="../modules.html#stringopts" class="tsd-signature-type" data-tsd-kind="Type alias">StringOpts</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L974">struct.ts:974</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1167">struct.ts:1167</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines nested structure</p>
+									<p>defines a tailed string field</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>N<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The filed name or aliases</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1174">struct.ts:1174</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>defines a string field of <code>length</code> bytes</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>N<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The filed name or aliases</p>
+									</div>
+								</li>
+								<li>
+									<h5>length: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The byte length of a string</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1183">struct.ts:1183</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>defines an encoded string field</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>N<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The filed name or aliases</p>
+									</div>
+								</li>
+								<li>
+									<h5>encoding: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The encoding of string. Default: <code>utf8</code>.
+											To use the full set of encodings install
+										<a href="https://github.com/ashtuchkin/iconv-lite">iconv-lite</a> package</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1193">struct.ts:1193</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>defines an encoded string field of <code>length</code> bytes</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>N<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The filed name or aliases</p>
+									</div>
+								</li>
+								<li>
+									<h5>length: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The byte length of a string</p>
+									</div>
+								</li>
+								<li>
+									<h5>encoding: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The encoding of string. Default: <code>utf8</code>.
+											To use the full set of encodings install
+										<a href="https://github.com/ashtuchkin/iconv-lite">iconv-lite</a> package</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1207">struct.ts:1207</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>defines an encoded string field of <code>length</code> bytes</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>N<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The filed name or aliases</p>
+									</div>
+								</li>
+								<li>
+									<h5>encoding: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The encoding of string. Default: <code>utf8</code>.
+											To use the full set of encodings install
+										<a href="https://github.com/ashtuchkin/iconv-lite">iconv-lite</a> package</p>
+									</div>
+								</li>
+								<li>
+									<h5>length: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The byte length of a string</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1218">struct.ts:1218</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>defines a string field</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>N<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+								</li>
+								<li>
+									<h4>R<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The filed name or aliases</p>
+									</div>
+								</li>
+								<li>
+									<h5>opts: <a href="../modules.html#stringopts" class="tsd-signature-type" data-tsd-kind="Type alias">StringOpts</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The string options</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="stringarray" class="tsd-anchor"></a>
+					<h3>String<wbr>Array</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">String<wbr>Array&lt;N&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, opts<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>encoding<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>lines<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1363">struct.ts:1363</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>defines a string array field</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>N<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The filed name or aliases or aliases</p>
+									</div>
+								</li>
+								<li>
+									<h5>opts: <span class="tsd-signature-symbol">{ </span>encoding<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>lines<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The string array options</p>
+									</div>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> encoding<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
+											<div class="tsd-comment tsd-typography">
+												<div class="lead">
+													<p>The encoding of <code>string</code>. Default: <code>utf8</code>.
+														To use the full set of encodings install
+													<a href="https://github.com/ashtuchkin/iconv-lite">iconv-lite</a> package</p>
+												</div>
+											</div>
+										</li>
+										<li class="tsd-parameter">
+											<h5>length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+											<div class="tsd-comment tsd-typography">
+												<div class="lead">
+													<p>The byte length of a string field</p>
+												</div>
+											</div>
+										</li>
+										<li class="tsd-parameter">
+											<h5>lines<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+											<div class="tsd-comment tsd-typography">
+												<div class="lead">
+													<p>the number of rows in the string array</p>
+												</div>
+											</div>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="struct" class="tsd-anchor"></a>
+					<h3>Struct</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">Struct&lt;N, S, StructClass&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, struct<span class="tsd-signature-symbol">: </span><a href="../interfaces/structconstructor.html" class="tsd-signature-type" data-tsd-kind="Interface">StructConstructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Item</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">StructClass</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1120">struct.ts:1120</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>defines a nested structure</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1452,11 +1765,11 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name or aliases</p>
+										<p>The filed name or aliases or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5>struct: <a href="../interfaces/structconstructor.html" class="tsd-signature-type" data-tsd-kind="Interface">StructConstructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">StructClass</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>struct: <a href="../interfaces/structconstructor.html" class="tsd-signature-type" data-tsd-kind="Interface">StructConstructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Item</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">StructClass</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>structure factory</p>
 									</div>
@@ -1476,7 +1789,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1111">struct.ts:1111</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1346">struct.ts:1346</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1501,13 +1814,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases or aliases</p>
 									</div>
 								</li>
 								<li>
 									<h5>struct: <a href="../interfaces/structconstructor.html" class="tsd-signature-type" data-tsd-kind="Interface">StructConstructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">StructClass</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>custom typed struct</p>
+										<p>The custom typed struct</p>
 									</div>
 								</li>
 								<li>
@@ -1531,12 +1844,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1054">struct.ts:1054</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1289">struct.ts:1289</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines a Uint16Array typed array represents an array of 16-bit unsigned integers.</p>
+									<p>defines a <code>Uint16Array</code> typed array represents an array of 16-bit unsigned integers.</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1550,7 +1863,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
@@ -1568,18 +1881,18 @@
 					<a name="uint16be" class="tsd-anchor"></a>
 					<h3>UInt16BE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">UInt16BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">UInt16BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L815">struct.ts:815</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L961">struct.ts:961</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines unsigned, big-endian 16-bit integer field</p>
+									<p>defines an unsigned, big-endian 16-bit integer field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1596,13 +1909,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1614,18 +1927,18 @@
 					<a name="uint16le" class="tsd-anchor"></a>
 					<h3>UInt16LE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">UInt16LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">UInt16LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L758">struct.ts:758</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L904">struct.ts:904</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines unsigned, little-endian 16-bit integer field</p>
+									<p>defines an unsigned, little-endian 16-bit integer field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1642,13 +1955,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1666,12 +1979,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1077">struct.ts:1077</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1312">struct.ts:1312</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines a Uint32Array typed array represents an array of 32-bit unsigned integers.</p>
+									<p>defines a <code>Uint32Array</code> typed array represents an array of 32-bit unsigned integers.</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1685,7 +1998,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
@@ -1703,18 +2016,18 @@
 					<a name="uint32be" class="tsd-anchor"></a>
 					<h3>UInt32BE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">UInt32BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">UInt32BE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L845">struct.ts:845</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L991">struct.ts:991</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines unsigned, big-endian 32-bit integer field</p>
+									<p>defines an unsigned, big-endian 32-bit integer field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1731,13 +2044,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1749,18 +2062,18 @@
 					<a name="uint32le" class="tsd-anchor"></a>
 					<h3>UInt32LE</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">UInt32LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">UInt32LE&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L786">struct.ts:786</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L932">struct.ts:932</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines unsigned, little-endian 32-bit integer field</p>
+									<p>defines an unsigned, little-endian 32-bit integer field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1777,13 +2090,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1795,18 +2108,18 @@
 					<a name="uint8" class="tsd-anchor"></a>
 					<h3>UInt8</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">UInt8&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">UInt8&lt;N, R&gt;<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span>, literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ExtendStruct</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassName</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L730">struct.ts:730</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L876">struct.ts:876</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines unsigned, 8-bit integer field</p>
+									<p>defines an unsigned, 8-bit integer field</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1823,13 +2136,13 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>filed name or aliases</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <span class="tsd-signature-type">R</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> literal: <span class="tsd-signature-type">R</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>constant value</p>
+										<p>The fixed value</p>
 									</div>
 								</li>
 							</ul>
@@ -1847,12 +2160,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1032">struct.ts:1032</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1266">struct.ts:1266</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>defines a UInt8Array typed array represents an array of 8-bit unsigned integers.</p>
+									<p>defines a <code>Uint8Array</code> typed array represents an array of 8-bit unsigned integers.</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1866,7 +2179,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-type">N</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">N</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 								<li>
@@ -1890,7 +2203,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1236">struct.ts:1236</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1488">struct.ts:1488</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1912,7 +2225,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1244">struct.ts:1244</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1496">struct.ts:1496</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1934,7 +2247,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1222">struct.ts:1222</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1474">struct.ts:1474</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1971,7 +2284,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1254">struct.ts:1254</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1506">struct.ts:1506</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1984,7 +2297,7 @@
 								<li>
 									<h5>className: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = ...</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Constructor name</p>
+										<p>The constructor name</p>
 									</div>
 								</li>
 							</ul>
@@ -2002,7 +2315,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L701">struct.ts:701</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L847">struct.ts:847</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2015,7 +2328,7 @@
 								<li>
 									<h5>name: <span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">T</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>field name</p>
+										<p>The filed name or aliases</p>
 									</div>
 								</li>
 							</ul>
@@ -2033,7 +2346,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L706">struct.ts:706</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L852">struct.ts:852</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2055,7 +2368,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L695">struct.ts:695</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L841">struct.ts:841</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2077,7 +2390,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L1210">struct.ts:1210</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L1462">struct.ts:1462</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2114,12 +2427,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/a38db3b/src/struct.ts#L689">struct.ts:689</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L835">struct.ts:835</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Underlying buffer of the structure</p>
+									<p>Returns the underlying buffer of the structure</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -2248,6 +2561,12 @@
 								<a href="default.html#int8array" class="tsd-kind-icon">Int8<wbr>Array</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="default.html#string" class="tsd-kind-icon">String</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="default.html#stringarray" class="tsd-kind-icon">String<wbr>Array</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="default.html#struct" class="tsd-kind-icon">Struct</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
@@ -2322,6 +2641,12 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="../modules.html#setter" class="tsd-kind-icon">Setter</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../modules.html#stringarrayopts" class="tsd-kind-icon">String<wbr>Array<wbr>Opts</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="../modules.html#stringopts" class="tsd-kind-icon">String<wbr>Opts</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="../modules.html#getmask" class="tsd-kind-icon">get<wbr>Mask</a>
