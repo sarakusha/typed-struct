@@ -3,6 +3,9 @@
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/master/cspell.schema.json",
   "language": "en",
   "words": [
+    "endianness",
+    "Привет",
+    "Андрей",
     "pojo",
     "bject",
     "sigint",

@@ -3,6 +3,7 @@
   [ ] feature request
   [ ] question about the decisions made in the repository
   [ ] question about how to use this project
+  [ ] documentation/syntax error report
 
 - **Summary**
 
