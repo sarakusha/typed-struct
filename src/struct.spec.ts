@@ -99,6 +99,7 @@ describe('Struct', () => {
       fbe32: -678.3400268554688,
       fbe64: -78.456,
     };
+    // noinspection SpellCheckingInspection
     const rawModel = Buffer.from(
       '12ff67459cff2345fea77856341260a4ffff23456789ff98684b66e6f642c42995c3295c8fc2f5887c40c0539d2f1a9fbe77',
       'hex'
@@ -110,27 +111,31 @@ describe('Struct', () => {
     test('constructor name', () => {
       expect(item.constructor.name).toBe('Model');
     });
-    test('get props', () => {
+    test('props should be equal', () => {
       expect(item).toEqual(model);
     });
-    test('set props', () => {
+    test('buffers should be equal', () => {
       const copy = new Model();
       Object.assign(copy, model);
       expect(Model.raw(copy)).toEqual(rawModel);
     });
-    test('nest types', () => {
+    describe('nested types', () => {
       const Nested = new Struct('Nested').Struct('model1', Model).Struct('model2', Model).compile();
-      const rawNested = Buffer.alloc(rawModel.length * 2);
-      rawModel.copy(rawNested, 0);
-      rawModel.copy(rawNested, rawModel.length);
-      expect(new Nested(rawNested)).toEqual({
-        model1: model,
-        model2: model,
+      test('props should be equal', () => {
+        const rawNested = Buffer.alloc(rawModel.length * 2);
+        rawModel.copy(rawNested, 0);
+        rawModel.copy(rawNested, rawModel.length);
+        expect(new Nested(rawNested)).toEqual({
+          model1: model,
+          model2: model,
+        });
       });
-      const nested = new Nested();
-      expect(() => {
-        nested.model1 = model;
-      }).toThrow();
+      test('should thrown when assigning an object', () => {
+        const nested = new Nested();
+        expect(() => {
+          nested.model1 = model;
+        }).toThrow();
+      });
     });
   });
   describe('boolean', () => {
@@ -142,11 +147,11 @@ describe('Struct', () => {
     test('size', () => {
       expect(Bool.baseSize).toBe(7);
     });
-    test('get props', () => {
+    test('props should be equal', () => {
       expect(new Bool(bufferFF)).toEqual(truthy);
       expect(new Bool(buffer00)).toEqual(falsy);
     });
-    test('set props', () => {
+    test('buffers should be equal', () => {
       expect(Bool.raw(Object.assign(new Bool(), truthy))).toEqual(bufferFF);
       expect(Bool.raw(Object.assign(new Bool(), falsy))).toEqual(buffer00);
     });
@@ -394,6 +399,33 @@ describe('Struct', () => {
       const crc = randomFor(PropType.UInt32)();
       crc32BE.crc = crc;
       expect(CRC32BE.raw(crc32BE).slice(-CRC32BE.baseSize).readUInt32BE()).toBe(crc);
+    });
+    test('calculate and update CRC', () => {
+      const crc = byteRnd();
+      const calc = jest.fn<number, [Buffer, number | undefined]>(() => crc);
+      const Foo = new Struct('Foo').Int32LE('bar').Buffer('data').CRC8('crc').compile();
+      const raw = randomize(Buffer.alloc(21));
+      const foo = new Foo(raw);
+      const old = foo.crc;
+      const crcCalc = Foo.crc(calc, 10);
+      expect(crcCalc(foo)).toBe(crc);
+      expect(foo.crc).toBe(old);
+      expect(crcCalc(foo, true)).toBe(crc);
+      expect(calc.mock.calls.length).toBe(2);
+      expect(calc.mock.calls[0][0]).toEqual(raw.slice(0, -1));
+      expect(calc.mock.calls[0][1]).toBe(10);
+      expect(foo.crc).toBe(crc);
+    });
+    test('only calculate CRC when CRC field is missing', () => {
+      const crc = byteRnd();
+      const calc = jest.fn<number, [Buffer, number | undefined]>(() => crc);
+      const Foo = new Struct('Foo').Int32LE('bar').Buffer('data').compile();
+      const raw = randomize(Buffer.alloc(20));
+      const foo = new Foo(raw);
+      expect(Foo.crc(calc, 12)(foo, true)).toBe(crc);
+      expect(calc.mock.calls.length).toBe(1);
+      expect(calc.mock.calls[0][0]).toEqual(raw);
+      expect(calc.mock.calls[0][1]).toBe(12);
     });
   });
   test('aliases', () => {
@@ -727,9 +759,10 @@ describe('Struct', () => {
     expect(raw).toEqual(expected);
   });
   test('string array', () => {
-    const Text = new Struct('Text').StringArray('lines', { length: 20, rows: 5 }).compile();
+    const Text = new Struct('Text').StringArray('lines', { length: 20, lines: 5 }).compile();
     expect(Text.baseSize).toBe(100);
     const text = new Text();
+    expect(Array.isArray(text.lines)).toBe(true);
     expect(text.lines).toHaveLength(5);
     const expected: string[] = [];
     for (let i = 0; i < text.lines.length; i += 1) {
@@ -737,6 +770,7 @@ describe('Struct', () => {
       expected[i] = line;
       text.lines[i] = line;
     }
+    const lines = text.lines;
     expect(text.lines).toEqual(expected);
     expect([...text.lines]).toEqual(expected);
     expect(text.toJSON()).toEqual({ lines: expected });
@@ -746,6 +780,8 @@ describe('Struct', () => {
     raw[0] = 'L'.charCodeAt(0);
     expected[0] = 'Line 0';
     expect(text.lines).toEqual(expected);
+    expect(lines).toEqual(expected);
+    expect(lines).toBe(text.lines);
     expect(() => {
       (text.lines as any)[6] = 'Lorem ipsum';
     }).toThrow(new TypeError('Cannot add property 6, object is not extensible'));

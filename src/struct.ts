@@ -69,6 +69,8 @@ type OmitTypeRecursively<Base, Condition> = OmitType<
   Condition
 >;
 
+type Item<A> = A extends any ? (A extends readonly (infer T)[] ? T : A) : never;
+
 type POJO<T> = Id<
   ReplaceRecursively<
     ReplaceRecursively<
@@ -189,10 +191,10 @@ type PropDesc<T extends PropType | string = PropType | string, R = NativeType<T>
   /** Big-Endian, default Little-Endian */
   be?: boolean;
   /** nested struct */
-  struct?: StructConstructor<unknown, string>;
+  struct?: StructConstructor<Item<R>, any>;
   /** make a buffer from the remaining bytes */
   tail?: boolean;
-  /** constant */
+  /** The fixed value */
   literal?: R;
   /** custom getter */
   getter?: Getter<R>;
@@ -628,6 +630,8 @@ type StructInstance<T, ClassName extends string> = Id<
   }
 >;
 
+type CalcCRC = (buf: Buffer, previous?: number) => number;
+
 /**
  * Ready-made constructor for custom structure
  */
@@ -689,6 +693,16 @@ export interface StructConstructor<T, ClassName extends string> {
    */
   raw(instance: StructInstance<T, ClassName>): Buffer;
   raw(instance: T): Buffer | undefined;
+
+  /**
+   * Create a function to calculate the checksum and update the corresponding field, if any
+   * @param calc
+   * @param previous
+   */
+  crc(
+    calc: CalcCRC,
+    previous?: number
+  ): (instance: StructInstance<T, ClassName>, needUpdate?: boolean) => number;
 }
 const isSimpleOrString = (value: unknown): value is number | boolean | string | null | undefined =>
   value === undefined || value === null || ['number', 'boolean', 'string'].includes(typeof value);
@@ -770,7 +784,7 @@ export type StringOpts<R extends string> = {
 export type StringArrayOpts = Id<
   Omit<StringOpts<string>, 'literal'> & {
     /** the number of rows in the string array */
-    rows: number;
+    lines: number;
   }
 >;
 
@@ -1105,7 +1119,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   Struct = <N extends string, S, StructClass extends string>(
     name: N | N[],
-    struct: StructConstructor<S, StructClass>
+    struct: StructConstructor<Item<S>, StructClass>
   ): ExtendStruct<T, ClassName, N, S> =>
     this.createProp<N, PropType.Struct, S, ExtendStruct<T, ClassName, N, S>>(name, {
       type: PropType.Struct,
@@ -1352,7 +1366,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   ): ExtendStruct<T, ClassName, N, string[]> {
     return this.createProp<N, PropType.StringArray, string[]>(name, {
       type: PropType.StringArray,
-      len: opts.rows,
+      len: opts.lines,
       size: opts.length,
       encoding: opts.encoding,
     });
@@ -1493,12 +1507,11 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
     className: string | undefined = this.defaultClassName
   ): StructConstructor<Id<T>, ClassName> {
     const { size: baseSize, props, getOffsetOf, getOffsets, swap } = this;
+    type Instance = StructInstance<T, ClassName>;
 
     // noinspection JSUnusedGlobalSymbols
     class Structure {
       static readonly baseSize = baseSize;
-
-      // static readonly tailed = tailed;
 
       static getOffsetOf = getOffsetOf;
 
@@ -1527,10 +1540,23 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
         Object.preventExtensions(this);
       }
 
-      static swap = (instance: StructInstance<T, ClassName>, name: keyof T): Buffer =>
-        swap(name, Struct.raw(instance));
+      static swap = (instance: Instance, name: keyof T): Buffer => swap(name, Struct.raw(instance));
 
-      static raw = (instance: StructInstance<T, ClassName>): Buffer => Struct.raw(instance);
+      static raw = (instance: Instance): Buffer => Struct.raw(instance);
+
+      static crc = (calc: CalcCRC, previous?: number) => {
+        const [name, info] = Array.from(props.entries()).pop() ?? [];
+        const lastSize = info && isCrc(info) && getSize(info.type);
+        const end = lastSize ? -lastSize : undefined;
+        return (instance: Instance, needUpdate = false): number => {
+          const sum = calc(Structure.raw(instance).slice(0, end), previous);
+          if (needUpdate && end && name) {
+            // eslint-disable-next-line no-param-reassign
+            instance[name] = sum as any;
+          }
+          return sum;
+        };
+      };
 
       toJSON(): POJO<T> {
         return deepClone(this as unknown as T);
