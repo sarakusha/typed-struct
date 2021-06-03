@@ -23,16 +23,17 @@ $ yarn add typed-struct
 
 The following types are supported:
 
-- Integers (1, 2, 4 bytes)
-- Booleans (1, 2, 4 bytes)
+- Integer (1, 2, 4 bytes)
+- Boolean (1, 2, 4 bytes)
 - Float (4 bytes)
 - Double (8 bytes)
-- Bit fields (1...32 bits)
-- Binary-decoded decimals 
-- Buffers
-- Custom types (requires custom getter/setter)
+- Bit fields (1, 2, 4 bytes)
+- Binary-decoded decimal (1 byte)
+- Buffer
+- String (with [iconv-lite](https://github.com/ashtuchkin/iconv-lite) encodings)  
+- Custom type (requires custom getter/setter)
 
-Nested types and arrays are also supported.
+Fixed values, endianness, nested types and arrays are also supported.
 
 The generated structures will be strongly typed,
 which will provide better documentation and allow TypeScript
@@ -45,6 +46,8 @@ to validate that your code is working correctly.
 ### Create a data structure by chaining the appropriate method calls
 
 ```ts
+const Struct = require('typed-struct').default;
+// or
 import Struct from 'typed-struct';
 
 const MyStructure = new Struct('MyStructure') // give a name to the constructor
@@ -57,7 +60,6 @@ const MyStructure = new Struct('MyStructure') // give a name to the constructor
 // the exact type of the generated structure
 const item1 = new MyStructure();      // creates an instance
 expect(item1.constructor.name).toBe('MyStructure');
-expect(item1.toString()).toBe('[object MyStructure]');
 
 // This class has useful static properties and methods.
 const raw = MyStructure.raw(item1);   // get the underlying buffer
@@ -94,12 +96,12 @@ expect(Foo.raw(foo)).toHaveLength(20);
 
 // If the byte order in the system is different from that used in the data,
 // use `swap` method
-Foo.swap(foo.bar);
+Foo.swap(foo, 'items');
 
 // ...
 
 // change back
-Foo.swap(foo.bar);
+Foo.swap(foo, 'items');
 ```
 ### Array of structures
 Using the structure `MyStructure` from the previous examples
@@ -111,6 +113,15 @@ const Baz = new Struct('Baz')
 const baz = new Baz();
 expect(baz.structs).toHaveLength(10);
 baz.structs[3].foo = 123;
+// but
+expect(() => {
+  baz.struct[3] = new MyStructure();
+}).toThrow(new TypeError('Cannot assign to read only property "3"'))
+
+expect(() => {
+  baz.structs.push(new MyStructure());
+}).toThrow(new TypedError('Cannot add property 10, object is not extensible'));
+
 ```
 
 ### Nested types
@@ -141,10 +152,11 @@ expect(() => {
 ```
 
 ### Union
+
 ```ts
 const Word = new Struct('Word')
   .UInt16LE('value')
-  // We take a step back or two bytes back, which takes up the previous field
+  // We take a step back or two bytes back, which the previous field takes up
   // you can also use `seek` method with a negative argument
   .back()
   .UInt8('low')
@@ -157,7 +169,9 @@ expect(word.low).toBe(0x34);
 expect(word.high).toBe(0x12);
 expect(Word.baseSize).toBe(2);
 ```
+
 ### Custom types
+
 ```ts
 const BirthCertificate = new Struct('BirthCertificate')
   .Custom(
@@ -174,8 +188,11 @@ expect(BirthCertificate.baseSize).toBe(8);
 const cert = new BirthCertificate();
 cert.birthday = new Date(1973, 7, 15);
 ```
+
 ### Aliases
+
 Using the structure `BirthCertificate` from the previous example.
+
 ```ts
 const Twins = new Struct('Twins')
   // `John` and `Jimmy` properties are equivalent
@@ -188,7 +205,9 @@ const twins = new Twins();
 twins.John.birthday = new Date(1973, 7, 15);
 expect(twins.Jimmy.birthday).toBe(twins.John.birthday);
 ```
-### Constant fields
+
+### Fixed values
+
 ```ts
 const Request = new Struct('Request')
   .UInt32BE('header', 0xDEADBEEF)
@@ -209,7 +228,9 @@ expect(() => {
 // ... but
 req.header = 0xDEADBEEF;
 ```
+
 ### Enumerated fields (Typescript)
+
 ```ts
 import Struct, { typed } from 'typed-struct';
 
@@ -241,7 +262,9 @@ type OperationResult = {
 const res = new OperationResult();
 res.error = ErrorType.Success;
 ```
+
 ### Variable length structures
+
 ```ts
 const Package = new Struct('Package')
   .UInt16LE('length')
@@ -264,6 +287,8 @@ function createPackage(data: Buffer): Package {
 
 // Often a checksum is used to verify data,
 // which is stored in the last bytes of the buffer.
+import { crc16 } from 'crc';
+
 const Exact = new Struct('Exact')
   .UInt16LE('length')
   .Buffer('data')
@@ -272,15 +297,94 @@ const Exact = new Struct('Exact')
   .compile();
 expect(Exact.baseSize).toBe(4);
 
+// Create a function for calculating checksum based on an algorithm
+// typeof crcExact is (instance: Exact, needUpdate = false) => number
+const crcExact = Exact.crc(crc16);
+
 function createExact(data: Buffer): Exact {
   const item = new Exact(Exact.baseSize + data.length);
   data.copy(item.data);
   item.length = data.length;
-  const raw = Exact.raw(item);
-  item.crc = crc16(raw.slice(0, raw.length - 2));
+  item.crc = crcExact(item);
+  // or the same thing - calculate and update the field
+  crcExact(item, true);
   return item;
 }
 ```
+
+### Strings
+
+```ts
+const Person = new Struct('Person')
+  .String('name', 30)
+  .String('surname', 40)
+  .compile();
+
+expect(Person.baseSize).toBe(70);
+
+const walterGreen = new Person();
+walterGreen.name = 'Walter';
+walterGreen.surname = 'Green';
+```
+
+You can specify the encoding, the default is UTF8.
+You can use the encodings supported by [`Buffer`](https://nodejs.org/dist/latest-v16.x/docs/api/buffer.html#buffer_buffers_and_character_encodings)
+or install [iconv-lite](https://github.com/ashtuchkin/iconv-lite) package
+to add support for all encodings defined in this package.
+
+```ts
+const Foo = new Struct('Foo')
+  // Specify the desired encoding and size in bytes like this
+  .String('bar', 'win1251', 10)
+  // or so
+  .String('baz', 10, 'ucs2')
+  // or even so
+  .String('quux', { length: 10, encoding: 'koi8-r', literal: 'Андрей' })
+  .compile();
+```
+
+If you do not specify the length, then the `string field` will take up all the remaining space.
+
+### String Arrays
+```ts
+const Page = new Struct('Page')
+  .StringArray('body', {
+    length: 80,        // string length in bytes (required)
+    lines: 25,         // number of lines (required)
+    encoding: 'ascii'
+  })
+  .compile();
+
+const page = new Page();
+expect(Page.baseSize).toBe(80 * 25);
+expect(Array.isArray(page.body)).toBe(true);
+const body = page.body;
+body[0] = 'Lorem ipsum';
+expect(page.body[0]).toBe(body[0]);
+const raw = Page.raw(page);
+raw[Page.getOffsetOf('body')] = 'l'.charCodeAt(0);
+expect(body[0]).toBe('lorem ipsum');
+console.log(page);
+```
+
+output
+
+```
+Page {
+  body: [
+    'lorem ipsum', '', '',
+    '',            '', '',
+    '',            '', '',
+    '',            '', '',
+    '',            '', '',
+    '',            '', '',
+    '',            '', '',
+    '',            '', '',
+    ''
+  ]
+}
+```
+
 ### Bit fields
 ```ts
 // |------> bit order from the most significant bits to the least significant
@@ -349,8 +453,8 @@ If you only need a parser, you can avoid overheads like getters and setters
 and hidden buffers by using the method `toJSON`. The result contains only data,
 as opposed to methods or internal state. Its `prototype` is `Object.prototype` 
 and all numeric iterable types (buffer, typed arrays) are replaced with `number[]`,
-all custom types other than `number`, `boolean` and numeric iterables are replaced
-with the result of executing `toJSON` or `toString` methods.
+all custom types other than `number`, `boolean`, `string`, `string[]` and numeric
+iterables are replaced with the result of executing `toJSON` or `toString` methods.
 
 ```ts
 console.log(model.toJSON());
