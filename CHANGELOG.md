@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/sarakusha/typed-struct/compare/v1.2.0...v1.3.0) (2021-06-03)
+
+
+### Features
+
+* added helper function for calculating and updating checksum, rename `rows` to `lines` ([dd6a897](https://github.com/sarakusha/typed-struct/commit/dd6a8978ada4916900ce0cf7fffcda6e1ca3134c))
+* added string literals ([b5242c6](https://github.com/sarakusha/typed-struct/commit/b5242c6238c31e4b6195b3aed42b16ca14a42741))
+* added support for strings and string arrays ([b740377](https://github.com/sarakusha/typed-struct/commit/b7403774e632828f802b529320618e177f7a2030)), closes [#1](https://github.com/sarakusha/typed-struct/issues/1)
+
+
+### Bug Fixes
+
+* prevented extensibility and modification of StructArray ([e594211](https://github.com/sarakusha/typed-struct/commit/e594211b8f1d1735228b36fb45d154589a3903e6))
+* remove `toString` ([fb8baa2](https://github.com/sarakusha/typed-struct/commit/fb8baa220b969ded0010d0718971fdfdaf0ec310))
+
 ## [1.2.0](https://github.com/sarakusha/typed-struct/compare/v1.1.1...v1.2.0) (2021-05-28)
 
 
