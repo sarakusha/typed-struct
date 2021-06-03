@@ -473,6 +473,7 @@ Package.ts
 
 ```ts
 import Struct, { typed, ExtractType } from 'typed-struct';
+import { crc16 } from 'crc';
 
 export enum Command {
   Read,
@@ -500,6 +501,8 @@ export const Package = new Struct('Package')
 // it's not obligatory
 export type Package = ExtractType<typeof Package>;
 
+export const crc = Package.crc(crc16);
+
 /*
 type Package = {
   header: 0x1234;
@@ -522,9 +525,7 @@ import {
   TransformCallback
 } from 'stream';
 
-import { crc16 } from 'crc';
-
-import { Package, PREAMBLE } from './Package';
+import { Package, PREAMBLE, crc } from './Package';
 
 const preambleBuf = Buffer.alloc(2);
 preambleBuf.writeInt16BE(PREAMBLE);
@@ -559,35 +560,36 @@ export default class Decoder extends Transform {
   }
 
   private recognize(data: Buffer): Buffer {
-    const start = data.indexOf(preambleBuf);
-    if (start === -1) return empty;
-    const frame = data.slice(start);
-    if (frame.length < lengthOffset + 2) return frame;
-    const length = frame.readUInt16LE(lengthOffset);
-    
-    // calculate the total size of structure
-    const total = length + Package.baseSize;
-    if (frame.length < total) return frame;
-    
-    // deserialize Package from the buffer
-    const pkg = new Package(frame.slice(0, total));
-    
-    // getting a raw buffer for crc computation
-    if (crc16(Package.raw(pkg).slice(0, total - 2)) === pkg.crc) {
-      
-      // push decoded package
-      this.push(pkg);
+    for (let offset = 0;;) {
+      const start = data.indexOf(preambleBuf, offset);
+      if (start === -1) return empty;
+      const frame = data.slice(start);
+      if (frame.length < lengthOffset + 2) return frame;
+      const length = frame.readUInt16LE(lengthOffset);
+
+      // calculate the total size of structure
+      const total = length + Package.baseSize;
+      if (frame.length < total) return frame;
+
+      // deserialize Package from the buffer
+      const pkg = new Package(frame.slice(0, total));
+
+      // crc check
+      if (crc(pkg) === pkg.crc) {
+
+        // push decoded package
+        this.push(pkg);
+      }
+      offset = start + total;
     }
-    return frame.slice(total);
   }
 }
 ```
 Encoder.ts
 ```ts
 import { Transform, TransformCallback, TransformOptions } from 'stream';
-import { crc16 } from 'crc';
 
-import { Package } from './Package';
+import { Package, crc } from './Package';
 
 export default class Encoder extends Transform {
   constructor(options?: TransformOptions) {
@@ -611,7 +613,7 @@ export default class Encoder extends Transform {
         pkg.length = pkg.data.length;
 
         // update crc
-        pkg.crc = crc16(raw.slice(0, raw.length - 2));
+        crc(pkg, true);
         
         // serialize
         this.push(raw);

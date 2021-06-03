@@ -779,7 +779,7 @@ export type StringOpts<R extends string> = {
 
 /**
  * String array options
- * * **rows** - the number of rows in the string array
+ * * **lines** - the number of lines in the string array
  */
 export type StringArrayOpts = Id<
   Omit<StringOpts<string>, 'literal'> & {
@@ -1123,7 +1123,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   ): ExtendStruct<T, ClassName, N, S> =>
     this.createProp<N, PropType.Struct, S, ExtendStruct<T, ClassName, N, S>>(name, {
       type: PropType.Struct,
-      struct: struct,
+      struct,
     });
 
   /**
