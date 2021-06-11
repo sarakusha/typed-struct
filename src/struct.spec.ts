@@ -343,6 +343,8 @@ describe('Struct', () => {
   });
   describe('CRC', () => {
     const len = 8;
+    const sum = (buf: Buffer, previous = 0): number =>
+      buf.reduce((crc, value) => (value + crc) & 0xff, previous);
     test('throws Invalid tail buffer length', () => {
       expect(() => {
         new Struct('CRC').Buffer('data', -3).CRC8('crc').compile();
@@ -403,29 +405,36 @@ describe('Struct', () => {
     test('calculate and update CRC', () => {
       const crc = byteRnd();
       const calc = jest.fn<number, [Buffer, number | undefined]>(() => crc);
-      const Foo = new Struct('Foo').Int32LE('bar').Buffer('data').CRC8('crc').compile();
+      const Foo = new Struct('Foo').Int32LE('bar').Buffer('data').CRC8('crc', calc, 10).compile();
       const raw = randomize(Buffer.alloc(21));
       const foo = new Foo(raw);
       const old = foo.crc;
-      const crcCalc = Foo.crc(calc, 10);
-      expect(crcCalc(foo)).toBe(crc);
+      expect(Foo.crc(foo)).toBe(crc);
       expect(foo.crc).toBe(old);
-      expect(crcCalc(foo, true)).toBe(crc);
+      expect(Foo.crc(foo, true)).toBe(crc);
       expect(calc.mock.calls.length).toBe(2);
       expect(calc.mock.calls[0][0]).toEqual(raw.slice(0, -1));
       expect(calc.mock.calls[0][1]).toBe(10);
       expect(foo.crc).toBe(crc);
     });
-    test('only calculate CRC when CRC field is missing', () => {
-      const crc = byteRnd();
-      const calc = jest.fn<number, [Buffer, number | undefined]>(() => crc);
+    test('Checksum calculation starting from position 4', () => {
+      const calc = jest.fn<number, [Buffer, number | undefined]>(sum);
+      const Foo = new Struct('Foo')
+        .Int32LE('bar', 0x1234)
+        .Buffer('data')
+        .CRC8('crc', { calc, start: 4 })
+        .compile();
+      const foo = new Foo(100);
+      const data = randomize(foo.data);
+      expect(sum(data)).toBe(Foo.crc(foo));
+      expect(calc.mock.calls[0][0]).toEqual(data);
+      expect(calc.mock.calls[0][1]).toBe(0);
+    });
+    test('There is no CRC field', () => {
       const Foo = new Struct('Foo').Int32LE('bar').Buffer('data').compile();
-      const raw = randomize(Buffer.alloc(20));
-      const foo = new Foo(raw);
-      expect(Foo.crc(calc, 12)(foo, true)).toBe(crc);
-      expect(calc.mock.calls.length).toBe(1);
-      expect(calc.mock.calls[0][0]).toEqual(raw);
-      expect(calc.mock.calls[0][1]).toBe(12);
+      expect(Foo).not.toHaveProperty('crc');
+      const Baz = new Struct('Baz').Buffer('data', 10).CRC8('crc').compile();
+      expect(Baz).not.toHaveProperty('crc');
     });
   });
   test('aliases', () => {

@@ -30,6 +30,21 @@ type FilterNames<Base, Condition> = FilterFlags<Base, Condition>[keyof Base];
 
 type OmitType<Base, Condition> = Omit<Base, FilterNames<Base, Condition>>;
 
+type ConditionalExtend<Base, Extender, Condition extends boolean> = Condition extends true
+  ? Base & Extender
+  : Base;
+
+type StructGuard<ClassName extends string> = {
+  /**
+   * fake field `__struct` is only used as a type guard and should not be used
+   */
+  readonly __struct: ClassName;
+};
+
+interface Constructable {
+  new (...args: any[]): any;
+}
+
 /** Cosmetic use only, makes the tooltips expand the type, can be removed */
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Id<T> = {} & { [P in keyof T]: T[P] };
@@ -204,6 +219,12 @@ type PropDesc<T extends PropType | string = PropType | string, R = NativeType<T>
   encoding?: string;
   /** Length of a string in an array of strings */
   size?: number;
+  /** Checksum function */
+  calc?: CRCCalc;
+  /** Initial value. Default 0 */
+  initial?: number;
+  /** Zero-based index at which to start calculation. Default 0 */
+  start?: number;
 };
 
 type PropertyMap<T> = Map<keyof Required<T>, PropDesc>;
@@ -242,7 +263,10 @@ const setBits = (
 const getUnsigned = (value: number, size: number): number =>
   (size < 32 ? value & ((1 << size) - 1) : value) >>> 0;
 
-const getSize = (type?: PropType | string): 1 | 2 | 4 | 8 | undefined => {
+function getSize(type: IntegerTypes): 1 | 2 | 4;
+function getSize(type: string): undefined;
+function getSize(type: PropType | string): 1 | 2 | 4 | 8 | undefined;
+function getSize(type: PropType | string): 1 | 2 | 4 | 8 | undefined {
   switch (type) {
     case PropType.Int8:
     case PropType.UInt8:
@@ -263,7 +287,7 @@ const getSize = (type?: PropType | string): 1 | 2 | 4 | 8 | undefined => {
     default:
       return undefined;
   }
-};
+}
 
 const decodeMaskedValue = (src: number, size: BitMaskSize, mask?: BitMask): number =>
   mask ? getBits(src, mask, size) : getUnsigned(src, size);
@@ -588,10 +612,13 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
   return desc;
 };
 
-type ExtendStruct<T, ClassName extends string, N extends string, R> = Struct<
-  T & { [P in N]: R },
-  ClassName
->;
+type ExtendStruct<
+  T,
+  ClassName extends string,
+  N extends string,
+  R,
+  NeedCRC extends boolean = false
+> = Struct<T & { [P in N]: R }, ClassName, NeedCRC>;
 
 type TypedArrayType<T extends NumericTypes> = T extends PropType.Int8
   ? Int8Array
@@ -614,7 +641,10 @@ type TypedArrayType<T extends NumericTypes> = T extends PropType.Int8
 const isCrc = (info: {
   len?: number;
   type?: PropType | string;
-}): info is { len: number; type?: PropType } =>
+}): info is {
+  len: number;
+  type: UnsignedIntegerTypes;
+} =>
   info.len === -1 &&
   typeof info.type !== 'string' &&
   info.type !== PropType.Buffer &&
@@ -623,17 +653,41 @@ const isCrc = (info: {
 type StructInstance<T, ClassName extends string> = Id<
   T & {
     toJSON(): POJO<T>;
-    /**
-     * fake field `__struct` is only used as a type guard and should not be used
-     */
-    readonly __struct: ClassName;
-  }
+  } & StructGuard<ClassName>
 >;
 
-type CalcCRC = (buf: Buffer, previous?: number) => number;
+/**
+ * Checksum function type
+ */
+export type CRCCalc = (buf: Buffer, previous?: number) => number;
 
 /**
- * Ready-made constructor for custom structure
+ * CRC field options
+ */
+export type CRCOpts = {
+  /** Checksum function */
+  calc: CRCCalc;
+  /** Initial value. Default 0 */
+  initial?: number;
+  /** Zero-based index at which to start calculation. Default 0 */
+  start?: number;
+};
+
+export interface CRC<T extends Constructable> {
+  /**
+   * calculate a checksum and possibly update the corresponding field if any
+   */
+  crc(instance: InstanceType<T>, needUpdate?: boolean): number;
+}
+
+export type WithCRC<T extends Constructable, NeedCRC extends boolean> = ConditionalExtend<
+  T,
+  CRC<T>,
+  NeedCRC
+>;
+
+/**
+ * A ready-made constructor with static methods for a custom structure
  */
 export interface StructConstructor<T, ClassName extends string> {
   /** Prototype */
@@ -693,17 +747,8 @@ export interface StructConstructor<T, ClassName extends string> {
    */
   raw(instance: StructInstance<T, ClassName>): Buffer;
   raw(instance: T): Buffer | undefined;
-
-  /**
-   * Create a function to calculate the checksum and update the corresponding field, if any
-   * @param calc
-   * @param previous
-   */
-  crc(
-    calc: CalcCRC,
-    previous?: number
-  ): (instance: StructInstance<T, ClassName>, needUpdate?: boolean) => number;
 }
+
 const isSimpleOrString = (value: unknown): value is number | boolean | string | null | undefined =>
   value === undefined || value === null || ['number', 'boolean', 'string'].includes(typeof value);
 
@@ -796,8 +841,12 @@ export type StringArrayOpts = Id<
  * export default class Struct
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export default class Struct<T = {}, ClassName extends string = 'Structure'> {
+export default class Struct<
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  T = {},
+  ClassName extends string = 'Structure',
+  NeedCRC extends boolean = false
+> {
   /** @hidden */
   private props: Map<keyof T, PropDesc> = new Map(); // Record<keyof T, PropDesc> = {} as never;
 
@@ -832,7 +881,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    * Returns the underlying buffer of the structure
    * @param structure
    */
-  static raw = <S extends { readonly __struct: string }>(structure: S): Buffer =>
+  static raw = <S extends StructGuard<string>>(structure: S): Buffer =>
     (structure as unknown as { $raw: Buffer }).$raw;
 
   /**
@@ -1114,7 +1163,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a nested structure
-   * @param name - The filed name or aliases or aliases
+   * @param name - The filed name or aliases
    * @param struct - structure factory
    */
   Struct = <N extends string, S, StructClass extends string>(
@@ -1328,7 +1377,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a `Float64Array` typed array represents an array of 64-bit floating numbers.
-   * @param name - The filed name or aliases or aliases
+   * @param name - The filed name or aliases
    * @param length - the number of elements
    */
   Float64Array = <N extends string>(
@@ -1339,7 +1388,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines an array of elements of a typed struct
-   * @param name - The filed name or aliases or aliases
+   * @param name - The filed name or aliases
    * @param struct - The custom typed struct
    * @param length - the number of elements
    */
@@ -1357,7 +1406,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
   /**
    * defines a string array field
-   * @param name - The filed name or aliases or aliases
+   * @param name - The filed name or aliases
    * @param opts - The string array options
    */
   StringArray<N extends string>(
@@ -1398,59 +1447,182 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   /**
    * The last byte in the structure, usually used as a checksum. Typically used
    * for variable length structures.
-   * @param name - The field name
+   * @param name - The filed name or aliases
    */
-  CRC8 = <N extends string>(name: N): ExtendStruct<T, ClassName, N, number> =>
-    this.createProp(name, {
-      len: -1,
-      type: PropType.UInt8,
-    });
+  CRC8<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
+
+  /**
+   * The last byte in the structure, usually used as a checksum. Typically used
+   * for variable length structures.
+   * @param name - The filed name or aliases
+   * @param calc - checksum function
+   * @param initial - initial value, default 0.
+   */
+  CRC8<N extends string>(
+    name: N | N[],
+    calc: CRCCalc,
+    initial?: number
+  ): ExtendStruct<T, ClassName, N, number, true>;
+
+  /**
+   * The last byte in the structure, usually used as a checksum. Typically used
+   * for variable length structures.
+   * @param name - The filed name or aliases
+   * @param opts - checksum function parameters
+   */
+  CRC8<N extends string>(name: N, opts: CRCOpts): ExtendStruct<T, ClassName, N, number, true>;
+
+  CRC8<N extends string>(
+    name: N | N[],
+    arg1?: CRCCalc | CRCOpts,
+    arg2?: number
+  ): ExtendStruct<T, ClassName, N, number, boolean> {
+    return this.createCRCProp(name, PropType.UInt8, false, arg1, arg2);
+  }
 
   /**
    * The last two bytes in the structure storing unsigned, little-endian
    * 16-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The field name
+   * @param name - The filed name or aliases
    */
-  CRC16LE = <N extends string>(name: N): ExtendStruct<T, ClassName, N, number> =>
-    this.createProp(name, {
-      len: -1,
-      type: PropType.UInt16,
-    });
+  CRC16LE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
+
+  /**
+   * The last two bytes in the structure storing unsigned, little-endian
+   * 16-bit integer usually used as a checksum. Typically used for variable length structures.
+   * @param name - The filed name or aliases
+   * @param calc - checksum function
+   * @param initial - initial value, default 0.
+   */
+  CRC16LE<N extends string>(
+    name: N | N[],
+    calc: CRCCalc,
+    initial?: number
+  ): ExtendStruct<T, ClassName, N, number, true>;
+
+  /**
+   * The last two bytes in the structure storing unsigned, little-endian
+   * 16-bit integer usually used as a checksum. Typically used for variable length structures.
+   * @param name - The filed name or aliases
+   * @param opts - checksum function parameters
+   */
+  CRC16LE<N extends string>(name: N, opts: CRCOpts): ExtendStruct<T, ClassName, N, number, true>;
+
+  CRC16LE<N extends string>(
+    name: N | N[],
+    arg1?: CRCCalc | CRCOpts,
+    arg2?: number
+  ): ExtendStruct<T, ClassName, N, number, boolean> {
+    return this.createCRCProp(name, PropType.UInt16, false, arg1, arg2);
+  }
 
   /**
    * The last two bytes in the structure storing unsigned, big-endian
    * 16-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The field name
+   * @param name - The filed name or aliases
    */
-  CRC16BE = <N extends string>(name: N): ExtendStruct<T, ClassName, N, number> =>
-    this.createProp(name, {
-      len: -1,
-      type: PropType.UInt16,
-      be: true,
-    });
+  CRC16BE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
+
+  /**
+   * The last two bytes in the structure storing unsigned, big-endian
+   * 16-bit integer usually used as a checksum. Typically used for variable length structures.
+   * @param name - The filed name or aliases
+   * @param calc - checksum function
+   * @param initial - initial value, default 0.
+   */
+  CRC16BE<N extends string>(
+    name: N | N[],
+    calc: CRCCalc,
+    initial?: number
+  ): ExtendStruct<T, ClassName, N, number, true>;
+
+  /**
+   * The last two bytes in the structure storing unsigned, big-endian
+   * 16-bit integer usually used as a checksum. Typically used for variable length structures.
+   * @param name - The filed name or aliases
+   * @param opts - checksum function parameters
+   */
+  CRC16BE<N extends string>(name: N, opts: CRCOpts): ExtendStruct<T, ClassName, N, number, true>;
+
+  CRC16BE<N extends string>(
+    name: N | N[],
+    arg1?: CRCCalc | CRCOpts,
+    arg2?: number
+  ): ExtendStruct<T, ClassName, N, number, boolean> {
+    return this.createCRCProp(name, PropType.UInt16, true, arg1, arg2);
+  }
 
   /**
    * The last four bytes in the structure storing unsigned, little-endian
    * 32-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The field name
+   * @param name - The filed name or aliases
    */
-  CRC32LE = <N extends string>(name: N): ExtendStruct<T, ClassName, N, number> =>
-    this.createProp(name, {
-      len: -1,
-      type: PropType.UInt32,
-    });
+  CRC32LE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
+
+  /**
+   * The last four bytes in the structure storing unsigned, little-endian
+   * 32-bit integer usually used as a checksum. Typically used for variable length structures.
+   * @param name - The filed name or aliases
+   * @param calc - checksum function
+   * @param initial - initial value, default 0.
+   */
+  CRC32LE<N extends string>(
+    name: N | N[],
+    calc: CRCCalc,
+    initial?: number
+  ): ExtendStruct<T, ClassName, N, number, true>;
+
+  /**
+   * The last four bytes in the structure storing unsigned, little-endian
+   * 32-bit integer usually used as a checksum. Typically used for variable length structures.
+   * @param name - The filed name or aliases
+   * @param opts - checksum function parameters
+   */
+  CRC32LE<N extends string>(name: N, opts: CRCOpts): ExtendStruct<T, ClassName, N, number, true>;
+
+  CRC32LE<N extends string>(
+    name: N | N[],
+    arg1?: CRCCalc | CRCOpts,
+    arg2?: number
+  ): ExtendStruct<T, ClassName, N, number, boolean> {
+    return this.createCRCProp(name, PropType.UInt32, false, arg1, arg2);
+  }
 
   /**
    * The last four bytes in the structure storing unsigned, big-endian
    * 32-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The field name
+   * @param name - The filed name or aliases
    */
-  CRC32BE = <N extends string>(name: N): ExtendStruct<T, ClassName, N, number> =>
-    this.createProp(name, {
-      len: -1,
-      type: PropType.UInt32,
-      be: true,
-    });
+  CRC32BE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
+
+  /**
+   * The last four bytes in the structure storing unsigned, big-endian
+   * 32-bit integer usually used as a checksum. Typically used for variable length structures.
+   * @param name - The filed name or aliases
+   * @param calc - checksum function
+   * @param initial - initial value, default 0.
+   */
+  CRC32BE<N extends string>(
+    name: N | N[],
+    calc: CRCCalc,
+    initial?: number
+  ): ExtendStruct<T, ClassName, N, number, true>;
+
+  /**
+   * The last four bytes in the structure storing unsigned, big-endian
+   * 32-bit integer usually used as a checksum. Typically used for variable length structures.
+   * @param name - The filed name or aliases
+   * @param opts - checksum function parameters
+   */
+  CRC32BE<N extends string>(name: N, opts: CRCOpts): ExtendStruct<T, ClassName, N, number, true>;
+
+  CRC32BE<N extends string>(
+    name: N | N[],
+    arg1?: CRCCalc | CRCOpts,
+    arg2?: number
+  ): ExtendStruct<T, ClassName, N, number, boolean> {
+    return this.createCRCProp(name, PropType.UInt32, true, arg1, arg2);
+  }
 
   /**
    * Skip the specified number of bytes. If the value is negative, the pointer in the buffer will
@@ -1459,7 +1631,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    * @see [[default.back]]
    * @param bytes
    */
-  seek(bytes: number): Struct<T, ClassName> {
+  seek(bytes: number): Struct<T, ClassName, NeedCRC> {
     if (bytes === 0) this.position = this.size;
     else this.position += bytes;
     return this;
@@ -1471,7 +1643,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    * @param steps - the number of steps back, if the value is 0 then the pointer will point to the
    *   beginning of the buffer
    */
-  back(steps = 1): Struct<T, ClassName> {
+  back(steps = 1): Struct<T, ClassName, NeedCRC> {
     if (steps < 0 || steps > this.props.size)
       throw new TypeError(`Invalid argument: back. Expected 0..${this.props.size}`);
     if (steps === 0) this.position = 0;
@@ -1485,7 +1657,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   /**
    * Align the current pointer to a two-byte boundary
    */
-  align2(): Struct<T, ClassName> {
+  align2(): Struct<T, ClassName, NeedCRC> {
     this.position += this.position % 2;
     return this;
   }
@@ -1493,7 +1665,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
   /**
    * Align the current pointer to a four-byte boundary
    */
-  align4(): Struct<T, ClassName> {
+  align4(): Struct<T, ClassName, NeedCRC> {
     const remainder = this.position % 4;
     if (remainder) this.position += 4 - remainder;
     return this;
@@ -1505,7 +1677,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
    */
   compile(
     className: string | undefined = this.defaultClassName
-  ): StructConstructor<Id<T>, ClassName> {
+  ): WithCRC<StructConstructor<Id<T>, ClassName>, NeedCRC> {
     const { size: baseSize, props, getOffsetOf, getOffsets, swap } = this;
     type Instance = StructInstance<T, ClassName>;
 
@@ -1544,28 +1716,33 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
 
       static raw = (instance: Instance): Buffer => Struct.raw(instance);
 
-      static crc = (calc: CalcCRC, previous?: number) => {
-        const [name, info] = Array.from(props.entries()).pop() ?? [];
-        const lastSize = info && isCrc(info) && getSize(info.type);
-        const end = lastSize ? -lastSize : undefined;
-        return (instance: Instance, needUpdate = false): number => {
-          const sum = calc(Structure.raw(instance).slice(0, end), previous);
-          if (needUpdate && end && name) {
-            // eslint-disable-next-line no-param-reassign
-            instance[name] = sum as any;
-          }
-          return sum;
-        };
-      };
-
       toJSON(): POJO<T> {
         return deepClone(this as unknown as T);
       }
     }
 
-    return (className ? nameIt(className, Structure) : Structure) as StructConstructor<
-      T,
-      ClassName
+    const [name, info] = Array.from(props.entries()).pop() ?? [];
+    if (info && isCrc(info)) {
+      const { calc, initial, start } = info;
+      if (calc) {
+        (Structure as WithCRC<StructConstructor<T, ClassName>, true>).crc = (
+          instance: Instance,
+          needUpdate = false
+        ): number => {
+          const size = getSize(info.type);
+          const sum = calc(Structure.raw(instance).slice(start, -size), initial);
+          if (needUpdate && name) {
+            // eslint-disable-next-line no-param-reassign
+            instance[name] = sum as any;
+          }
+          return sum;
+        };
+      }
+    }
+
+    return (className ? nameIt(className, Structure) : Structure) as WithCRC<
+      StructConstructor<T, ClassName>,
+      NeedCRC
     >;
   }
 
@@ -1598,7 +1775,7 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
     N extends string,
     Y extends PropType | string,
     R = NativeType<Y>,
-    S extends ExtendStruct<T, ClassName, N, R> = ExtendStruct<T, ClassName, N, R>
+    S extends ExtendStruct<T, ClassName, N, R, boolean> = ExtendStruct<T, ClassName, N, R>
   >(nameOrAliases: N | N[], info: Omit<PropDesc<Y, R>, 'offset'>): S {
     const self = this as unknown as S;
     const names: N[] = Array.isArray(nameOrAliases) ? nameOrAliases : [nameOrAliases];
@@ -1662,7 +1839,36 @@ export default class Struct<T = {}, ClassName extends string = 'Structure'> {
         be: true,
       });
     });
-    this.position += getSize(type) ?? 0;
+    this.position += getSize(type);
     return self;
+  }
+
+  /** hidden */
+  private createCRCProp<N extends string>(
+    name: N | N[],
+    type: UnsignedIntegerTypes,
+    be: boolean,
+    arg1?: CRCCalc | CRCOpts,
+    arg2?: number
+  ): ExtendStruct<T, ClassName, N, number, true> {
+    let calc;
+    let initial;
+    let start;
+    if (typeof arg1 === 'function') {
+      calc = arg1;
+      initial = arg2 ?? 0;
+    } else if (arg1) {
+      calc = arg1.calc;
+      initial = arg1.initial ?? 0;
+      start = arg1.start ?? 0;
+    }
+    return this.createProp(name, {
+      type,
+      len: -1,
+      be,
+      calc,
+      initial,
+      start,
+    });
   }
 }
