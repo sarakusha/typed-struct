@@ -514,14 +514,11 @@ export const Package = new Struct('Package')
   .UInt8('command', typed<Command>())
   .UInt16LE('length')
   .Buffer('data')
-  .CRC16LE('crc')
+  .CRC16LE('crc', crc16)
   .compile();
 
 // it's not obligatory
 export type Package = ExtractType<typeof Package>;
-
-export const crc = Package.crc(crc16);
-
 /*
 type Package = {
   header: 0x1234;
@@ -544,7 +541,7 @@ import {
   TransformCallback
 } from 'stream';
 
-import { Package, PREAMBLE, crc } from './Package';
+import { Package, PREAMBLE } from './Package';
 
 const preambleBuf = Buffer.alloc(2);
 preambleBuf.writeInt16BE(PREAMBLE);
@@ -595,7 +592,7 @@ export default class Decoder extends Transform {
         const pkg = new Package(frame.slice(0, total));
 
         // crc check
-        if (crc(pkg) === pkg.crc) {
+        if (Package.crc(pkg) === pkg.crc) {
 
           // push decoded package
           this.push(pkg);
@@ -614,7 +611,7 @@ Encoder.ts
 ```ts
 import { Transform, TransformCallback, TransformOptions } from 'stream';
 
-import { Package, crc } from './Package';
+import { Package } from './Package';
 
 export default class Encoder extends Transform {
   constructor(options?: TransformOptions) {
@@ -638,7 +635,7 @@ export default class Encoder extends Transform {
         pkg.length = pkg.data.length;
 
         // update crc
-        crc(pkg, true);
+        Package.crc(pkg, true);
         
         // serialize
         this.push(raw);
