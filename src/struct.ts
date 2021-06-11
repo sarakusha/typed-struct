@@ -1843,7 +1843,7 @@ export default class Struct<
     return self;
   }
 
-  /** hidden */
+  /** @hidden */
   private createCRCProp<N extends string>(
     name: N | N[],
     type: UnsignedIntegerTypes,
