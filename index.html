@@ -544,14 +544,11 @@
 <span style="color: #000000">  .</span><span style="color: #795E26">UInt8</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;command&#039;</span><span style="color: #000000">, </span><span style="color: #795E26">typed</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Command</span><span style="color: #000000">&gt;())</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">UInt16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;length&#039;</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">Buffer</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;data&#039;</span><span style="color: #000000">)</span>
-<span style="color: #000000">  .</span><span style="color: #795E26">CRC16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;crc&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">CRC16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;crc&#039;</span><span style="color: #000000">, </span><span style="color: #001080">crc16</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">compile</span><span style="color: #000000">();</span>
 
 <span style="color: #008000">// it&#039;s not obligatory</span>
 <span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Package</span><span style="color: #000000"> = </span><span style="color: #267F99">ExtractType</span><span style="color: #000000">&lt;</span><span style="color: #0000FF">typeof</span><span style="color: #000000"> </span><span style="color: #001080">Package</span><span style="color: #000000">&gt;;</span>
-
-<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">crc</span><span style="color: #000000"> = </span><span style="color: #001080">Package</span><span style="color: #000000">.</span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">crc16</span><span style="color: #000000">);</span>
-
 <span style="color: #008000">/*</span>
 <span style="color: #008000">type Package = {</span>
 <span style="color: #008000">  header: 0x1234;</span>
@@ -571,7 +568,7 @@
 <span style="color: #000000">  </span><span style="color: #001080">TransformCallback</span>
 <span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;stream&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Package</span><span style="color: #000000">, </span><span style="color: #001080">PREAMBLE</span><span style="color: #000000">, </span><span style="color: #001080">crc</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./Package&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Package</span><span style="color: #000000">, </span><span style="color: #001080">PREAMBLE</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./Package&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">preambleBuf</span><span style="color: #000000"> = </span><span style="color: #001080">Buffer</span><span style="color: #000000">.</span><span style="color: #795E26">alloc</span><span style="color: #000000">(</span><span style="color: #098658">2</span><span style="color: #000000">);</span>
 <span style="color: #001080">preambleBuf</span><span style="color: #000000">.</span><span style="color: #795E26">writeInt16BE</span><span style="color: #000000">(</span><span style="color: #0070C1">PREAMBLE</span><span style="color: #000000">);</span>
@@ -622,7 +619,7 @@
 <span style="color: #000000">        </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pkg</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Package</span><span style="color: #000000">(</span><span style="color: #001080">frame</span><span style="color: #000000">.</span><span style="color: #795E26">slice</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #001080">total</span><span style="color: #000000">));</span>
 
 <span style="color: #000000">        </span><span style="color: #008000">// crc check</span>
-<span style="color: #000000">        </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">pkg</span><span style="color: #000000">) === </span><span style="color: #001080">pkg</span><span style="color: #000000">.</span><span style="color: #001080">crc</span><span style="color: #000000">) {</span>
+<span style="color: #000000">        </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">Package</span><span style="color: #000000">.</span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">pkg</span><span style="color: #000000">) === </span><span style="color: #001080">pkg</span><span style="color: #000000">.</span><span style="color: #001080">crc</span><span style="color: #000000">) {</span>
 
 <span style="color: #000000">          </span><span style="color: #008000">// push decoded package</span>
 <span style="color: #000000">          </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">pkg</span><span style="color: #000000">);</span>
@@ -640,7 +637,7 @@
 				<p>Encoder.ts</p>
 				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Transform</span><span style="color: #000000">, </span><span style="color: #001080">TransformCallback</span><span style="color: #000000">, </span><span style="color: #001080">TransformOptions</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;stream&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Package</span><span style="color: #000000">, </span><span style="color: #001080">crc</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./Package&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Package</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./Package&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #AF00DB">default</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Encoder</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">Transform</span><span style="color: #000000"> {</span>
 <span style="color: #000000">  </span><span style="color: #0000FF">constructor</span><span style="color: #000000">(</span><span style="color: #001080">options</span><span style="color: #000000">?: </span><span style="color: #267F99">TransformOptions</span><span style="color: #000000">) {</span>
@@ -664,7 +661,7 @@
 <span style="color: #000000">        </span><span style="color: #001080">pkg</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> = </span><span style="color: #001080">pkg</span><span style="color: #000000">.</span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000">;</span>
 
 <span style="color: #000000">        </span><span style="color: #008000">// update crc</span>
-<span style="color: #000000">        </span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">pkg</span><span style="color: #000000">, </span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+<span style="color: #000000">        </span><span style="color: #001080">Package</span><span style="color: #000000">.</span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">pkg</span><span style="color: #000000">, </span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
 <span style="color: #000000">        </span>
 <span style="color: #000000">        </span><span style="color: #008000">// serialize</span>
 <span style="color: #000000">        </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">raw</span><span style="color: #000000">);</span>
