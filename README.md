@@ -4,8 +4,13 @@ A JavaScript utility library (written in TypeScript) for creating objects and cl
 their properties in a buffer for serialization/deserialization
 similar to structures in C.
 
+[![NPM version](https://img.shields.io/npm/v/typed-struct.svg)](https://www.npmjs.com/package/typed-struct)
+[![NPM version](https://img.shields.io/npm/dm/typed-struct.svg)](https://www.npmjs.com/package/typed-struct)
 [![codecov](https://codecov.io/gh/sarakusha/typed-struct/branch/main/graph/badge.svg?token=6F26I7FO73)](https://codecov.io/gh/sarakusha/typed-struct)
 [![CircleCI](https://circleci.com/gh/sarakusha/typed-struct.svg?style=shield)](https://circleci.com/gh/sarakusha/typed-struct)
+
+[![NPM](https://nodei.co/npm/typed-struct.png?downloads=true)](https://nodei.co/npm/typed-struct/)
+
 ## Getting started
 
 Using npm:
@@ -151,7 +156,7 @@ expect(() => {
 }).toThrow(new TypeError('Cannot assign to read only property bat'))
 ```
 
-### Union
+### Unions
 
 ```ts
 const Word = new Struct('Word')
@@ -186,7 +191,7 @@ const BirthCertificate = new Struct('BirthCertificate')
 expect(BirthCertificate.baseSize).toBe(8);
 
 const cert = new BirthCertificate();
-cert.birthday = new Date(1973, 7, 15);
+cert.birthday = new Date(1973, 6, 15);
 ```
 
 ### Aliases
@@ -202,7 +207,7 @@ const Twins = new Struct('Twins')
 expect(Twins.baseSize).toBe(8);
 
 const twins = new Twins();
-twins.John.birthday = new Date(1973, 7, 15);
+twins.John.birthday = new Date(1973, 6, 15);
 expect(twins.Jimmy.birthday).toBe(twins.John.birthday);
 ```
 
@@ -284,11 +289,13 @@ function createPackage(data: Buffer): Package {
   pkg.length = data.length;
   return pkg;
 }
+```
+### CRC
 
-// Often a checksum is used to verify data,
-// which is stored in the last bytes of the buffer.
-import { crc16 } from 'crc';
+The checksum is often used to verify data integrity,
+it is usually stored in the last bytes of the buffer.
 
+```ts
 const Exact = new Struct('Exact')
   .UInt16LE('length')
   .Buffer('data')
@@ -296,18 +303,30 @@ const Exact = new Struct('Exact')
   .CRC16LE('crc')
   .compile();
 expect(Exact.baseSize).toBe(4);
+```
 
-// Create a function for calculating checksum based on an algorithm
-// typeof crcExact is (instance: Exact, needUpdate = false) => number
-const crcExact = Exact.crc(crc16);
+If you pass the checksum function as parameters, then your structure will have the static `crc` method that you can use to calculate and update this field.
+
+Let's slightly modify the previous example:
+
+```ts
+import { crc16 } from 'crc';
+
+const Exact = new Struct('Exact')
+  .UInt16LE('length')
+  .Buffer('data')
+  // checksum function and initial value
+  .CRC16LE('crc', crc16, 0xffff)
+  .compile();
 
 function createExact(data: Buffer): Exact {
   const item = new Exact(Exact.baseSize + data.length);
   data.copy(item.data);
   item.length = data.length;
-  item.crc = crcExact(item);
+  // New static method `Exact.crc`
+  item.crc = Exact.crc(item);
   // or the same thing - calculate and update the field
-  crcExact(item, true);
+  Exact.crc(item, true);
   return item;
 }
 ```
@@ -566,21 +585,27 @@ export default class Decoder extends Transform {
       const frame = data.slice(start);
       if (frame.length < lengthOffset + 2) return frame;
       const length = frame.readUInt16LE(lengthOffset);
+      if (length <= MAX_LENGTH) {
 
-      // calculate the total size of structure
-      const total = length + Package.baseSize;
-      if (frame.length < total) return frame;
+        // calculate the total size of structure
+        const total = length + Package.baseSize;
+        if (frame.length < total) return frame;
 
-      // deserialize Package from the buffer
-      const pkg = new Package(frame.slice(0, total));
+        // deserialize Package from the buffer
+        const pkg = new Package(frame.slice(0, total));
 
-      // crc check
-      if (crc(pkg) === pkg.crc) {
+        // crc check
+        if (crc(pkg) === pkg.crc) {
 
-        // push decoded package
-        this.push(pkg);
+          // push decoded package
+          this.push(pkg);
+          offset = start + total;
+        }
       }
-      offset = start + total;
+      
+      if (offset <= start) {
+        offset = start + 1;
+      }
     }
   }
 }
