@@ -50,7 +50,8 @@
     "doc:json": "typedoc src/ --exclude **/*.spec.ts --json build/docs/typedoc.json",
     "doc:publish": "gh-pages -m \"[ci skip] Updates\" -d build/docs",
     "release:version": "standard-version",
-    "release:publish": "git push --follow-tags origin main && yarn publish"
+    "release:publish": "git push --follow-tags origin main && npm publish",
+    "release:dry-run": "npm publish --registry=http://localhost:4873"
   },
   "engines": {
     "node": ">=12"
