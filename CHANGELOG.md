@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/sarakusha/typed-struct/compare/v1.3.0...v2.0.0) (2021-06-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **crc:** The static `crc` method has been changed. It can now be used to calculate the
+checksum if you have specified a checksum function for this field.
+
+### Features
+
+* **crc:** it is possible to pass the checksum function in the CRC field parameters ([8a8444c](https://github.com/sarakusha/typed-struct/commit/8a8444c6367b4495bf595c69fabb4f25c0dbe8e9))
+
 ## [1.3.0](https://github.com/sarakusha/typed-struct/compare/v1.2.0...v1.3.0) (2021-06-03)
 
 
