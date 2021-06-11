@@ -64,8 +64,11 @@
 				<p>A JavaScript utility library (written in TypeScript) for creating objects and classes that store
 					their properties in a buffer for serialization/deserialization
 				similar to structures in C.</p>
-				<p><a href="https://codecov.io/gh/sarakusha/typed-struct"><img src="https://codecov.io/gh/sarakusha/typed-struct/branch/main/graph/badge.svg?token=6F26I7FO73" alt="codecov"></a>
+				<p><a href="https://www.npmjs.com/package/typed-struct"><img src="https://img.shields.io/npm/v/typed-struct.svg" alt="NPM version"></a>
+					<a href="https://www.npmjs.com/package/typed-struct"><img src="https://img.shields.io/npm/dm/typed-struct.svg" alt="NPM version"></a>
+					<a href="https://codecov.io/gh/sarakusha/typed-struct"><img src="https://codecov.io/gh/sarakusha/typed-struct/branch/main/graph/badge.svg?token=6F26I7FO73" alt="codecov"></a>
 				<a href="https://circleci.com/gh/sarakusha/typed-struct"><img src="https://circleci.com/gh/sarakusha/typed-struct.svg?style=shield" alt="CircleCI"></a></p>
+				<p><a href="https://nodei.co/npm/typed-struct/"><img src="https://nodei.co/npm/typed-struct.png?downloads=true" alt="NPM"></a></p>
 				<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
 					<h2>Getting started</h2>
 				</a>
@@ -208,8 +211,8 @@
 <span style="color: #000000">  </span><span style="color: #001080">xyz</span><span style="color: #000000">.</span><span style="color: #001080">bat</span><span style="color: #000000"> = </span><span style="color: #001080">bat</span><span style="color: #000000">;</span>
 <span style="color: #000000">}).</span><span style="color: #795E26">toThrow</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">TypeError</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Cannot assign to read only property bat&#039;</span><span style="color: #000000">))</span>
 </code></pre>
-				<a href="#union" id="union" style="color: inherit; text-decoration: none;">
-					<h3>Union</h3>
+				<a href="#unions" id="unions" style="color: inherit; text-decoration: none;">
+					<h3>Unions</h3>
 				</a>
 				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Word</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Word&#039;</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">UInt16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;value&#039;</span><span style="color: #000000">)</span>
@@ -242,7 +245,7 @@
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">BirthCertificate</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #098658">8</span><span style="color: #000000">);</span>
 
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">cert</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">BirthCertificate</span><span style="color: #000000">();</span>
-<span style="color: #001080">cert</span><span style="color: #000000">.</span><span style="color: #001080">birthday</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">(</span><span style="color: #098658">1973</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">15</span><span style="color: #000000">);</span>
+<span style="color: #001080">cert</span><span style="color: #000000">.</span><span style="color: #001080">birthday</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">(</span><span style="color: #098658">1973</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">15</span><span style="color: #000000">);</span>
 </code></pre>
 				<a href="#aliases" id="aliases" style="color: inherit; text-decoration: none;">
 					<h3>Aliases</h3>
@@ -256,7 +259,7 @@
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">Twins</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #098658">8</span><span style="color: #000000">);</span>
 
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">twins</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Twins</span><span style="color: #000000">();</span>
-<span style="color: #001080">twins</span><span style="color: #000000">.</span><span style="color: #001080">John</span><span style="color: #000000">.</span><span style="color: #001080">birthday</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">(</span><span style="color: #098658">1973</span><span style="color: #000000">, </span><span style="color: #098658">7</span><span style="color: #000000">, </span><span style="color: #098658">15</span><span style="color: #000000">);</span>
+<span style="color: #001080">twins</span><span style="color: #000000">.</span><span style="color: #001080">John</span><span style="color: #000000">.</span><span style="color: #001080">birthday</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">(</span><span style="color: #098658">1973</span><span style="color: #000000">, </span><span style="color: #098658">6</span><span style="color: #000000">, </span><span style="color: #098658">15</span><span style="color: #000000">);</span>
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">twins</span><span style="color: #000000">.</span><span style="color: #001080">Jimmy</span><span style="color: #000000">.</span><span style="color: #001080">birthday</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #001080">twins</span><span style="color: #000000">.</span><span style="color: #001080">John</span><span style="color: #000000">.</span><span style="color: #001080">birthday</span><span style="color: #000000">);</span>
 </code></pre>
 				<a href="#fixed-values" id="fixed-values" style="color: inherit; text-decoration: none;">
@@ -335,30 +338,39 @@
 <span style="color: #000000">  </span><span style="color: #001080">pkg</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> = </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000">;</span>
 <span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">pkg</span><span style="color: #000000">;</span>
 <span style="color: #000000">}</span>
-
-<span style="color: #008000">// Often a checksum is used to verify data,</span>
-<span style="color: #008000">// which is stored in the last bytes of the buffer.</span>
-<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">crc16</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;crc&#039;</span><span style="color: #000000">;</span>
-
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Exact</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Exact&#039;</span><span style="color: #000000">)</span>
+</code></pre>
+				<a href="#crc" id="crc" style="color: inherit; text-decoration: none;">
+					<h3>CRC</h3>
+				</a>
+				<p>The checksum is often used to verify data integrity,
+				it is usually stored in the last bytes of the buffer.</p>
+				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Exact</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Exact&#039;</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">UInt16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;length&#039;</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">Buffer</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;data&#039;</span><span style="color: #000000">)</span>
 <span style="color: #000000">  </span><span style="color: #008000">// Only the checksum can go after the tail buffer</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">CRC16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;crc&#039;</span><span style="color: #000000">)</span>
 <span style="color: #000000">  .</span><span style="color: #795E26">compile</span><span style="color: #000000">();</span>
 <span style="color: #795E26">expect</span><span style="color: #000000">(</span><span style="color: #001080">Exact</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">).</span><span style="color: #795E26">toBe</span><span style="color: #000000">(</span><span style="color: #098658">4</span><span style="color: #000000">);</span>
+</code></pre>
+				<p>If you pass the checksum function as parameters, then your structure will have the static <code>crc</code> method that you can use to calculate and update this field.</p>
+				<p>Let&#39;s slightly modify the previous example:</p>
+				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">crc16</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;crc&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #008000">// Create a function for calculating checksum based on an algorithm</span>
-<span style="color: #008000">// typeof crcExact is (instance: Exact, needUpdate = false) =&gt; number</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">crcExact</span><span style="color: #000000"> = </span><span style="color: #001080">Exact</span><span style="color: #000000">.</span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">crc16</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">Exact</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Struct</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Exact&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">UInt16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;length&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">Buffer</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;data&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">  </span><span style="color: #008000">// checksum function and initial value</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">CRC16LE</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;crc&#039;</span><span style="color: #000000">, </span><span style="color: #001080">crc16</span><span style="color: #000000">, </span><span style="color: #098658">0xffff</span><span style="color: #000000">)</span>
+<span style="color: #000000">  .</span><span style="color: #795E26">compile</span><span style="color: #000000">();</span>
 
 <span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">createExact</span><span style="color: #000000">(</span><span style="color: #001080">data</span><span style="color: #000000">: </span><span style="color: #267F99">Buffer</span><span style="color: #000000">): </span><span style="color: #267F99">Exact</span><span style="color: #000000"> {</span>
 <span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">item</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Exact</span><span style="color: #000000">(</span><span style="color: #001080">Exact</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000"> + </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000">);</span>
 <span style="color: #000000">  </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #795E26">copy</span><span style="color: #000000">(</span><span style="color: #001080">item</span><span style="color: #000000">.</span><span style="color: #001080">data</span><span style="color: #000000">);</span>
 <span style="color: #000000">  </span><span style="color: #001080">item</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> = </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000">;</span>
-<span style="color: #000000">  </span><span style="color: #001080">item</span><span style="color: #000000">.</span><span style="color: #001080">crc</span><span style="color: #000000"> = </span><span style="color: #795E26">crcExact</span><span style="color: #000000">(</span><span style="color: #001080">item</span><span style="color: #000000">);</span>
+<span style="color: #000000">  </span><span style="color: #008000">// New static method `Exact.crc`</span>
+<span style="color: #000000">  </span><span style="color: #001080">item</span><span style="color: #000000">.</span><span style="color: #001080">crc</span><span style="color: #000000"> = </span><span style="color: #001080">Exact</span><span style="color: #000000">.</span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">item</span><span style="color: #000000">);</span>
 <span style="color: #000000">  </span><span style="color: #008000">// or the same thing - calculate and update the field</span>
-<span style="color: #000000">  </span><span style="color: #795E26">crcExact</span><span style="color: #000000">(</span><span style="color: #001080">item</span><span style="color: #000000">, </span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+<span style="color: #000000">  </span><span style="color: #001080">Exact</span><span style="color: #000000">.</span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">item</span><span style="color: #000000">, </span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
 <span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">item</span><span style="color: #000000">;</span>
 <span style="color: #000000">}</span>
 </code></pre>
@@ -510,6 +522,7 @@
 				</a>
 				<p>Package.ts</p>
 				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #001080">Struct</span><span style="color: #000000">, { </span><span style="color: #001080">typed</span><span style="color: #000000">, </span><span style="color: #001080">ExtractType</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;typed-struct&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">crc16</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;crc&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">enum</span><span style="color: #000000"> </span><span style="color: #267F99">Command</span><span style="color: #000000"> {</span>
 <span style="color: #000000">  </span><span style="color: #0070C1">Read</span><span style="color: #000000">,</span>
@@ -537,6 +550,8 @@
 <span style="color: #008000">// it&#039;s not obligatory</span>
 <span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Package</span><span style="color: #000000"> = </span><span style="color: #267F99">ExtractType</span><span style="color: #000000">&lt;</span><span style="color: #0000FF">typeof</span><span style="color: #000000"> </span><span style="color: #001080">Package</span><span style="color: #000000">&gt;;</span>
 
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">crc</span><span style="color: #000000"> = </span><span style="color: #001080">Package</span><span style="color: #000000">.</span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">crc16</span><span style="color: #000000">);</span>
+
 <span style="color: #008000">/*</span>
 <span style="color: #008000">type Package = {</span>
 <span style="color: #008000">  header: 0x1234;</span>
@@ -556,9 +571,7 @@
 <span style="color: #000000">  </span><span style="color: #001080">TransformCallback</span>
 <span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;stream&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">crc16</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;crc&#039;</span><span style="color: #000000">;</span>
-
-<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Package</span><span style="color: #000000">, </span><span style="color: #001080">PREAMBLE</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./Package&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Package</span><span style="color: #000000">, </span><span style="color: #001080">PREAMBLE</span><span style="color: #000000">, </span><span style="color: #001080">crc</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./Package&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">preambleBuf</span><span style="color: #000000"> = </span><span style="color: #001080">Buffer</span><span style="color: #000000">.</span><span style="color: #795E26">alloc</span><span style="color: #000000">(</span><span style="color: #098658">2</span><span style="color: #000000">);</span>
 <span style="color: #001080">preambleBuf</span><span style="color: #000000">.</span><span style="color: #795E26">writeInt16BE</span><span style="color: #000000">(</span><span style="color: #0070C1">PREAMBLE</span><span style="color: #000000">);</span>
@@ -593,34 +606,41 @@
 <span style="color: #000000">  }</span>
 
 <span style="color: #000000">  </span><span style="color: #0000FF">private</span><span style="color: #000000"> </span><span style="color: #795E26">recognize</span><span style="color: #000000">(</span><span style="color: #001080">data</span><span style="color: #000000">: </span><span style="color: #267F99">Buffer</span><span style="color: #000000">): </span><span style="color: #267F99">Buffer</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">start</span><span style="color: #000000"> = </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #795E26">indexOf</span><span style="color: #000000">(</span><span style="color: #001080">preambleBuf</span><span style="color: #000000">);</span>
-<span style="color: #000000">    </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">start</span><span style="color: #000000"> === -</span><span style="color: #098658">1</span><span style="color: #000000">) </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">empty</span><span style="color: #000000">;</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">frame</span><span style="color: #000000"> = </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #795E26">slice</span><span style="color: #000000">(</span><span style="color: #001080">start</span><span style="color: #000000">);</span>
-<span style="color: #000000">    </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">frame</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> &lt; </span><span style="color: #001080">lengthOffset</span><span style="color: #000000"> + </span><span style="color: #098658">2</span><span style="color: #000000">) </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">frame</span><span style="color: #000000">;</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">length</span><span style="color: #000000"> = </span><span style="color: #001080">frame</span><span style="color: #000000">.</span><span style="color: #795E26">readUInt16LE</span><span style="color: #000000">(</span><span style="color: #001080">lengthOffset</span><span style="color: #000000">);</span>
-<span style="color: #000000">    </span>
-<span style="color: #000000">    </span><span style="color: #008000">// calculate the total size of structure</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">total</span><span style="color: #000000"> = </span><span style="color: #001080">length</span><span style="color: #000000"> + </span><span style="color: #001080">Package</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">;</span>
-<span style="color: #000000">    </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">frame</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> &lt; </span><span style="color: #001080">total</span><span style="color: #000000">) </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">frame</span><span style="color: #000000">;</span>
-<span style="color: #000000">    </span>
-<span style="color: #000000">    </span><span style="color: #008000">// deserialize Package from the buffer</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pkg</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Package</span><span style="color: #000000">(</span><span style="color: #001080">frame</span><span style="color: #000000">.</span><span style="color: #795E26">slice</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #001080">total</span><span style="color: #000000">));</span>
-<span style="color: #000000">    </span>
-<span style="color: #000000">    </span><span style="color: #008000">// getting a raw buffer for crc computation</span>
-<span style="color: #000000">    </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #795E26">crc16</span><span style="color: #000000">(</span><span style="color: #001080">Package</span><span style="color: #000000">.</span><span style="color: #795E26">raw</span><span style="color: #000000">(</span><span style="color: #001080">pkg</span><span style="color: #000000">).</span><span style="color: #795E26">slice</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #001080">total</span><span style="color: #000000"> - </span><span style="color: #098658">2</span><span style="color: #000000">)) === </span><span style="color: #001080">pkg</span><span style="color: #000000">.</span><span style="color: #001080">crc</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #AF00DB">for</span><span style="color: #000000"> (</span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">offset</span><span style="color: #000000"> = </span><span style="color: #098658">0</span><span style="color: #000000">;;) {</span>
+<span style="color: #000000">      </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">start</span><span style="color: #000000"> = </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #795E26">indexOf</span><span style="color: #000000">(</span><span style="color: #001080">preambleBuf</span><span style="color: #000000">, </span><span style="color: #001080">offset</span><span style="color: #000000">);</span>
+<span style="color: #000000">      </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">start</span><span style="color: #000000"> === -</span><span style="color: #098658">1</span><span style="color: #000000">) </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">empty</span><span style="color: #000000">;</span>
+<span style="color: #000000">      </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">frame</span><span style="color: #000000"> = </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #795E26">slice</span><span style="color: #000000">(</span><span style="color: #001080">start</span><span style="color: #000000">);</span>
+<span style="color: #000000">      </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">frame</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> &lt; </span><span style="color: #001080">lengthOffset</span><span style="color: #000000"> + </span><span style="color: #098658">2</span><span style="color: #000000">) </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">frame</span><span style="color: #000000">;</span>
+<span style="color: #000000">      </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">length</span><span style="color: #000000"> = </span><span style="color: #001080">frame</span><span style="color: #000000">.</span><span style="color: #795E26">readUInt16LE</span><span style="color: #000000">(</span><span style="color: #001080">lengthOffset</span><span style="color: #000000">);</span>
+<span style="color: #000000">      </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">length</span><span style="color: #000000"> &lt;= </span><span style="color: #0070C1">MAX_LENGTH</span><span style="color: #000000">) {</span>
+
+<span style="color: #000000">        </span><span style="color: #008000">// calculate the total size of structure</span>
+<span style="color: #000000">        </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">total</span><span style="color: #000000"> = </span><span style="color: #001080">length</span><span style="color: #000000"> + </span><span style="color: #001080">Package</span><span style="color: #000000">.</span><span style="color: #001080">baseSize</span><span style="color: #000000">;</span>
+<span style="color: #000000">        </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">frame</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> &lt; </span><span style="color: #001080">total</span><span style="color: #000000">) </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">frame</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">        </span><span style="color: #008000">// deserialize Package from the buffer</span>
+<span style="color: #000000">        </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pkg</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Package</span><span style="color: #000000">(</span><span style="color: #001080">frame</span><span style="color: #000000">.</span><span style="color: #795E26">slice</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #001080">total</span><span style="color: #000000">));</span>
+
+<span style="color: #000000">        </span><span style="color: #008000">// crc check</span>
+<span style="color: #000000">        </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">pkg</span><span style="color: #000000">) === </span><span style="color: #001080">pkg</span><span style="color: #000000">.</span><span style="color: #001080">crc</span><span style="color: #000000">) {</span>
+
+<span style="color: #000000">          </span><span style="color: #008000">// push decoded package</span>
+<span style="color: #000000">          </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">pkg</span><span style="color: #000000">);</span>
+<span style="color: #000000">          </span><span style="color: #001080">offset</span><span style="color: #000000"> = </span><span style="color: #001080">start</span><span style="color: #000000"> + </span><span style="color: #001080">total</span><span style="color: #000000">;</span>
+<span style="color: #000000">        }</span>
+<span style="color: #000000">      }</span>
 <span style="color: #000000">      </span>
-<span style="color: #000000">      </span><span style="color: #008000">// push decoded package</span>
-<span style="color: #000000">      </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">pkg</span><span style="color: #000000">);</span>
+<span style="color: #000000">      </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">offset</span><span style="color: #000000"> &lt;= </span><span style="color: #001080">start</span><span style="color: #000000">) {</span>
+<span style="color: #000000">        </span><span style="color: #001080">offset</span><span style="color: #000000"> = </span><span style="color: #001080">start</span><span style="color: #000000"> + </span><span style="color: #098658">1</span><span style="color: #000000">;</span>
+<span style="color: #000000">      }</span>
 <span style="color: #000000">    }</span>
-<span style="color: #000000">    </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">frame</span><span style="color: #000000">.</span><span style="color: #795E26">slice</span><span style="color: #000000">(</span><span style="color: #001080">total</span><span style="color: #000000">);</span>
 <span style="color: #000000">  }</span>
 <span style="color: #000000">}</span>
 </code></pre>
 				<p>Encoder.ts</p>
 				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Transform</span><span style="color: #000000">, </span><span style="color: #001080">TransformCallback</span><span style="color: #000000">, </span><span style="color: #001080">TransformOptions</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;stream&#039;</span><span style="color: #000000">;</span>
-<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">crc16</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;crc&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Package</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./Package&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Package</span><span style="color: #000000">, </span><span style="color: #001080">crc</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./Package&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #AF00DB">default</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Encoder</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">Transform</span><span style="color: #000000"> {</span>
 <span style="color: #000000">  </span><span style="color: #0000FF">constructor</span><span style="color: #000000">(</span><span style="color: #001080">options</span><span style="color: #000000">?: </span><span style="color: #267F99">TransformOptions</span><span style="color: #000000">) {</span>
@@ -644,7 +664,7 @@
 <span style="color: #000000">        </span><span style="color: #001080">pkg</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> = </span><span style="color: #001080">pkg</span><span style="color: #000000">.</span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000">;</span>
 
 <span style="color: #000000">        </span><span style="color: #008000">// update crc</span>
-<span style="color: #000000">        </span><span style="color: #001080">pkg</span><span style="color: #000000">.</span><span style="color: #001080">crc</span><span style="color: #000000"> = </span><span style="color: #795E26">crc16</span><span style="color: #000000">(</span><span style="color: #001080">raw</span><span style="color: #000000">.</span><span style="color: #795E26">slice</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">, </span><span style="color: #001080">raw</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> - </span><span style="color: #098658">2</span><span style="color: #000000">));</span>
+<span style="color: #000000">        </span><span style="color: #795E26">crc</span><span style="color: #000000">(</span><span style="color: #001080">pkg</span><span style="color: #000000">, </span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
 <span style="color: #000000">        </span>
 <span style="color: #000000">        </span><span style="color: #008000">// serialize</span>
 <span style="color: #000000">        </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">push</span><span style="color: #000000">(</span><span style="color: #001080">raw</span><span style="color: #000000">);</span>
@@ -732,10 +752,19 @@
 						<a href="classes/default.html" class="tsd-kind-icon">default</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/crc.html" class="tsd-kind-icon">CRC</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/structconstructor.html" class="tsd-kind-icon">Struct<wbr>Constructor</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="modules.html#bitmask" class="tsd-kind-icon">Bit<wbr>Mask</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#crccalc" class="tsd-kind-icon">CRCCalc</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#crcopts" class="tsd-kind-icon">CRCOpts</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="modules.html#extracttype" class="tsd-kind-icon">Extract<wbr>Type</a>
@@ -751,6 +780,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="modules.html#stringopts" class="tsd-kind-icon">String<wbr>Opts</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#withcrc" class="tsd-kind-icon">WithCRC</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#getmask" class="tsd-kind-icon">get<wbr>Mask</a>

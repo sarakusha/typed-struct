@@ -76,6 +76,7 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/crc.html" class="tsd-kind-icon">CRC</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/structconstructor.html" class="tsd-kind-icon">Struct<wbr>Constructor</a></li>
 							</ul>
 						</section>
@@ -83,11 +84,14 @@
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-type-alias"><a href="modules.html#bitmask" class="tsd-kind-icon">Bit<wbr>Mask</a></li>
+								<li class="tsd-kind-type-alias"><a href="modules.html#crccalc" class="tsd-kind-icon">CRCCalc</a></li>
+								<li class="tsd-kind-type-alias"><a href="modules.html#crcopts" class="tsd-kind-icon">CRCOpts</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#extracttype" class="tsd-kind-icon">Extract<wbr>Type</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#getter" class="tsd-kind-icon">Getter</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#setter" class="tsd-kind-icon">Setter</a></li>
 								<li class="tsd-kind-type-alias"><a href="modules.html#stringarrayopts" class="tsd-kind-icon">String<wbr>Array<wbr>Opts</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#stringopts" class="tsd-kind-icon">String<wbr>Opts</a></li>
+								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#withcrc" class="tsd-kind-icon">WithCRC</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -108,7 +112,7 @@
 					<div class="tsd-signature tsd-kind-icon">Bit<wbr>Mask<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span>offset<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span>length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L138">struct.ts:138</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L153">struct.ts:153</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -128,13 +132,96 @@
 </code></pre>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="crccalc" class="tsd-anchor"></a>
+					<h3>CRCCalc</h3>
+					<div class="tsd-signature tsd-kind-icon">CRCCalc<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>buf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, previous<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L662">struct.ts:662</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Checksum function type</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>buf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, previous<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>buf: <span class="tsd-signature-type">Buffer</span></h5>
+											</li>
+											<li>
+												<h5><span class="tsd-flag ts-flagOptional">Optional</span> previous: <span class="tsd-signature-type">number</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="crcopts" class="tsd-anchor"></a>
+					<h3>CRCOpts</h3>
+					<div class="tsd-signature tsd-kind-icon">CRCOpts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>calc<span class="tsd-signature-symbol">: </span><a href="modules.html#crccalc" class="tsd-signature-type" data-tsd-kind="Type alias">CRCCalc</a><span class="tsd-signature-symbol">; </span>initial<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>start<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L667">struct.ts:667</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>CRC field options</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>calc<span class="tsd-signature-symbol">: </span><a href="modules.html#crccalc" class="tsd-signature-type" data-tsd-kind="Type alias">CRCCalc</a></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Checksum function</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> initial<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Initial value. Default 0</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> start<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Zero-based index at which to start calculation. Default 0</p>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
 					<a name="extracttype" class="tsd-anchor"></a>
 					<h3>Extract<wbr>Type</h3>
 					<div class="tsd-signature tsd-kind-icon">Extract<wbr>Type&lt;C&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">C</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-symbol">new </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-symbol">infer </span> T<span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">Omit</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;__struct&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;toJSON&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L6">struct.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L6">struct.ts:6</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -150,7 +237,7 @@
 					<div class="tsd-signature tsd-kind-icon">Getter&lt;R&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L166">struct.ts:166</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L181">struct.ts:181</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -196,7 +283,7 @@
 					<div class="tsd-signature tsd-kind-icon">Setter&lt;R&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L171">struct.ts:171</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L186">struct.ts:186</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -244,14 +331,14 @@
 					<div class="tsd-signature tsd-kind-icon">String<wbr>Array<wbr>Opts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Id</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Omit</span><span class="tsd-signature-symbol">&lt;</span><a href="modules.html#stringopts" class="tsd-signature-type" data-tsd-kind="Type alias">StringOpts</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;literal&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>lines<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L784">struct.ts:784</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L829">struct.ts:829</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>String array options</p>
 							<ul>
-								<li><strong>rows</strong> - the number of rows in the string array</li>
+								<li><strong>lines</strong> - the number of lines in the string array</li>
 							</ul>
 						</div>
 					</div>
@@ -262,7 +349,7 @@
 					<div class="tsd-signature tsd-kind-icon">String<wbr>Opts&lt;R&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>encoding<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>literal<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L767">struct.ts:767</a></li>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L812">struct.ts:812</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -308,6 +395,25 @@
 						</ul>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
+					<a name="withcrc" class="tsd-anchor"></a>
+					<h3>WithCRC</h3>
+					<div class="tsd-signature tsd-kind-icon">WithCRC&lt;T, NeedCRC&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ConditionalExtend</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><a href="interfaces/crc.html" class="tsd-signature-type" data-tsd-kind="Interface">CRC</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">NeedCRC</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L683">struct.ts:683</a></li>
+						</ul>
+					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Constructable</span></h4>
+						</li>
+						<li>
+							<h4>NeedCRC<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
@@ -321,7 +427,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L222">struct.ts:222</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L243">struct.ts:243</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -364,7 +470,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/901bded/src/struct.ts#L760">struct.ts:760</a></li>
+									<li>Defined in <a href="https://github.com/sarakusha/typed-struct/blob/9ea2579/src/struct.ts#L805">struct.ts:805</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -411,10 +517,19 @@
 						<a href="classes/default.html" class="tsd-kind-icon">default</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/crc.html" class="tsd-kind-icon">CRC</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/structconstructor.html" class="tsd-kind-icon">Struct<wbr>Constructor</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="modules.html#bitmask" class="tsd-kind-icon">Bit<wbr>Mask</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#crccalc" class="tsd-kind-icon">CRCCalc</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#crcopts" class="tsd-kind-icon">CRCOpts</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="modules.html#extracttype" class="tsd-kind-icon">Extract<wbr>Type</a>
@@ -430,6 +545,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="modules.html#stringopts" class="tsd-kind-icon">String<wbr>Opts</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#withcrc" class="tsd-kind-icon">WithCRC</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#getmask" class="tsd-kind-icon">get<wbr>Mask</a>
