@@ -1709,7 +1709,7 @@ export default class Struct<
         }
         Object.defineProperty(this, '$raw', { value: $raw });
         defineProps(this, props, $raw);
-        Object.preventExtensions(this);
+        // Object.preventExtensions(this);
       }
 
       static swap = (instance: Instance, name: keyof T): Buffer => swap(name, Struct.raw(instance));
