@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/sarakusha/typed-struct/compare/v2.0.0...v2.1.0) (2021-07-13)
+
+
+### Features
+
+* added support for 64-bit integers ([cd06e4f](https://github.com/sarakusha/typed-struct/commit/cd06e4f594ce3390ff73ea65799f1930df2ca4b6)), closes [#2](https://github.com/sarakusha/typed-struct/issues/2)
+* allow structure extensions ([6d279fc](https://github.com/sarakusha/typed-struct/commit/6d279fc37dc296a42ec4d9347b481d3a5c1d7b43))
+
 ## [2.0.0](https://github.com/sarakusha/typed-struct/compare/v1.3.0...v2.0.0) (2021-06-11)
 
 
