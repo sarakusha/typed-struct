@@ -658,8 +658,8 @@ type ExtendStruct<
   ClassName extends string,
   N extends string,
   R,
-  NeedCRC extends boolean = false
-> = Struct<T & { [P in N]: R }, ClassName, NeedCRC>;
+  HasCRC extends boolean = false
+> = Struct<T & { [P in N]: R }, ClassName, HasCRC>;
 
 type TypedArrayType<T extends NumericTypes> = T extends PropType.Int8
   ? Int8Array
@@ -725,10 +725,10 @@ export interface CRC<T extends Constructable> {
   crc(instance: InstanceType<T>, needUpdate?: boolean): number;
 }
 
-export type WithCRC<T extends Constructable, NeedCRC extends boolean> = ConditionalExtend<
+export type WithCRC<T extends Constructable, HasCRC extends boolean> = ConditionalExtend<
   T,
   CRC<T>,
-  NeedCRC
+  HasCRC
 >;
 
 /**
@@ -894,7 +894,7 @@ export default class Struct<
   // eslint-disable-next-line @typescript-eslint/ban-types
   T = {},
   ClassName extends string = 'Structure',
-  NeedCRC extends boolean = false
+  HasCRC extends boolean = false
 > {
   /** @hidden */
   private props: Map<keyof T, PropDesc> = new Map(); // Record<keyof T, PropDesc> = {} as never;
@@ -1762,7 +1762,7 @@ export default class Struct<
    * @see [[default.back]]
    * @param bytes
    */
-  seek(bytes: number): Struct<T, ClassName, NeedCRC> {
+  seek(bytes: number): Struct<T, ClassName, HasCRC> {
     if (bytes === 0) this.position = this.size;
     else this.position += bytes;
     return this;
@@ -1774,7 +1774,7 @@ export default class Struct<
    * @param steps - the number of steps back, if the value is 0 then the pointer will point to the
    *   beginning of the buffer
    */
-  back(steps = 1): Struct<T, ClassName, NeedCRC> {
+  back(steps = 1): Struct<T, ClassName, HasCRC> {
     if (steps < 0 || steps > this.props.size)
       throw new TypeError(`Invalid argument: back. Expected 0..${this.props.size}`);
     if (steps === 0) this.position = 0;
@@ -1788,7 +1788,7 @@ export default class Struct<
   /**
    * Align the current pointer to a two-byte boundary
    */
-  align2(): Struct<T, ClassName, NeedCRC> {
+  align2(): Struct<T, ClassName, HasCRC> {
     this.position += this.position % 2;
     return this;
   }
@@ -1796,7 +1796,7 @@ export default class Struct<
   /**
    * Align the current pointer to a four-byte boundary
    */
-  align4(): Struct<T, ClassName, NeedCRC> {
+  align4(): Struct<T, ClassName, HasCRC> {
     const remainder = this.position % 4;
     if (remainder) this.position += 4 - remainder;
     return this;
@@ -1805,7 +1805,7 @@ export default class Struct<
   /**
    * Align the current pointer to a eight-byte boundary
    */
-  align8(): Struct<T, ClassName, NeedCRC> {
+  align8(): Struct<T, ClassName, HasCRC> {
     const remainder = this.position % 8;
     if (remainder) this.position += 8 - remainder;
     return this;
@@ -1817,7 +1817,7 @@ export default class Struct<
    */
   compile(
     className: string | undefined = this.defaultClassName
-  ): WithCRC<StructConstructor<Id<T>, ClassName>, NeedCRC> {
+  ): WithCRC<StructConstructor<Id<T>, ClassName>, HasCRC> {
     const { size: baseSize, props, getOffsetOf, getOffsets, swap } = this;
     type Instance = StructInstance<T, ClassName>;
 
@@ -1882,7 +1882,7 @@ export default class Struct<
 
     return (className ? nameIt(className, Structure) : Structure) as WithCRC<
       StructConstructor<T, ClassName>,
-      NeedCRC
+      HasCRC
     >;
   }
 
