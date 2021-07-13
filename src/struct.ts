@@ -89,10 +89,18 @@ type Item<A> = A extends any ? (A extends readonly (infer T)[] ? T : A) : never;
 type POJO<T> = Id<
   ReplaceRecursively<
     ReplaceRecursively<
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      ReplaceRecursively<OmitTypeRecursively<T, Function | undefined>, Iterable<number>, number[]>,
-      Date,
-      string
+      ReplaceRecursively<
+        ReplaceRecursively<
+          // eslint-disable-next-line @typescript-eslint/ban-types
+          OmitTypeRecursively<T, Function | undefined>,
+          Iterable<number>,
+          number[]
+        >,
+        Date | bigint,
+        string
+      >,
+      Iterable<bigint>,
+      string[]
     >,
     string | number | boolean | null | number[] | string[],
     unknown,
@@ -134,6 +142,8 @@ export enum PropType {
   Buffer,
   String,
   StringArray,
+  BigInt64,
+  BigUInt64,
 }
 
 /**
@@ -152,11 +162,13 @@ export enum PropType {
  */
 export type BitMask = readonly [offset: number, length: number];
 
-type SignedIntegerTypes = PropType.Int8 | PropType.Int16 | PropType.Int32;
+type SignedIntegerTypes = PropType.Int8 | PropType.Int16 | PropType.Int32 | PropType.BigInt64;
 
-type UnsignedIntegerTypes = PropType.UInt8 | PropType.UInt16 | PropType.UInt32;
+type UnsignedIntegerTypes = PropType.UInt8 | PropType.UInt16 | PropType.UInt32 | PropType.BigUInt64;
 
 type IntegerTypes = SignedIntegerTypes | UnsignedIntegerTypes;
+
+type BigIntTypes = PropType.BigInt64 | PropType.BigUInt64;
 
 type NumericTypes = IntegerTypes | PropType.BCD | PropType.Float32 | PropType.Float64;
 
@@ -164,7 +176,9 @@ type BooleanTypes = PropType.Boolean8 | PropType.Boolean16 | PropType.Boolean32;
 
 type SimpleTypes = NumericTypes | BooleanTypes;
 
-type NativeType<T extends PropType | string> = T extends NumericTypes
+type NativeType<T extends PropType | string> = T extends BigIntTypes
+  ? bigint
+  : T extends NumericTypes
   ? number
   : T extends BooleanTypes
   ? boolean
@@ -185,7 +199,7 @@ export type Getter<R> = (type: string, buffer: Buffer) => R | undefined;
  */
 export type Setter<R> = (type: string, buffer: Buffer, value: R) => boolean;
 
-const isSimpleType = (desc: PropDesc): desc is PropDesc<SimpleTypes, number | boolean> =>
+const isSimpleType = (desc: PropDesc): desc is PropDesc<SimpleTypes, number | boolean | bigint> =>
   desc.struct === undefined &&
   typeof desc.type !== 'string' &&
   desc.type !== PropType.String &&
@@ -263,7 +277,7 @@ const setBits = (
 const getUnsigned = (value: number, size: number): number =>
   (size < 32 ? value & ((1 << size) - 1) : value) >>> 0;
 
-function getSize(type: IntegerTypes): 1 | 2 | 4;
+function getSize(type: IntegerTypes): 1 | 2 | 4 | 8;
 function getSize(type: string): undefined;
 function getSize(type: PropType | string): 1 | 2 | 4 | 8 | undefined;
 function getSize(type: PropType | string): 1 | 2 | 4 | 8 | undefined {
@@ -283,6 +297,8 @@ function getSize(type: PropType | string): 1 | 2 | 4 | 8 | undefined {
     case PropType.Float32:
       return 4;
     case PropType.Float64:
+    case PropType.BigInt64:
+    case PropType.BigUInt64:
       return 8;
     default:
       return undefined;
@@ -299,7 +315,10 @@ const encodeMaskedValue = (
   mask?: BitMask
 ): number => (mask ? setBits(dest, mask, value, size) : getUnsigned(value, size));
 
-const getValue = (info: PropDesc<SimpleTypes>, data: Buffer): number | boolean | undefined => {
+const getValue = (
+  info: PropDesc<SimpleTypes>,
+  data: Buffer
+): bigint | number | boolean | undefined => {
   // if (!isSimpleType(info)) throw new TypeError('Invalid type');
   const { len, offset, type, mask, be, tail } = info;
   /* istanbul ignore next */
@@ -351,20 +370,28 @@ const getValue = (info: PropDesc<SimpleTypes>, data: Buffer): number | boolean |
       return !!decodeMaskedValue(data.readUInt32LE(offset), 32, mask);
     case PropType.BCD:
       return Math.floor(data[0] / 16) * 10 + (data[0] % 16);
+    case PropType.BigInt64:
+      return be ? data.readBigInt64BE(offset) : data.readBigInt64LE(offset);
+    case PropType.BigUInt64:
+      return be ? data.readBigUInt64BE(offset) : data.readBigUInt64LE(offset);
     /* istanbul ignore next */
     default:
       return undefined;
   }
 };
 
-const setValue = (info: PropDesc<SimpleTypes>, data: Buffer, value: number | boolean): boolean => {
+const setValue = (
+  info: PropDesc<SimpleTypes>,
+  data: Buffer,
+  value: number | boolean | bigint
+): boolean => {
   // if (!isSimpleType(info)) throw new TypeError('Invalid type');
   const { mask, ...other } = info;
   const { len, offset, type, be, tail } = other;
   /* istanbul ignore next */
   if ((len && len > 0) || tail) throw new TypeError('Array not allowed');
 
-  const encode = <V extends number | boolean>(val: V, size: BitMaskSize): number => {
+  const encode = <V extends number | boolean | bigint>(val: V, size: BitMaskSize): number => {
     const numValue = Number(val);
     // if (Number.isNaN(numValue)) throw new TypeError('Numeric value expected');
     return encodeMaskedValue(getValue(other, data) as number, numValue, size, mask);
@@ -431,6 +458,14 @@ const setValue = (info: PropDesc<SimpleTypes>, data: Buffer, value: number | boo
     case PropType.BCD:
       data.writeUInt8(Math.floor(Number(value) / 10) * 16 + (Number(value) % 10), offset);
       return true;
+    case PropType.BigInt64:
+      if (be) data.writeBigInt64BE(BigInt(value), offset);
+      else data.writeBigInt64LE(BigInt(value), offset);
+      return true;
+    case PropType.BigUInt64:
+      if (be) data.writeBigUInt64BE(BigInt(value), offset);
+      else data.writeBigUInt64LE(BigInt(value), offset);
+      return true;
     /* istanbul ignore next */
     default:
       return false;
@@ -466,6 +501,8 @@ const getTypedArrayConstructor = (
   | Uint32ArrayConstructor
   | Float32ArrayConstructor
   | Float64ArrayConstructor
+  | BigInt64ArrayConstructor
+  | BigUint64ArrayConstructor
   | undefined => {
   switch (type) {
     case PropType.Int8:
@@ -487,6 +524,10 @@ const getTypedArrayConstructor = (
       return Float32Array;
     case PropType.Float64:
       return Float64Array;
+    case PropType.BigInt64:
+      return BigInt64Array;
+    case PropType.BigUInt64:
+      return BigUint64Array;
     default:
       return undefined;
   }
@@ -636,6 +677,10 @@ type TypedArrayType<T extends NumericTypes> = T extends PropType.Int8
   ? Float32Array
   : T extends PropType.Float64
   ? Float64Array
+  : T extends PropType.BigInt64
+  ? BigInt64Array
+  : T extends PropType.BigUInt64
+  ? BigUint64Array
   : never;
 
 const isCrc = (info: {
@@ -760,10 +805,14 @@ const isObject = (obj: unknown): obj is Record<PropertyKey, unknown> =>
 const deepClone = <T>(obj: T): POJO<T> => {
   const clone: any = {};
   Object.entries(obj).forEach(([name, value]) => {
-    if (isSimpleOrString(value)) {
+    if (typeof value === 'bigint') {
+      clone[name] = value.toString();
+    } else if (isSimpleOrString(value)) {
       clone[name] = value;
     } else if (isIterable(value)) {
-      clone[name] = [...value];
+      const values = [...value];
+      const [first] = values;
+      clone[name] = typeof first === 'bigint' ? values.map(v => (v as bigint).toString()) : values;
     } else if (isObject(value)) {
       clone[name] = deepClone(value);
     } else {
@@ -779,7 +828,7 @@ const deepClone = <T>(obj: T): POJO<T> => {
   return clone;
 };
 
-const nameIt = <C extends new (...args: any[]) => any>(name: string, superClass: C) =>
+const nameIt = <C extends Constructable>(name: string, superClass: C) =>
   ({
     [name]: class extends superClass {
       constructor(...args: any[]) {
@@ -802,7 +851,7 @@ const nameIt = <C extends new (...args: any[]) => any>(name: string, superClass:
  * res.error = ErrorType.Success;
  * ```
  */
-export function typed<T extends number | string>(): T | undefined {
+export function typed<T extends number | bigint | string>(): T | undefined {
   return undefined;
 }
 
@@ -1106,6 +1155,64 @@ export default class Struct<
     });
 
   /**
+   * defines a signed, little-endian 64-bit integer field
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
+   */
+  BigInt64LE = <N extends string, R extends bigint>(
+    name: N | N[],
+    literal?: R
+  ): ExtendStruct<T, ClassName, N, R> =>
+    this.createProp(name, {
+      type: PropType.BigInt64,
+      literal,
+    });
+
+  /**
+   * defines a signed, big-endian 64-bit integer field
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
+   */
+  BigInt64BE = <N extends string, R extends bigint>(
+    name: N | N[],
+    literal?: R
+  ): ExtendStruct<T, ClassName, N, R> =>
+    this.createProp(name, {
+      type: PropType.BigInt64,
+      literal,
+      be: true,
+    });
+
+  /**
+   * defines an unsigned, little-endian 64-bit integer field
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
+   */
+  BigUInt64LE = <N extends string, R extends bigint>(
+    name: N | N[],
+    literal?: R
+  ): ExtendStruct<T, ClassName, N, R> =>
+    this.createProp(name, {
+      type: PropType.BigUInt64,
+      literal,
+    });
+
+  /**
+   * defines an unsigned, big-endian 64-bit integer field
+   * @param name - The filed name or aliases
+   * @param literal - The fixed value
+   */
+  BigUInt64BE = <N extends string, R extends bigint>(
+    name: N | N[],
+    literal?: R
+  ): ExtendStruct<T, ClassName, N, R> =>
+    this.createProp(name, {
+      type: PropType.BigUInt64,
+      literal,
+      be: true,
+    });
+
+  /**
    * defines a 8-bit boolean field
    * @param name - The filed name or aliases
    * @param literal - The fixed value
@@ -1385,6 +1492,30 @@ export default class Struct<
     length?: number
   ): ExtendStruct<T, ClassName, N, Float64Array> =>
     this.createTypedArray(name, PropType.Float64, length);
+
+  /**
+   * defines a `BigInt64Array` typed array represents an array of 64-bit signed
+   * integers.
+   * @param name - The filed name or aliases
+   * @param length - the number of elements
+   */
+  BigInt64Array = <N extends string>(
+    name: N | N[],
+    length?: number
+  ): ExtendStruct<T, ClassName, N, BigInt64Array> =>
+    this.createTypedArray(name, PropType.BigInt64, length);
+
+  /**
+   * defines a `BigUint64Array` typed array represents an array of 64-bit unsigned
+   * integers.
+   * @param name - The filed name or aliases
+   * @param length - the number of elements
+   */
+  BigUInt64Array = <N extends string>(
+    name: N | N[],
+    length?: number
+  ): ExtendStruct<T, ClassName, N, BigUint64Array> =>
+    this.createTypedArray(name, PropType.BigUInt64, length);
 
   /**
    * defines an array of elements of a typed struct
@@ -1672,6 +1803,15 @@ export default class Struct<
   }
 
   /**
+   * Align the current pointer to a eight-byte boundary
+   */
+  align8(): Struct<T, ClassName, NeedCRC> {
+    const remainder = this.position % 8;
+    if (remainder) this.position += 8 - remainder;
+    return this;
+  }
+
+  /**
    * Create structure constructor
    * @param className - The constructor name
    */
@@ -1826,7 +1966,7 @@ export default class Struct<
   /** @hidden */
   private createBitFields<
     N extends string,
-    Y extends UnsignedIntegerTypes,
+    Y extends Exclude<UnsignedIntegerTypes, BigIntTypes>,
     S extends ExtendStruct<T, ClassName, N, number> = ExtendStruct<T, ClassName, N, number>
   >(type: Y, fields: Record<N, BitMask>): S {
     const self = this as unknown as S;
@@ -1846,7 +1986,7 @@ export default class Struct<
   /** @hidden */
   private createCRCProp<N extends string>(
     name: N | N[],
-    type: UnsignedIntegerTypes,
+    type: Exclude<UnsignedIntegerTypes, BigIntTypes>,
     be: boolean,
     arg1?: CRCCalc | CRCOpts,
     arg2?: number

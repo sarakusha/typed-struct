@@ -1,6 +1,7 @@
 /* eslint-disable no-bitwise */
 
 import { inspect } from 'util';
+import { randomBytes } from 'crypto';
 import Struct, { ExtractType, getMask, PropType, typed } from './struct';
 
 const random = (offset: number, length: number): number =>
@@ -37,6 +38,8 @@ const randomFor = (type: PropType): (() => number) => {
 };
 
 const byteRnd = randomFor(PropType.UInt8);
+const bigintRnd = (): bigint => BigInt(`0x${randomBytes(8).toString('hex')}`);
+
 const randomize = (buffer: Buffer): Buffer => {
   buffer.forEach((_, index) => {
     // eslint-disable-next-line no-param-reassign
@@ -78,9 +81,10 @@ describe('Struct', () => {
       .Float32BE('fbe32')
       .Float64LE('fle64')
       .Float64BE('fbe64')
-      // .Boolean8('b8')
-      // .Boolean16('b16')
-      // .Boolean32('b32')
+      .BigInt64LE('bile64')
+      .BigInt64BE('bibe64')
+      .BigUInt64LE('bule64')
+      .BigUInt64BE('bube64')
       .compile();
     type Model = ExtractType<typeof Model>;
     const model: Model = {
@@ -98,10 +102,14 @@ describe('Struct', () => {
       fle64: 456.56,
       fbe32: -678.3400268554688,
       fbe64: -78.456,
+      bile64: 123456n,
+      bibe64: 456789n,
+      bule64: 987654n,
+      bube64: 654321n,
     };
     // noinspection SpellCheckingInspection
     const rawModel = Buffer.from(
-      '12ff67459cff2345fea77856341260a4ffff23456789ff98684b66e6f642c42995c3295c8fc2f5887c40c0539d2f1a9fbe77',
+      '12ff67459cff2345fea77856341260a4ffff23456789ff98684b66e6f642c42995c3295c8fc2f5887c40c0539d2f1a9fbe7740e2010000000000000000000006f85506120f0000000000000000000009fbf1',
       'hex'
     );
     const item = new Model(rawModel, true);
@@ -168,6 +176,8 @@ describe('Struct', () => {
       .UInt32Array('u32', len)
       .Float32Array('f32', len)
       .Float64Array('f64', len)
+      .BigInt64Array('bi64', len)
+      .BigUInt64Array('bu64', len)
       .compile();
 
     const arrayBuffer = new ArrayBuffer(Data.baseSize);
@@ -183,6 +193,8 @@ describe('Struct', () => {
     const u32 = new Uint32Array(arrayBuffer, s32.byteOffset + s32.byteLength, len);
     const f32 = new Float32Array(arrayBuffer, u32.byteOffset + u32.byteLength, len);
     const f64 = new Float64Array(arrayBuffer, f32.byteOffset + f32.byteLength, len);
+    const bi64 = new BigInt64Array(arrayBuffer, f64.byteOffset + f64.byteLength, len);
+    const bu64 = new BigUint64Array(arrayBuffer, bi64.byteOffset + bi64.byteLength, len);
 
     test('array s8', () => {
       expect(s8).toEqual(data.s8);
@@ -270,6 +282,27 @@ describe('Struct', () => {
       });
       expect(data.f64).toEqual(f64);
       const Tailed = new Struct('Tailed').Float64Array('data').compile();
+      const tailed = new Tailed(8);
+      expect(tailed.data).toHaveLength(1);
+    });
+    test('array bi64', () => {
+      expect(bi64).toEqual(data.bi64);
+      const rnd = (): bigint => bigintRnd() - 2n ** 63n;
+      data.bi64.forEach((_, i) => {
+        data.bi64[i] = rnd();
+      });
+      expect(data.bi64).toEqual(bi64);
+      const Tailed = new Struct('Tailed').BigInt64Array('data').compile();
+      const tailed = new Tailed(8);
+      expect(tailed.data).toHaveLength(1);
+    });
+    test('array bu64', () => {
+      expect(bu64).toEqual(data.bu64);
+      data.bu64.forEach((_, i) => {
+        data.bu64[i] = bigintRnd();
+      });
+      expect(data.bu64).toEqual(bu64);
+      const Tailed = new Struct('Tailed').BigUInt64Array('data').compile();
       const tailed = new Tailed(8);
       expect(tailed.data).toHaveLength(1);
     });
@@ -710,8 +743,41 @@ describe('Struct', () => {
       .Struct('s', new Struct().Int8Array('values', 2).compile())
       .Buffer('buf', 2)
       .Custom('date', 8, getter, setter)
+      .BigUInt64LE('bu64')
+      .align8()
+      .BigUInt64Array('abu64', 1)
       .compile();
-    const raw = [0xff, 0xfd, 1, 2, 3, 0xfe, 0xfd, 0xc0, 0xde, 0, 0, 0, 0, 0x02, 0x98, 0x9a, 0x41];
+    const bu64 = Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]); // randomBytes(8);
+    const abu64 = randomBytes(8);
+    const bigint64 = (a: Buffer): string => BigInt(`0x${a.toString('hex')}`).toString();
+    const raw = [
+      0xff,
+      0xfd,
+      1,
+      2,
+      3,
+      0xfe,
+      0xfd,
+      0xc0,
+      0xde,
+      0,
+      0,
+      0,
+      0,
+      0x02,
+      0x98,
+      0x9a,
+      0x41,
+      ...[...bu64].reverse(),
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      ...[...abu64].reverse(),
+    ];
     const foo = new Foo(raw);
     const json = foo.toJSON();
     expect(Object.getPrototypeOf(json)).toBe(Object.prototype);
@@ -722,6 +788,8 @@ describe('Struct', () => {
       s: { values: [-2, -3] },
       buf: [0xc0, 0xde],
       date: foo.date.toJSON(),
+      bu64: bigint64(bu64),
+      abu64: [bigint64(abu64)],
     });
   });
   test('string', () => {

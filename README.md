@@ -28,7 +28,7 @@ $ yarn add typed-struct
 
 The following types are supported:
 
-- Integer (1, 2, 4 bytes)
+- Integer (1, 2, 4, 8 bytes)
 - Boolean (1, 2, 4 bytes)
 - Float (4 bytes)
 - Double (8 bytes)
