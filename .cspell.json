@@ -33,7 +33,10 @@
     "transpiled",
     "typedoc",
     "untracked",
-    "deserialization"
+    "deserialization",
+    "bibe",
+    "bule",
+    "bube"
   ],
   "flagWords": [],
   "ignorePaths": [
