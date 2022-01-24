@@ -177,6 +177,8 @@ export enum PropType {
  */
 export type BitMask = readonly [offset: number, length: number];
 
+export type BitMaskN<M extends number> = readonly [offset: BitOffset<M>, length: BitLength<M>];
+
 type SignedIntegerTypes = PropType.Int8 | PropType.Int16 | PropType.Int32 | PropType.BigInt64;
 
 type UnsignedIntegerTypes = PropType.UInt8 | PropType.UInt16 | PropType.UInt32 | PropType.BigUInt64;
@@ -890,6 +892,52 @@ export type StringArrayOpts = Id<
   }
 >;
 
+type Prepend<A, Prefix> = A extends unknown[]
+  ? ((t: Prefix, ...a: A) => void) extends (..._: infer Result) => void
+    ? Result
+    : never
+  : never;
+
+type PrependNextNum<A extends unknown[]> = A['length'] extends infer T ? Prepend<A, T> : never;
+
+type EnumerateInternal<A extends Array<unknown>, N extends number> = {
+  0: A;
+  1: EnumerateInternal<PrependNextNum<A>, N>;
+}[N extends A['length'] ? 0 : 1];
+
+type ArrayItem<A> = A extends (infer E)[] ? E : never;
+
+export type Enumerate<N extends number> = ArrayItem<EnumerateInternal<[], N>>;
+
+export type Range<FROM extends number, TO extends number> = Exclude<Enumerate<TO>, Enumerate<FROM>>;
+
+// type Reverse<Tuple extends any[], Prefix extends any[] = []> = {
+//   0: Prefix;
+//   1: ((..._: Tuple) => any) extends (_: infer First, ..._1: infer Next) => any
+//     ? Reverse<Next, Prepend<Prefix, First>>
+//     : never;
+// }[Tuple extends [any, ...any[]] ? 1 : 0];
+
+// type Take<A extends unknown[], N extends number, Prefix extends unknown[] = []> = {
+//   0: Prefix;
+//   1: ((..._: A) => unknown) extends (_: infer F, ...__: infer Next) => unknown
+//     ? Take<Next, N, Prepend<Prefix, F>>
+//     : never;
+// }[N extends Prefix['length'] ? 0 : 1];
+
+// type Skip<A, N extends number, Prefix extends unknown[] = []> = A extends unknown[]
+//   ? {
+//       0: A;
+//       1: ((..._: A) => unknown) extends (_: infer F, ...__: infer Next) => unknown
+//         ? Skip<Next, N, Prepend<Prefix, F>>
+//         : never;
+//     }[N extends Prefix['length'] ? 0 : 1]
+//   : never;
+
+type BitOffset<N extends number> = Enumerate<N>;
+
+type BitLength<N extends number> = Exclude<BitOffset<N>, 0> | N;
+
 // noinspection JSUnusedGlobalSymbols
 /**
  * Factory of structures. You can define your data structure by chaining the appropriate method
@@ -1294,22 +1342,25 @@ export default class Struct<
    * defines unsigned bit fields on one byte
    * @param fields - an object with the name of the fields and their [[BitMask]]
    */
-  Bits8 = <N extends string>(fields: Record<N, BitMask>): ExtendStruct<T, ClassName, N, number> =>
-    this.createBitFields(PropType.UInt8, fields);
+  Bits8 = <N extends string>(
+    fields: Record<N, BitMaskN<8>>
+  ): ExtendStruct<T, ClassName, N, number> => this.createBitFields(PropType.UInt8, fields);
 
   /**
    * defines unsigned bit fields on two bytes
    * @param fields - an object with the name of the fields and their [[BitMask]]
    */
-  Bits16 = <N extends string>(fields: Record<N, BitMask>): ExtendStruct<T, ClassName, N, number> =>
-    this.createBitFields(PropType.UInt16, fields);
+  Bits16 = <N extends string>(
+    fields: Record<N, BitMaskN<16>>
+  ): ExtendStruct<T, ClassName, N, number> => this.createBitFields(PropType.UInt16, fields);
 
   /**
    * defines unsigned bit fields on four bytes
    * @param fields - an object with the name of the fields and their [[BitMask]]
    */
-  Bits32 = <N extends string>(fields: Record<N, BitMask>): ExtendStruct<T, ClassName, N, number> =>
-    this.createBitFields(PropType.UInt32, fields);
+  Bits32 = <N extends string>(
+    fields: Record<N, BitMaskN<32>>
+  ): ExtendStruct<T, ClassName, N, number> => this.createBitFields(PropType.UInt32, fields);
 
   /**
    * defines a buffer field of `length` bytes
