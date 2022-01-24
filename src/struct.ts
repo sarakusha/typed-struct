@@ -1643,6 +1643,12 @@ export default class Struct<
     });
   }
 
+  Custom<N extends string, ReturnType>(
+    name: N | N[],
+    size: number | undefined,
+    getter: Getter<ReturnType>
+  ): ExtendStruct<T, ClassName, N, ReturnType, false, true>;
+
   /**
    * defines a field with a custom getter and setter
    * @param name - The filed name or aliases
@@ -1652,19 +1658,27 @@ export default class Struct<
    * @param setter - a function which serves as a setter for the property, or undefined if there
    * is no setter.
    */
-  Custom = <N extends string, ReturnType>(
+  Custom<N extends string, ReturnType>(
     name: N | N[],
-    size?: number,
-    getter?: Getter<ReturnType>,
+    size: number | undefined,
+    getter: Getter<ReturnType>,
+    setter: Setter<ReturnType>
+  ): ExtendStruct<T, ClassName, N, ReturnType, false, false>;
+
+  Custom<N extends string, ReturnType>(
+    name: N | N[],
+    size: number | undefined,
+    getter: Getter<ReturnType>,
     setter?: Setter<ReturnType>
-  ): ExtendStruct<T, ClassName, N, ReturnType> =>
-    this.createProp(name, {
+  ): ExtendStruct<T, ClassName, N, ReturnType> {
+    return this.createProp(name, {
       type: Array.isArray(name) ? name[0] : name,
       len: size,
       tail: size === undefined,
       getter,
       setter,
     });
+  }
 
   /**
    * The last byte in the structure, usually used as a checksum. Typically used

@@ -8,7 +8,7 @@ similar to structures in C.
 [![NPM version](https://img.shields.io/npm/dm/typed-struct.svg)](https://www.npmjs.com/package/typed-struct)
 [![codecov](https://codecov.io/gh/sarakusha/typed-struct/branch/main/graph/badge.svg?token=6F26I7FO73)](https://codecov.io/gh/sarakusha/typed-struct)
 [![CircleCI](https://circleci.com/gh/sarakusha/typed-struct.svg?style=shield)](https://circleci.com/gh/sarakusha/typed-struct)
-
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/sarakusha/typed-struct.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/sarakusha/typed-struct/context:javascript)
 [![NPM](https://nodei.co/npm/typed-struct.png?downloads=true)](https://nodei.co/npm/typed-struct/)
 
 ## Getting started
@@ -543,8 +543,8 @@ import {
 
 import { Package, PREAMBLE } from './Package';
 
-const preambleBuf = Buffer.alloc(2);
-preambleBuf.writeInt16BE(PREAMBLE);
+const preamble = Buffer.alloc(2);
+preamble.writeInt16BE(PREAMBLE);
 
 const empty = Buffer.alloc(0);
 
@@ -577,10 +577,12 @@ export default class Decoder extends Transform {
 
   private recognize(data: Buffer): Buffer {
     for (let offset = 0;;) {
-      const start = data.indexOf(preambleBuf, offset);
+      const rest = data.length - offset;
+      if (rest <= 0) return empty;
+      const start = data.indexOf(rest < preamble.length ? preamble.slice(0, rest) : preamble, offset);
       if (start === -1) return empty;
       const frame = data.slice(start);
-      if (frame.length < lengthOffset + 2) return frame;
+      if (frame.length < Package.baseSize) return frame;
       const length = frame.readUInt16LE(lengthOffset);
       if (length <= MAX_LENGTH) {
 
