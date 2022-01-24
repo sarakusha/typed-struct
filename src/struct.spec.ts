@@ -141,6 +141,7 @@ describe('Struct', () => {
       test('should thrown when assigning an object', () => {
         const nested = new Nested();
         expect(() => {
+          // @ts-ignore
           nested.model1 = model;
         }).toThrow();
       });
@@ -148,8 +149,16 @@ describe('Struct', () => {
   });
   describe('boolean', () => {
     const Bool = new Struct('Bool').Boolean8('b8').Boolean16('b16').Boolean32('b32').compile();
-    const truthy = { b8: true, b16: true, b32: true };
-    const falsy = { b8: false, b16: false, b32: false };
+    const truthy = {
+      b8: true,
+      b16: true,
+      b32: true,
+    };
+    const falsy = {
+      b8: false,
+      b16: false,
+      b32: false,
+    };
     const bufferFF = Buffer.alloc(7, 0xff);
     const buffer00 = Buffer.alloc(7);
     test('size', () => {
@@ -312,11 +321,24 @@ describe('Struct', () => {
     const Vector = new Struct('Vector').StructArray('points', Point, 2).compile();
     const vector = new Vector([10, 20, 30, 40]);
     const Polygon = new Struct('Polygon').StructArray('vertices', Point).compile();
-    const polygon = new Polygon([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    const PolygonWithName = new Struct('PolygonWithName')
+      .String('name', 20)
+      .StructArray('vertices', Point)
+      .compile();
     expect(Vector.baseSize).toBe(4);
     expect(vector.points).toHaveLength(2);
+    expect(Polygon.baseSize).toBe(0);
+    expect(PolygonWithName.baseSize).toBe(20);
+    const polygon = new Polygon([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     vector.points[0].x = -1;
     vector.points[1].y = -2;
+    const empty = new Polygon([0]);
+    expect(empty.vertices).toHaveLength(0);
+    const buf = Buffer.alloc(PolygonWithName.baseSize);
+    buf.write('name');
+    const named = new PolygonWithName(buf);
+    expect(named.vertices).toHaveLength(0);
+    expect(named.name).toBe('name');
     expect(Vector.raw(vector)).toEqual(Buffer.from([0xff, 20, 30, 0xfe]));
     expect(vector.points).toBe(vector.points);
     expect(vector).toEqual({ points: [new Point([-1, 20]), new Point([30, -2])] });
@@ -358,14 +380,15 @@ describe('Struct', () => {
       .compile();
     const custom = new Custom();
     expect(() => custom.unknown).toThrow(new TypeError('Unknown type "unknown"'));
+    // @ts-ignore
     expect(() => (custom.unknown = undefined)).toThrow(new TypeError('Unknown type "unknown"'));
   });
-  test('empty custom', () => {
-    const Trivial = new Struct('Trivial').Custom('value').compile();
-    const trivial = new Trivial(10);
-    expect(trivial.value).toHaveLength(10);
-    expect(trivial.value).toBeInstanceOf(Buffer);
-  });
+  // test('empty custom', () => {
+  //   const Trivial = new Struct('Trivial').Custom('value').compile();
+  //   const trivial = new Trivial(10);
+  //   expect(trivial.value).toHaveLength(10);
+  //   expect(trivial.value).toBeInstanceOf(Buffer);
+  // });
   test('BCD', () => {
     const BCD = new Struct('BCD').BCD('value').compile();
     expect(BCD.baseSize).toBe(1);
@@ -455,7 +478,10 @@ describe('Struct', () => {
       const Foo = new Struct('Foo')
         .Int32LE('bar', 0x1234)
         .Buffer('data')
-        .CRC8('crc', { calc, start: 4 })
+        .CRC8('crc', {
+          calc,
+          start: 4,
+        })
         .compile();
       const foo = new Foo(100);
       const data = randomize(foo.data);
@@ -532,7 +558,7 @@ describe('Struct', () => {
     const Data = new Struct('Data').Int32LE('value').compile();
     expect(() => {
       new Data(3);
-    }).toThrow(new TypeError('Buffer size must be at least 4 (3)'));
+    }).toThrow(new TypeError('[Data]: Buffer size must be at least 4 (3)'));
   });
   describe('swap', () => {
     test('swap16 property', () => {
@@ -609,7 +635,7 @@ describe('Struct', () => {
     });
     test('throws "Invalid params"', () => {
       expect(() => {
-        new Struct('BitFields').Bits8({ a: [0, 12] });
+        new Struct('BitFields').Bits8({ a: [0, 12 as any] });
       });
     });
     test('throws "Property a already exists"', () => {
@@ -717,8 +743,8 @@ describe('Struct', () => {
   });
   test('crc should be the last field after the buffer', () => {
     expect(() => {
-      new Struct().Int8('foo').CRC8('bar').compile();
-    }).toThrow(TypeError('CRC field must follow immediately after the buffer field'));
+      new Struct().CRC8('bar').compile();
+    }).toThrow(TypeError('CRC should not to be first'));
     expect(() => {
       new Struct().Buffer('data', -2).CRC16LE('crc').compile();
     }).not.toThrow();
@@ -817,7 +843,6 @@ describe('Struct', () => {
     }).toThrow('String is too long');
     const StringLiteral = new Struct('StringLiteral')
       .String('value', {
-        length: 16,
         literal: 'Lorem ipsum',
       })
       .compile();
@@ -830,13 +855,18 @@ describe('Struct', () => {
       literal.value = 'Lorem ipsum';
     }).not.toThrow();
     const raw = StringLiteral.raw(literal);
-    expect(raw).toHaveLength(16);
-    const expected = Buffer.alloc(16);
+    expect(raw).toHaveLength(11);
+    const expected = Buffer.alloc(11);
     Buffer.from('Lorem ipsum').copy(expected);
     expect(raw).toEqual(expected);
   });
   test('string array', () => {
-    const Text = new Struct('Text').StringArray('lines', { length: 20, lines: 5 }).compile();
+    const Text = new Struct('Text')
+      .StringArray('lines', {
+        length: 20,
+        lines: 5,
+      })
+      .compile();
     expect(Text.baseSize).toBe(100);
     const text = new Text();
     expect(Array.isArray(text.lines)).toBe(true);
@@ -864,5 +894,19 @@ describe('Struct', () => {
     }).toThrow(new TypeError('Cannot add property 6, object is not extensible'));
     expect(Object.isExtensible(text.lines)).toBe(false);
     expect(inspect(expected)).toBe(inspect(text.lines));
+  });
+  test('multiple tiles', () => {
+    const A = new Struct('A').UInt8('value').compile();
+    const B = new Struct('B').UInt16LE('value').compile();
+    const Wrapper = new Struct('Wrapper').StructArray('a', A).back().StructArray('b', B).compile();
+    const bytes = [1, 2, 3, 4];
+    const words = [0x201, 0x403];
+    const item = new Wrapper(bytes).toJSON();
+    expect(item.a.map(({ value }) => value)).toEqual(bytes);
+    expect(item.b.map(({ value }) => value)).toEqual(words);
+    const BinData = new Struct('BinData').UInt8Array('bytes').back().UInt16Array('words').compile();
+    const binData = new BinData(bytes);
+    expect(binData.bytes).toEqual(new Uint8Array(bytes));
+    expect(binData.words).toEqual(new Uint16Array(words));
   });
 });
