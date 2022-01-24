@@ -727,22 +727,6 @@ type StructInstance<T, ClassName extends string> = T & {
   toJSON(): POJO<T>;
 } & StructGuard<ClassName>;
 
-type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
-
-const isFixed = (desc: PropDesc): desc is MakeRequired<PropDesc<IntegerTypes>, 'literal'> =>
-  desc.literal !== undefined &&
-  typeof desc.type !== 'string' &&
-  [
-    PropType.Int8,
-    PropType.Int16,
-    PropType.Int32,
-    PropType.BigInt64,
-    PropType.UInt8,
-    PropType.UInt16,
-    PropType.UInt32,
-    PropType.BigUInt64,
-  ].includes(desc.type);
-
 /**
  * Checksum function type
  */
