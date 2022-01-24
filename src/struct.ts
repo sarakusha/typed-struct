@@ -58,6 +58,10 @@ type ReplaceDistributive<Base, Condition, Target> = Base extends any
     ? Target
     : Base extends Record<PropertyKey, unknown>
     ? Id<ReplaceRecursively<Base, Condition, Target>>
+    : Base extends string
+    ? string
+    : Base extends Iterable<unknown>
+    ? Id<ReplaceDistributive<IteratorType<Base>, Condition, Target>>[]
     : Base
   : never;
 
@@ -65,14 +69,22 @@ type ReplaceDistributiveNot<Base, Condition, Target> = Base extends any
   ? Base extends Condition
     ? Base
     : Base extends Record<PropertyKey, unknown>
-    ? Id<ReplaceRecursively<Base, Condition, Target, true>>
+    ? Id<ReplaceRecursivelyNot<Base, Condition, Target>>
+    : Base extends string
+    ? string
+    : Base extends Iterable<unknown>
+    ? Id<ReplaceDistributiveNot<IteratorType<Base>, Condition, Target>>[]
     : Target
   : never;
 
-type ReplaceRecursively<Base, Condition, Target, Not extends boolean = false> = {
-  [P in keyof Base]: Not extends false
-    ? ReplaceDistributive<Base[P], Condition, Target>
-    : ReplaceDistributiveNot<Base[P], Condition, Target>;
+type IteratorType<T> = T extends Iterable<infer E> ? E : never;
+
+type ReplaceRecursively<Base, Condition, Target> = {
+  [P in keyof Base]: ReplaceDistributive<Base[P], Condition, Target>;
+};
+
+type ReplaceRecursivelyNot<Base, Condition, Target> = {
+  [P in keyof Base]: ReplaceDistributiveNot<Base[P], Condition, Target>;
 };
 
 type OmitTypeDistributive<Base, Condition> = Base extends any
@@ -90,25 +102,24 @@ type OmitTypeRecursively<Base, Condition> = OmitType<
 
 type Item<A> = A extends any ? (A extends readonly (infer T)[] ? T : A) : never;
 
+type DeepWriteable<T> = {
+  -readonly [P in keyof T]: T[P] extends Record<PropertyKey, unknown>
+    ? Id<DeepWriteable<T[P]>>
+    : T[P];
+};
+
 type POJO<T> = Id<
-  ReplaceRecursively<
-    ReplaceRecursively<
+  DeepWriteable<
+    ReplaceRecursivelyNot<
       ReplaceRecursively<
-        ReplaceRecursively<
-          // eslint-disable-next-line @typescript-eslint/ban-types
-          OmitTypeRecursively<T, Function | undefined>,
-          Iterable<number>,
-          number[]
-        >,
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        OmitTypeRecursively<T, Function | undefined>,
         Date | bigint,
         string
       >,
-      Iterable<bigint>,
-      string[]
-    >,
-    string | number | boolean | null | number[] | string[],
-    unknown,
-    true
+      string | number | boolean | null,
+      unknown
+    >
   >
 >;
 
@@ -806,30 +817,23 @@ const isIterable = (arr: unknown): arr is Iterable<unknown> => Symbol.iterator i
 const isObject = (obj: unknown): obj is Record<PropertyKey, unknown> =>
   Object.prototype.toString.call(obj) === '[object Object]';
 
-const deepClone = <T>(obj: T): POJO<T> => {
-  const clone: any = {};
-  Object.entries(obj).forEach(([name, value]) => {
-    if (typeof value === 'bigint') {
-      clone[name] = value.toString();
-    } else if (isSimpleOrString(value)) {
-      clone[name] = value;
-    } else if (isIterable(value)) {
-      const values = [...value];
-      const [first] = values;
-      clone[name] = typeof first === 'bigint' ? values.map(v => (v as bigint).toString()) : values;
-    } else if (isObject(value)) {
-      clone[name] = deepClone(value);
-    } else {
-      try {
-        const v = typeof value.toJSON === 'function' ? value.toJSON() : value.toString();
-        if (v !== undefined) clone[name] = v;
-      } catch (err) {
-        /* istanbul ignore next */
-        console.warn(`error while serialize ${name}: ${err.message}`);
-      }
-    }
-  });
-  return clone;
+const toPOJO = (value: any): any => {
+  if (typeof value === 'bigint') return value.toString();
+  if (isSimpleOrString(value)) return value;
+  if (isIterable(value)) return [...value].map(toPOJO);
+  if (isObject(value))
+    return Object.entries(value).reduce(
+      (acc, [name, val]) => ({
+        ...acc,
+        [name]: toPOJO(val),
+      }),
+      {}
+    );
+  try {
+    return typeof value.toJSON === 'function' ? value.toJSON() : JSON.stringify(value);
+  } catch {
+    return value.toString();
+  }
 };
 
 const nameIt = <C extends Constructable>(name: string, superClass: C) =>
