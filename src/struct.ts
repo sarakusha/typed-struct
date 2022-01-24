@@ -193,6 +193,8 @@ type BooleanTypes = PropType.Boolean8 | PropType.Boolean16 | PropType.Boolean32;
 
 type SimpleTypes = NumericTypes | BooleanTypes;
 
+type AssignableTypes = number | boolean | string | Date;
+
 type NativeType<T extends PropType | string> = T extends BigIntTypes
   ? bigint
   : T extends NumericTypes
@@ -219,6 +221,7 @@ export type Setter<R> = (type: string, buffer: Buffer, value: R) => boolean;
 const isSimpleType = (desc: PropDesc): desc is PropDesc<SimpleTypes, number | boolean | bigint> =>
   desc.struct === undefined &&
   typeof desc.type !== 'string' &&
+  desc.type !== PropType.Buffer &&
   desc.type !== PropType.String &&
   desc.type !== PropType.StringArray;
 
@@ -294,7 +297,7 @@ const setBits = (
 const getUnsigned = (value: number, size: number): number =>
   (size < 32 ? value & ((1 << size) - 1) : value) >>> 0;
 
-function getSize(type: IntegerTypes): 1 | 2 | 4 | 8;
+function getSize(type: SimpleTypes): 1 | 2 | 4 | 8;
 function getSize(type: string): undefined;
 function getSize(type: PropType | string): 1 | 2 | 4 | 8 | undefined;
 function getSize(type: PropType | string): 1 | 2 | 4 | 8 | undefined {
@@ -332,10 +335,10 @@ const encodeMaskedValue = (
   mask?: BitMask
 ): number => (mask ? setBits(dest, mask, value, size) : getUnsigned(value, size));
 
-const getValue = (
-  info: PropDesc<SimpleTypes>,
+const getValue = <T extends SimpleTypes>(
+  info: PropDesc<T>,
   data: Buffer
-): bigint | number | boolean | undefined => {
+): NativeType<T> | bigint | number | boolean | undefined => {
   // if (!isSimpleType(info)) throw new TypeError('Invalid type');
   const { len, offset, type, mask, be, tail } = info;
   /* istanbul ignore next */
@@ -397,10 +400,10 @@ const getValue = (
   }
 };
 
-const setValue = (
-  info: PropDesc<SimpleTypes>,
+const setValue = <T extends SimpleTypes>(
+  info: PropDesc<T>,
   data: Buffer,
-  value: number | boolean | bigint
+  value: NativeType<T>
 ): boolean => {
   // if (!isSimpleType(info)) throw new TypeError('Invalid type');
   const { mask, ...other } = info;
@@ -508,7 +511,7 @@ const throwUnknownType = (type: string) => {
 };
 
 const getTypedArrayConstructor = (
-  type?: SimpleTypes
+  type: SimpleTypes
 ):
   | Int8ArrayConstructor
   | Uint8ArrayConstructor
@@ -519,8 +522,7 @@ const getTypedArrayConstructor = (
   | Float32ArrayConstructor
   | Float64ArrayConstructor
   | BigInt64ArrayConstructor
-  | BigUint64ArrayConstructor
-  | undefined => {
+  | BigUint64ArrayConstructor => {
   switch (type) {
     case PropType.Int8:
       return Int8Array;
@@ -546,7 +548,7 @@ const getTypedArrayConstructor = (
     case PropType.BigUInt64:
       return BigUint64Array;
     default:
-      return undefined;
+      throw new TypeError('Invalid array type');
   }
 };
 
@@ -582,12 +584,16 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
     if (!getter && !setter) {
       desc.value = buf;
     }
+  } else if (info.type === PropType.Buffer) {
+    desc.value = data.slice(
+      info.offset,
+      info.len && info.len > 0 ? info.offset + info.len : info.len
+    );
   } else if (isSimpleType(info)) {
     if (!isCrc(info) && (info.len || info.tail)) {
       const TypedArray = getTypedArrayConstructor(info.type);
-      desc.value = TypedArray
-        ? new TypedArray(data.buffer, data.byteOffset + info.offset, info.len)
-        : data.slice(info.offset, info.len && info.len > 0 ? info.offset + info.len : info.len);
+      const len = info.len ?? Math.floor((data.length - info.offset) / getSize(info.type));
+      desc.value = new TypedArray(data.buffer, data.byteOffset + info.offset, len);
     } else {
       info.literal === undefined || setValue(info, data, info.literal); // initialize
       desc.get = () => getValue(info, data); // ?? throwUnknownType(info.type);
@@ -603,7 +609,7 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
     const { len, tail, offset } = info;
     if (len || tail) {
       value = [];
-      const count = len ?? Math.floor(data.length / S.baseSize);
+      const count = len ?? Math.floor((data.length - offset) / S.baseSize);
       for (let i = 0; i < count; i += 1) {
         const start = offset + S.baseSize * i;
         (value as unknown[]).push(new S(data.slice(start, start + S.baseSize)));
@@ -675,8 +681,13 @@ type ExtendStruct<
   ClassName extends string,
   N extends string,
   R,
-  HasCRC extends boolean = false
-> = Struct<T & { [P in N]: R }, ClassName, HasCRC>;
+  HasCRC extends boolean = false,
+  Readonly = R extends AssignableTypes ? false : true
+> = Struct<
+  T & (Readonly extends false ? { [P in N]: R } : { readonly [P in N]: R }),
+  ClassName,
+  HasCRC
+>;
 
 type TypedArrayType<T extends NumericTypes> = T extends PropType.Int8
   ? Int8Array
@@ -712,11 +723,25 @@ const isCrc = (info: {
   info.type !== PropType.Buffer &&
   info.type !== PropType.String;
 
-type StructInstance<T, ClassName extends string> = Id<
-  T & {
-    toJSON(): POJO<T>;
-  } & StructGuard<ClassName>
->;
+type StructInstance<T, ClassName extends string> = T & {
+  toJSON(): POJO<T>;
+} & StructGuard<ClassName>;
+
+type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+
+const isFixed = (desc: PropDesc): desc is MakeRequired<PropDesc<IntegerTypes>, 'literal'> =>
+  desc.literal !== undefined &&
+  typeof desc.type !== 'string' &&
+  [
+    PropType.Int8,
+    PropType.Int16,
+    PropType.Int32,
+    PropType.BigInt64,
+    PropType.UInt8,
+    PropType.UInt16,
+    PropType.UInt32,
+    PropType.BigUInt64,
+  ].includes(desc.type);
 
 /**
  * Checksum function type
@@ -808,7 +833,7 @@ export interface StructConstructor<T, ClassName extends string> {
    * @param instance - the object from which to get the underlying buffer
    */
   raw(instance: StructInstance<T, ClassName>): Buffer;
-  raw(instance: T): Buffer | undefined;
+  raw(instance: POJO<T>): Buffer | undefined;
 }
 
 const isSimpleOrString = (value: unknown): value is number | boolean | string | null | undefined =>
@@ -868,27 +893,34 @@ export function typed<T extends number | bigint | string>(): T | undefined {
 /**
  * String options.
  */
-export type StringOpts<R extends string> = {
-  /**
-   * The encoding of `string`. Default: `utf8`.
-   * To use the full set of encodings install
-   * [iconv-lite](https://github.com/ashtuchkin/iconv-lite) package
-   */
-  encoding?: string;
-  /** The byte length of a string field */
-  length: number;
-  /** The fixed value */
-  literal?: R;
-};
+export type StringOpts<R extends string> =
+  | {
+      /**
+       * The encoding of `string`. Default: `utf8`.
+       * To use the full set of encodings install
+       * [iconv-lite](https://github.com/ashtuchkin/iconv-lite) package
+       */
+      encoding?: string;
+      /** The byte length of a string field */
+      length: number;
+      literal?: undefined;
+    }
+  | {
+      encoding?: string;
+      length?: undefined;
+      /** The fixed value */
+      literal: R;
+    };
 
 /**
  * String array options
  * * **lines** - the number of lines in the string array
  */
 export type StringArrayOpts = Id<
-  Omit<StringOpts<string>, 'literal'> & {
+  Omit<StringOpts<string>, 'literal' | 'length'> & {
     /** the number of rows in the string array */
     lines: number;
+    length: number;
   }
 >;
 
@@ -1444,7 +1476,7 @@ export default class Struct<
     let encoding: string | undefined;
     let literal: R | undefined;
     if (typeof arg1 === 'object') {
-      length = arg1.length;
+      length = arg1.length ?? arg1.literal.length;
       encoding = arg1.encoding;
       literal = arg1.literal;
     } else {
@@ -1899,7 +1931,8 @@ export default class Struct<
           Buffer.isBuffer(rawOrSize) || Array.isArray(rawOrSize)
             ? rawOrSize.length
             : rawOrSize ?? baseSize;
-        if (size < baseSize) throw TypeError(`Buffer size must be at least ${baseSize} (${size})`);
+        if (size < baseSize)
+          throw TypeError(`[${className}]: Buffer size must be at least ${baseSize} (${size})`);
         let $raw: Buffer;
         if (typeof rawOrSize === 'number' || rawOrSize === undefined) {
           $raw = Buffer.alloc(size);
@@ -1916,7 +1949,7 @@ export default class Struct<
       static raw = (instance: Instance): Buffer => Struct.raw(instance);
 
       toJSON(): POJO<T> {
-        return deepClone(this as unknown as T);
+        return toPOJO(this);
       }
     }
 
@@ -1980,14 +2013,13 @@ export default class Struct<
     const names: N[] = Array.isArray(nameOrAliases) ? nameOrAliases : [nameOrAliases];
     const [exists] = names.filter(name => self.props.has(name));
     if (exists !== undefined) throw TypeError(`Property "${exists}" already exists`);
-    if (this.tailed && !isCrc(info))
+    if (this.tailed && !isCrc(info) && !info.tail)
       throw TypeError(`Invalid property "${names[0]}". The tail buffer already created`);
     const itemSize = info.struct?.baseSize ?? info.size ?? getSize(info.type) ?? 1;
     if (info.tail) this.tailed = true;
     if (isCrc(info)) {
       const prev = Array.from(self.props.values()).pop();
-      if (!prev || (prev.type !== PropType.Buffer && prev.type !== PropType.String))
-        throw new TypeError('CRC field must follow immediately after the buffer field');
+      if (!prev) throw new TypeError('CRC should not to be first');
       if (prev.len === undefined) {
         prev.len = -itemSize;
       } else if (prev.len < 0) {
@@ -2000,7 +2032,12 @@ export default class Struct<
     names.forEach(name => {
       self.props.set(name, { offset: isCrc(info) ? -itemSize : this.position, ...info });
     });
-    const size = Math.abs(info.len ?? (info.type === PropType.Buffer ? 0 : 1)) * itemSize;
+    const size =
+      Math.abs(
+        info.len ??
+          // (this.position === 0 || info ? 1 : 0)
+          (info.type === PropType.Buffer || info.tail ? 0 : 1)
+      ) * itemSize;
     this.position += size;
     return self;
   }
