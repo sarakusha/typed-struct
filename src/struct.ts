@@ -3,7 +3,11 @@ import { inspect } from 'util';
 
 import type { decode as Decode, encode as Encode } from 'iconv-lite';
 
-export type ExtractType<C> = C extends new () => infer T ? Omit<T, '__struct' | 'toJSON'> : never;
+export type ExtractType<C, clear extends boolean = true> = C extends new () => infer T
+  ? clear extends true
+    ? Omit<T, '__struct' | 'toJSON'>
+    : T
+  : never;
 
 let iconvDecode: typeof Decode | undefined;
 let iconvEncode: typeof Encode | undefined;
