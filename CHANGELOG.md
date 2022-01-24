@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/sarakusha/typed-struct/compare/v2.1.1...v2.2.0) (2022-01-24)
+
+
+### Features
+
+* extracting clear or full type ([72e2285](https://github.com/sarakusha/typed-struct/commit/72e22853e66486fec4e36ff86ad3107680762c30))
+* setter property is optional for a custom type ([c5b9200](https://github.com/sarakusha/typed-struct/commit/c5b92001dd9982ecb17c90b54ff4ddde6218c6b7))
+
+
+### Bug Fixes
+
+* fixed some bugs, strict types ([c1705c5](https://github.com/sarakusha/typed-struct/commit/c1705c5ea9e98e238e8a5d94ec9713c60c93e80c))
+* returns a more accurate type in method toJSON() ([390b752](https://github.com/sarakusha/typed-struct/commit/390b752fb8c89e8db75c1dfbd7068d157fa55e91))
+
 ### [2.1.1](https://github.com/sarakusha/typed-struct/compare/v2.1.0...v2.1.1) (2021-07-13)
 
 ## [2.1.0](https://github.com/sarakusha/typed-struct/compare/v2.0.0...v2.1.0) (2021-07-13)
