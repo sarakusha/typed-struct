@@ -798,7 +798,7 @@ export interface StructConstructor<T, ClassName extends string> {
   new (array: number[]): StructInstance<T, ClassName>;
   /**
    * Returns the offset in bytes from the beginning of the structure of the specified field
-   * @param name - The filed name
+   * @param name - The field name
    */
   getOffsetOf(name: keyof T): number;
   /**
@@ -1012,7 +1012,7 @@ export default class Struct<
 
   /**
    * Returns the offset in bytes from the beginning of the structure of the specified field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    */
   getOffsetOf = (name: keyof T): number | undefined => this.props.get(name)?.offset;
 
@@ -1026,7 +1026,7 @@ export default class Struct<
 
   /**
    * defines a signed, 8-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Int8 = <N extends string, R extends number>(
@@ -1040,7 +1040,7 @@ export default class Struct<
 
   /**
    * defines an unsigned, 8-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   UInt8 = <N extends string, R extends number>(
@@ -1054,7 +1054,7 @@ export default class Struct<
 
   /**
    * defines a signed, little-endian 16-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Int16LE = <N extends string, R extends number>(
@@ -1068,7 +1068,7 @@ export default class Struct<
 
   /**
    * defines an unsigned, little-endian 16-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   UInt16LE = <N extends string, R extends number>(
@@ -1082,7 +1082,7 @@ export default class Struct<
 
   /**
    * defines a signed, little-endian 32-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Int32LE = <N extends string, R extends number>(
@@ -1096,7 +1096,7 @@ export default class Struct<
 
   /**
    * defines an unsigned, little-endian 32-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   UInt32LE = <N extends string, R extends number>(
@@ -1110,7 +1110,7 @@ export default class Struct<
 
   /**
    * defines a signed, big-endian 16-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Int16BE = <N extends string, R extends number>(
@@ -1125,7 +1125,7 @@ export default class Struct<
 
   /**
    * defines an unsigned, big-endian 16-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   UInt16BE = <N extends string, R extends number>(
@@ -1140,7 +1140,7 @@ export default class Struct<
 
   /**
    * defines a signed, big-endian 32-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Int32BE = <N extends string, R extends number>(
@@ -1155,7 +1155,7 @@ export default class Struct<
 
   /**
    * defines an unsigned, big-endian 32-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   UInt32BE = <N extends string, R extends number>(
@@ -1170,7 +1170,7 @@ export default class Struct<
 
   /**
    * defines a 32-bit, little-endian float field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Float32LE = <N extends string, R extends number>(
@@ -1184,7 +1184,7 @@ export default class Struct<
 
   /**
    * defines a 64-bit, little-endian float field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Float64LE = <N extends string, R extends number>(
@@ -1198,7 +1198,7 @@ export default class Struct<
 
   /**
    * defines a 32-bit, big-endian float field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Float32BE = <N extends string, R extends number>(
@@ -1213,7 +1213,7 @@ export default class Struct<
 
   /**
    * defines a 64-bit, big-endian float field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Float64BE = <N extends string, R extends number>(
@@ -1228,7 +1228,7 @@ export default class Struct<
 
   /**
    * defines a signed, little-endian 64-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   BigInt64LE = <N extends string, R extends bigint>(
@@ -1242,7 +1242,7 @@ export default class Struct<
 
   /**
    * defines a signed, big-endian 64-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   BigInt64BE = <N extends string, R extends bigint>(
@@ -1257,7 +1257,7 @@ export default class Struct<
 
   /**
    * defines an unsigned, little-endian 64-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   BigUInt64LE = <N extends string, R extends bigint>(
@@ -1271,7 +1271,7 @@ export default class Struct<
 
   /**
    * defines an unsigned, big-endian 64-bit integer field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   BigUInt64BE = <N extends string, R extends bigint>(
@@ -1286,7 +1286,7 @@ export default class Struct<
 
   /**
    * defines a 8-bit boolean field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Boolean8 = <N extends string, R extends boolean>(
@@ -1300,7 +1300,7 @@ export default class Struct<
 
   /**
    * defines a 16-bit boolean field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Boolean16 = <N extends string, R extends boolean>(
@@ -1314,7 +1314,7 @@ export default class Struct<
 
   /**
    * defines a 32-bit boolean field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   Boolean32 = <N extends string, R extends boolean>(
@@ -1328,7 +1328,7 @@ export default class Struct<
 
   /**
    * defines a single-byte binary-coded decimal
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param literal - The fixed value
    */
   BCD = <N extends string, R extends number>(
@@ -1342,7 +1342,7 @@ export default class Struct<
 
   /**
    * defines a nested structure
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param struct - structure factory
    */
   Struct = <N extends string, S, StructClass extends string>(
@@ -1380,7 +1380,7 @@ export default class Struct<
 
   /**
    * defines a buffer field of `length` bytes
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - The desired length of the `Buffer`
    */
   Buffer<N extends string>(name: N | N[], length?: number): ExtendStruct<T, ClassName, N, Buffer> {
@@ -1393,20 +1393,20 @@ export default class Struct<
 
   /**
    * defines a tailed string field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    */
   String<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, string>;
 
   /**
    * defines a string field of `length` bytes
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - The byte length of a string
    */
   String<N extends string>(name: N | N[], length: number): ExtendStruct<T, ClassName, N, string>;
 
   /**
    * defines an encoded string field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param encoding - The encoding of string. Default: `utf8`.
    * To use the full set of encodings install
    * [iconv-lite](https://github.com/ashtuchkin/iconv-lite) package
@@ -1415,7 +1415,7 @@ export default class Struct<
 
   /**
    * defines an encoded string field of `length` bytes
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - The byte length of a string
    * @param encoding - The encoding of string. Default: `utf8`.
    * To use the full set of encodings install
@@ -1429,7 +1429,7 @@ export default class Struct<
 
   /**
    * defines an encoded string field of `length` bytes
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param encoding - The encoding of string. Default: `utf8`.
    * To use the full set of encodings install
    * [iconv-lite](https://github.com/ashtuchkin/iconv-lite) package
@@ -1443,7 +1443,7 @@ export default class Struct<
 
   /**
    * defines a string field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param opts - The string options
    */
   String<N extends string, R extends string>(
@@ -1481,7 +1481,7 @@ export default class Struct<
   /**
    * defines a `Int8Array` typed array represents an array of twos-complement 8-bit signed
    * integers.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - the number of elements
    */
   Int8Array = <N extends string>(
@@ -1491,7 +1491,7 @@ export default class Struct<
 
   /**
    * defines a `Uint8Array` typed array represents an array of 8-bit unsigned integers.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - the number of elements
    */
   UInt8Array = <N extends string>(
@@ -1503,7 +1503,7 @@ export default class Struct<
   /**
    * defines a `Int16Array` typed array represents an array of twos-complement 16-bit signed
    * integers.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - the number of elements
    */
   Int16Array = <N extends string>(
@@ -1514,7 +1514,7 @@ export default class Struct<
 
   /**
    * defines a `Uint16Array` typed array represents an array of 16-bit unsigned integers.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - the number of elements
    */
   UInt16Array = <N extends string>(
@@ -1526,7 +1526,7 @@ export default class Struct<
   /**
    * defines a `Int32Array` typed array represents an array of twos-complement 32-bit signed
    * integers.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - the number of elements
    */
   Int32Array = <N extends string>(
@@ -1537,7 +1537,7 @@ export default class Struct<
 
   /**
    * defines a `Uint32Array` typed array represents an array of 32-bit unsigned integers.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - the number of elements
    */
   UInt32Array = <N extends string>(
@@ -1548,7 +1548,7 @@ export default class Struct<
 
   /**
    * defines a `Float32Array` typed array represents an array of 32-bit floating numbers.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - the number of elements
    */
   Float32Array = <N extends string>(
@@ -1559,7 +1559,7 @@ export default class Struct<
 
   /**
    * defines a `Float64Array` typed array represents an array of 64-bit floating numbers.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - the number of elements
    */
   Float64Array = <N extends string>(
@@ -1571,7 +1571,7 @@ export default class Struct<
   /**
    * defines a `BigInt64Array` typed array represents an array of 64-bit signed
    * integers.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - the number of elements
    */
   BigInt64Array = <N extends string>(
@@ -1583,7 +1583,7 @@ export default class Struct<
   /**
    * defines a `BigUint64Array` typed array represents an array of 64-bit unsigned
    * integers.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param length - the number of elements
    */
   BigUInt64Array = <N extends string>(
@@ -1594,7 +1594,7 @@ export default class Struct<
 
   /**
    * defines an array of elements of a typed struct
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param struct - The custom typed struct
    * @param length - the number of elements
    */
@@ -1612,7 +1612,7 @@ export default class Struct<
 
   /**
    * defines a string array field
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param opts - The string array options
    */
   StringArray<N extends string>(
@@ -1635,7 +1635,7 @@ export default class Struct<
 
   /**
    * defines a field with a custom getter and setter
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param size - The field size
    * @param getter - a function which serves as a getter for the property, or undefined if there is
    *   no getter.
@@ -1667,14 +1667,14 @@ export default class Struct<
   /**
    * The last byte in the structure, usually used as a checksum. Typically used
    * for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    */
   CRC8<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
 
   /**
    * The last byte in the structure, usually used as a checksum. Typically used
    * for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param calc - checksum function
    * @param initial - initial value, default 0.
    */
@@ -1687,7 +1687,7 @@ export default class Struct<
   /**
    * The last byte in the structure, usually used as a checksum. Typically used
    * for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param opts - checksum function parameters
    */
   CRC8<N extends string>(name: N, opts: CRCOpts): ExtendStruct<T, ClassName, N, number, true>;
@@ -1703,14 +1703,14 @@ export default class Struct<
   /**
    * The last two bytes in the structure storing unsigned, little-endian
    * 16-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    */
   CRC16LE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
 
   /**
    * The last two bytes in the structure storing unsigned, little-endian
    * 16-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param calc - checksum function
    * @param initial - initial value, default 0.
    */
@@ -1723,7 +1723,7 @@ export default class Struct<
   /**
    * The last two bytes in the structure storing unsigned, little-endian
    * 16-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param opts - checksum function parameters
    */
   CRC16LE<N extends string>(name: N, opts: CRCOpts): ExtendStruct<T, ClassName, N, number, true>;
@@ -1739,14 +1739,14 @@ export default class Struct<
   /**
    * The last two bytes in the structure storing unsigned, big-endian
    * 16-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    */
   CRC16BE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
 
   /**
    * The last two bytes in the structure storing unsigned, big-endian
    * 16-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param calc - checksum function
    * @param initial - initial value, default 0.
    */
@@ -1759,7 +1759,7 @@ export default class Struct<
   /**
    * The last two bytes in the structure storing unsigned, big-endian
    * 16-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param opts - checksum function parameters
    */
   CRC16BE<N extends string>(name: N, opts: CRCOpts): ExtendStruct<T, ClassName, N, number, true>;
@@ -1775,14 +1775,14 @@ export default class Struct<
   /**
    * The last four bytes in the structure storing unsigned, little-endian
    * 32-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    */
   CRC32LE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
 
   /**
    * The last four bytes in the structure storing unsigned, little-endian
    * 32-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param calc - checksum function
    * @param initial - initial value, default 0.
    */
@@ -1795,7 +1795,7 @@ export default class Struct<
   /**
    * The last four bytes in the structure storing unsigned, little-endian
    * 32-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param opts - checksum function parameters
    */
   CRC32LE<N extends string>(name: N, opts: CRCOpts): ExtendStruct<T, ClassName, N, number, true>;
@@ -1811,14 +1811,14 @@ export default class Struct<
   /**
    * The last four bytes in the structure storing unsigned, big-endian
    * 32-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    */
   CRC32BE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
 
   /**
    * The last four bytes in the structure storing unsigned, big-endian
    * 32-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param calc - checksum function
    * @param initial - initial value, default 0.
    */
@@ -1831,7 +1831,7 @@ export default class Struct<
   /**
    * The last four bytes in the structure storing unsigned, big-endian
    * 32-bit integer usually used as a checksum. Typically used for variable length structures.
-   * @param name - The filed name or aliases
+   * @param name - The field name or aliases
    * @param opts - checksum function parameters
    */
   CRC32BE<N extends string>(name: N, opts: CRCOpts): ExtendStruct<T, ClassName, N, number, true>;
