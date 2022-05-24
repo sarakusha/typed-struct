@@ -56,8 +56,16 @@
   "engines": {
     "node": ">=12"
   },
-  "dependencies": {},
-  "optionalDependencies": {
+  "peerDependenciesMeta": {
+    "iconv-lite": {
+      "optional": true
+    },
+    "debug": {
+      "optional": true
+    }
+  },
+  "peerDependencies": {
+    "debug": "^4.3.3",
     "iconv-lite": "^0.6.3"
   },
   "devDependencies": {
