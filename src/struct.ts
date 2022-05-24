@@ -197,7 +197,7 @@ type BooleanTypes = PropType.Boolean8 | PropType.Boolean16 | PropType.Boolean32;
 
 type SimpleTypes = NumericTypes | BooleanTypes;
 
-type AssignableTypes = number | boolean | string | Date;
+type AssignableTypes = number | boolean | string | Date | bigint;
 
 type NativeType<T extends PropType | string> = T extends BigIntTypes
   ? bigint
