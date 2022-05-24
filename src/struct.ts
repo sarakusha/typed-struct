@@ -30,6 +30,22 @@ import('iconv-lite')
     }
   );
 
+let useColors = false;
+let colors: number[] = [0];
+
+import('debug')
+  .then(debug => {
+    colors = debug.colors.map(color => typeof color === 'string' ? parseInt(color.slice(1), 16) : color);
+    useColors = debug.useColors() && colors && colors.length > 1;
+  })
+  .catch(
+    /* istanbul ignore next */
+    () => {
+      useColors = false;
+      colors.length = 1;
+    }
+  );
+
 type FilterFlags<Base, Condition> = {
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
 };
@@ -763,6 +779,12 @@ export type WithCRC<T extends Constructable, HasCRC extends boolean> = Condition
   HasCRC
 >;
 
+const selectColor = (name: string): number =>
+  colors[
+    Math.abs([...name].reduce((hash, ch) => (((hash << 5) - hash + ch.charCodeAt(0))) | 0, 0)) %
+      (colors.length || 1)
+  ];
+
 /**
  * A ready-made constructor with static methods for a custom structure
  */
@@ -861,6 +883,14 @@ const nameIt = <C extends Constructable>(name: string, superClass: C) =>
       }
     },
   }[name]);
+
+const printBuffer = (data: Buffer): string =>
+  [...data].map(byte => byte.toString(16).padStart(2, '0')).join('-');
+
+const colorPrint = (c: number, msg: string): string => {
+  const colorCode = `\u001B[3${c < 8 ? c : `8;5;${c}`}`;
+  return `${colorCode};1m${msg}\u001B[0m`;
+};
 
 /**
  * Use this function to specify the type of the numeric field
@@ -1943,8 +1973,51 @@ export default class Struct<
         } else {
           $raw = clone || Array.isArray(rawOrSize) ? Buffer.from(rawOrSize) : rawOrSize;
         }
-        Object.defineProperty(this, '$raw', { value: $raw });
         defineProps(this, props, $raw);
+        const toString = () => {
+          const { length } = $raw;
+          const offsets = Object.entries<number>(getOffsets())
+            .map<[keyof T, number]>(([name, offset]) => [
+              name as keyof T,
+              offset < 0 ? offset + length : offset,
+            ])
+            .sort(([, a], [, b]) => a - b);
+          if (offsets.length === 0) return '';
+          const chunks: [keyof T, string][] = [];
+          for (let i = 0; i < offsets.length; i += 1) {
+            const [name, start] = offsets[i];
+            const prop = props.get(name);
+            switch (prop?.type) {
+              case PropType.Struct: {
+                const value = (this as any)[name];
+                if (prop.len === undefined) chunks.push([name, `${value}`]);
+                else if (Array.isArray(value))
+                  chunks.push([name, value.map(v => `${v}`).join(colorPrint(2, '='))]);
+                break;
+              }
+              default: {
+                const [, end] = i + 1 < offsets.length ? offsets[i + 1] : [];
+                const buf = $raw.slice(start, end);
+                if (buf.length > 0) chunks.push([name, printBuffer(buf)]);
+              }
+            }
+          }
+          return chunks
+            .map(([name, value]) =>
+              useColors ? colorPrint(selectColor(name.toString()), value) : value
+            )
+            .join('=');
+        };
+        Object.defineProperties(this, {
+          $raw: { value: $raw },
+          ...(inspect && {
+            [inspect.custom]: {
+              value: (...args: unknown[]) => inspect?.({ ...this }, ...args.slice(1)),
+            },
+          }),
+          [Symbol.toPrimitive]: { value: toString },
+          toString: { value: toString },
+        });
         // Object.preventExtensions(this);
       }
 
