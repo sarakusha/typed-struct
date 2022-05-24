@@ -854,7 +854,12 @@ const isSimpleOrString = (value: unknown): value is number | boolean | string | 
 const isIterable = (arr: unknown): arr is Iterable<unknown> => Symbol.iterator in Object(arr);
 
 const isObject = (obj: unknown): obj is Record<PropertyKey, unknown> =>
-  Object.prototype.toString.call(obj) === '[object Object]';
+  obj != null &&
+  !Array.isArray(obj) &&
+  !Buffer.isBuffer(obj) &&
+  typeof obj === 'object' &&
+  Object.entries(obj).length > 0;
+// Object.prototype.toString.call(obj) === '[object Object]';
 
 const toPOJO = (value: any): any => {
   if (typeof value === 'bigint') return value.toString();
