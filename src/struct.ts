@@ -1,6 +1,4 @@
 /* eslint-disable no-bitwise,max-classes-per-file,no-use-before-define,object-shorthand,@typescript-eslint/no-explicit-any */
-import { inspect } from 'util';
-
 import type { decode as Decode, encode as Encode } from 'iconv-lite';
 
 export type ExtractType<C, clear extends boolean = true> = C extends new () => infer T
@@ -11,8 +9,14 @@ export type ExtractType<C, clear extends boolean = true> = C extends new () => i
 
 let iconvDecode: typeof Decode | undefined;
 let iconvEncode: typeof Encode | undefined;
+let inspect: (((...args: any[]) => string) & { custom: symbol }) | undefined;
 
-// eslint-disable-next-line import/no-extraneous-dependencies
+if (typeof process !== 'undefined' && typeof process.versions.node !== 'undefined') {
+  import('util').then(util => {
+    inspect = util.inspect;
+  });
+}
+
 import('iconv-lite')
   .then(({ encode, decode }) => {
     iconvEncode = encode;
@@ -647,13 +651,15 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
     const target = [...Array(len)];
     Object.defineProperties(target, {
       length: { value: len },
-      [inspect.custom]: {
-        value: (...args: Parameters<typeof inspect>) =>
-          inspect(
-            target.map((_, index) => getter(index)),
-            ...args.slice(1)
-          ),
-      },
+      ...(inspect && {
+        [inspect.custom]: {
+          value: (...args: unknown[]) =>
+            inspect?.(
+              target.map((_, index) => getter(index)),
+              ...args.slice(1)
+            ),
+        },
+      }),
       [Symbol.iterator]: {
         value: function* iterator() {
           for (let i = 0; i < len; i += 1) {
