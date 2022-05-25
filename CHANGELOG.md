@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/sarakusha/typed-struct/compare/v2.2.0...v2.3.0) (2022-05-25)
+
+
+### Features
+
+* overloaded toString method to print a structured buffer for debugging ([fdd22b4](https://github.com/sarakusha/typed-struct/commit/fdd22b48d98f334db24c4a7a957c63d58cc03d4c))
+
+
+### Bug Fixes
+
+* assignment allowed for bigint ([42c1527](https://github.com/sarakusha/typed-struct/commit/42c1527f9669d43db2111f208f51491e69689016))
+* checking color support ([9bcdcf5](https://github.com/sarakusha/typed-struct/commit/9bcdcf53988aafbd614191b66857427c4c2ef145))
+* clarified object definition method ([2a25405](https://github.com/sarakusha/typed-struct/commit/2a25405b4a6c2d290e48a23800a1b1a9a6d63bd7))
+* **package:** debug and icon-light are now fully optional ([f369829](https://github.com/sarakusha/typed-struct/commit/f36982986ec7a89e6da7252b86073015f17d741a))
+* using node:util became optional ([82e4f27](https://github.com/sarakusha/typed-struct/commit/82e4f27d91f54e8346dc5676e3301960c6ae28d6))
+
 ## [2.2.0](https://github.com/sarakusha/typed-struct/compare/v2.1.1...v2.2.0) (2022-01-24)
 
 
