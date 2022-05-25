@@ -1997,7 +1997,7 @@ export default class Struct<
                 const value = (this as any)[name];
                 if (prop.len === undefined) chunks.push([name, `${value}`]);
                 else if (Array.isArray(value))
-                  chunks.push([name, value.map(v => `${v}`).join(colorPrint(2, '='))]);
+                  chunks.push([name, value.map(v => `${v}`).join(useColors ? colorPrint(2, '=') : '=')]);
                 break;
               }
               default: {
