@@ -163,7 +163,7 @@ export enum PropType {
   Float32,
   /** A 64-bit double */
   Float64,
-  /** A 8-bit boolean */
+  /** An 8-bit boolean */
   Boolean8,
   /** A 16-bit boolean */
   Boolean16,
@@ -1326,7 +1326,7 @@ export default class Struct<
     });
 
   /**
-   * defines a 8-bit boolean field
+   * defines an 8-bit boolean field
    * @param name - The field name or aliases
    * @param literal - The fixed value
    */
@@ -1706,14 +1706,14 @@ export default class Struct<
   }
 
   /**
-   * The last byte in the structure, usually used as a checksum. Typically used
+   * The last byte in the structure, usually used as a checksum. Typically, used
    * for variable length structures.
    * @param name - The field name or aliases
    */
   CRC8<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
 
   /**
-   * The last byte in the structure, usually used as a checksum. Typically used
+   * The last byte in the structure, usually used as a checksum. Typically, used
    * for variable length structures.
    * @param name - The field name or aliases
    * @param calc - checksum function
@@ -1726,7 +1726,7 @@ export default class Struct<
   ): ExtendStruct<T, ClassName, N, number, true>;
 
   /**
-   * The last byte in the structure, usually used as a checksum. Typically used
+   * The last byte in the structure, usually used as a checksum. Typically, used
    * for variable length structures.
    * @param name - The field name or aliases
    * @param opts - checksum function parameters
@@ -1743,14 +1743,14 @@ export default class Struct<
 
   /**
    * The last two bytes in the structure storing unsigned, little-endian
-   * 16-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 16-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    */
   CRC16LE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
 
   /**
    * The last two bytes in the structure storing unsigned, little-endian
-   * 16-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 16-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    * @param calc - checksum function
    * @param initial - initial value, default 0.
@@ -1763,7 +1763,7 @@ export default class Struct<
 
   /**
    * The last two bytes in the structure storing unsigned, little-endian
-   * 16-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 16-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    * @param opts - checksum function parameters
    */
@@ -1779,14 +1779,14 @@ export default class Struct<
 
   /**
    * The last two bytes in the structure storing unsigned, big-endian
-   * 16-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 16-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    */
   CRC16BE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
 
   /**
    * The last two bytes in the structure storing unsigned, big-endian
-   * 16-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 16-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    * @param calc - checksum function
    * @param initial - initial value, default 0.
@@ -1799,7 +1799,7 @@ export default class Struct<
 
   /**
    * The last two bytes in the structure storing unsigned, big-endian
-   * 16-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 16-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    * @param opts - checksum function parameters
    */
@@ -1815,14 +1815,14 @@ export default class Struct<
 
   /**
    * The last four bytes in the structure storing unsigned, little-endian
-   * 32-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 32-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    */
   CRC32LE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
 
   /**
    * The last four bytes in the structure storing unsigned, little-endian
-   * 32-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 32-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    * @param calc - checksum function
    * @param initial - initial value, default 0.
@@ -1835,7 +1835,7 @@ export default class Struct<
 
   /**
    * The last four bytes in the structure storing unsigned, little-endian
-   * 32-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 32-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    * @param opts - checksum function parameters
    */
@@ -1851,14 +1851,14 @@ export default class Struct<
 
   /**
    * The last four bytes in the structure storing unsigned, big-endian
-   * 32-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 32-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    */
   CRC32BE<N extends string>(name: N | N[]): ExtendStruct<T, ClassName, N, number>;
 
   /**
    * The last four bytes in the structure storing unsigned, big-endian
-   * 32-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 32-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    * @param calc - checksum function
    * @param initial - initial value, default 0.
@@ -1871,7 +1871,7 @@ export default class Struct<
 
   /**
    * The last four bytes in the structure storing unsigned, big-endian
-   * 32-bit integer usually used as a checksum. Typically used for variable length structures.
+   * 32-bit integer usually used as a checksum. Typically, used for variable length structures.
    * @param name - The field name or aliases
    * @param opts - checksum function parameters
    */
@@ -1933,7 +1933,7 @@ export default class Struct<
   }
 
   /**
-   * Align the current pointer to a eight-byte boundary
+   * Align the current pointer to an eight-byte boundary
    */
   align8(): Struct<T, ClassName, HasCRC> {
     const remainder = this.position % 8;
