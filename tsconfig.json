@@ -4,6 +4,7 @@
     "target": "es2020",
     "outDir": "build/main",
     "rootDir": "src",
+    "baseUrl": "./",
     "moduleResolution": "node",
     "module": "commonjs",
     "removeComments": true,
@@ -41,6 +42,9 @@
 
     "lib": ["es2020"],
     "types": ["node", "jest"],
+    "paths": {
+      "debug": ["@types/debug"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules/**", "src/**/*.spec.ts"],
