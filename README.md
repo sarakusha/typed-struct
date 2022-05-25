@@ -452,7 +452,7 @@ const Model = new Struct('Model')
 
 const model = new Model([0x10, 1, 2, 3, 4, 0x20, 5, 6, 7, 8]);
 ```
-Let's see what the `model` is
+Let's see what the `model` is <sup>[[note*]](#note)</sup>
 ```ts
 console.log(model);
 ```
@@ -486,6 +486,27 @@ output:
   nested: { value: 32, items: [ 5, 6, 7, 8 ] }
 }
 ```
+<br/>
+
+##### Note:
+>Starting from version 2.3.0 in the environment of node.js, the expression
+>``console.log(model)`` behaves the same as ``console.log(model.toJSON())``.
+> This is done to make debugging easier.
+
+### toString()
+For ease of debugging, the generated structures have an overridden ``toString`` method
+that outputs a string of hexadecimal bytes separated by an equals sign at field boundaries.
+If there is a [debug](https://www.npmjs.com/package/debug) package in the dependencies, then these fields will be colored
+depending on the field name.
+
+
+>console.log(\`${model}\`);
+> 
+><span style="color:lightblue">01</span>=<span style="color: lightgreen">ce-ca-23-00-00-00-00-00</span>=<span style="color: orange">ff-ff-ff-ff-ff-ff</span>
+
+
+
+
 ### A typical example of working with binary data via a serial port
 
 Package.ts
