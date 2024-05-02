@@ -1,3 +1,5 @@
-export declare function useColors(): boolean;
+declare module 'debug' {
+export function useColors(): boolean;
 
-export declare const colors: (number|string)[];
+export const colors: (number|string)[];
+}

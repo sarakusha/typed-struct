@@ -46,7 +46,7 @@
       "debug": ["@types/debug"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "@types/*.ts"],
   "exclude": ["node_modules/**", "src/**/*.spec.ts"],
   "compileOnSave": false
 }
