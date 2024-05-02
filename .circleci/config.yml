@@ -9,9 +9,9 @@ jobs:
     steps:
       - checkout
       - node/install-packages:
-          pkg-manager: yarn
-      - run: yarn run test
-      - run: yarn run cov:send
+          pkg-manager: pnpm
+      - run: pnpm run test
+      - run: pnpm run cov:send
 workflows:
   test-app:
     jobs:
