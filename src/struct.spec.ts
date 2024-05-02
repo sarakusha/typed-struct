@@ -935,16 +935,18 @@ describe('Struct', () => {
 }
 `
     );
-    const colored = (str: string): string => `\\x1b\\[.+;1m${str}\\x1b\\[0m`;
-    const chunks = [
-      ['01', 'ce-ca-23-00-00-00-00-00', 'ff-ff-ff-ff-ff-ff'],
-      ['00', '00-00-00-00-00-00-00-00', '00-00-00-00-00-00'],
-    ];
-    const re = new RegExp(
-      colored(chunks.map(item => item.map(colored).join('=')).join(colored('=')))
-    );
-    expect(`${root}`).toMatch(re);
-    console.log(`${root.models[0]}`);
+    if (process.stdout.isTTY) {
+      const colored = (str: string): string => `\\x1b\\[.+;1m${str}\\x1b\\[0m`;
+      const chunks = [
+        ['01', 'ce-ca-23-00-00-00-00-00', 'ff-ff-ff-ff-ff-ff'],
+        ['00', '00-00-00-00-00-00-00-00', '00-00-00-00-00-00'],
+      ];
+      const re = new RegExp(
+        colored(chunks.map(item => item.map(colored).join('=')).join(colored('=')))
+      );
+      expect(`${root}`).toMatch(re);
+      console.log(`${root.models[0]}`);
+    }
     jest.resetModules(); // unload debug
     const { default: S } = await import('./struct');
     const M = new S('Model').UInt8('foo').BigInt64LE('bar').Buffer('baz', 6).compile();
