@@ -107,7 +107,7 @@ describe('Struct', () => {
       bile64: 123456n,
       bibe64: 456789n,
       bule64: 987654n,
-      bube64: 654321n
+      bube64: 654321n,
     };
     // noinspection SpellCheckingInspection
     const rawModel = Buffer.from(
@@ -137,7 +137,7 @@ describe('Struct', () => {
         rawModel.copy(rawNested, rawModel.length);
         expect(new Nested(rawNested)).toEqual({
           model1: model,
-          model2: model
+          model2: model,
         });
       });
       test('should thrown when assigning an object', () => {
@@ -154,12 +154,12 @@ describe('Struct', () => {
     const truthy = {
       b8: true,
       b16: true,
-      b32: true
+      b32: true,
     };
     const falsy = {
       b8: false,
       b16: false,
-      b32: false
+      b32: false,
     };
     const bufferFF = Buffer.alloc(7, 0xff);
     const buffer00 = Buffer.alloc(7);
@@ -346,7 +346,7 @@ describe('Struct', () => {
     expect(vector).toEqual({ points: [new Point([-1, 20]), new Point([30, -2])] });
     expect(polygon.vertices).toHaveLength(5);
     expect(() => (vector.points[0] = new Point([1, 2]))).toThrow(
-      'Cannot assign to read only property \'0\' of object \'[object Array]\''
+      "Cannot assign to read only property '0' of object '[object Array]'"
     );
     expect(() => vector.points.push(new Point([1, 2]))).toThrow(
       new TypeError('Cannot add property 2, object is not extensible')
@@ -482,7 +482,7 @@ describe('Struct', () => {
         .Buffer('data')
         .CRC8('crc', {
           calc,
-          start: 4
+          start: 4,
         })
         .compile();
       const foo = new Foo(100);
@@ -506,7 +506,7 @@ describe('Struct', () => {
     expect(Ab.baseSize).toBe(1);
     expect(ab).toEqual({
       a: value,
-      b: value
+      b: value,
     });
   });
   test('Unit', () => {
@@ -543,7 +543,7 @@ describe('Struct', () => {
       offset3: 3,
       offset_3: 3,
       offset_0: 0,
-      offset7: 7
+      offset7: 7,
     });
   });
   test('constant value', () => {
@@ -644,10 +644,10 @@ describe('Struct', () => {
       expect(() => {
         new Struct()
           .Bits8({
-            a: [0, 1]
+            a: [0, 1],
           })
           .Bits8({
-            a: [0, 8]
+            a: [0, 8],
           });
       }).toThrow('Property a already exists');
     });
@@ -657,10 +657,10 @@ describe('Struct', () => {
           a: [0, 1],
           b: [1, 2],
           c: [3, 3],
-          d: [6, 2]
+          d: [6, 2],
         })
         .Bits8({
-          e: [0, 8]
+          e: [0, 8],
         })
         .compile();
       expect(Bits8.baseSize).toBe(2);
@@ -681,7 +681,7 @@ describe('Struct', () => {
           d: [6, 4],
           e: [10, 5],
           f: [15, 1],
-          ab: [0, 3]
+          ab: [0, 3],
         })
         .compile();
       expect(Bits16.baseSize).toBe(2);
@@ -693,7 +693,7 @@ describe('Struct', () => {
         d: 15,
         e: 6,
         f: 1,
-        ab: 5
+        ab: 5,
       });
     });
     test('Bits32', () => {
@@ -706,7 +706,7 @@ describe('Struct', () => {
           e: [10, 5],
           f: [15, 6],
           g: [21, 7],
-          h: [28, 4]
+          h: [28, 4],
         })
         .compile();
       expect(Bits32.baseSize).toBe(4);
@@ -719,7 +719,7 @@ describe('Struct', () => {
         e: 6,
         f: 61,
         g: 113,
-        h: 2
+        h: 2,
       });
       value.g = 0;
       expect(Bits32.raw(value)).toEqual(Buffer.from([0xab, 0xcd, 0xe8, 0x02]));
@@ -804,7 +804,7 @@ describe('Struct', () => {
       0,
       0,
       0,
-      ...[...abu64].reverse()
+      ...[...abu64].reverse(),
     ];
     const foo = new Foo(raw);
     const json = foo.toJSON();
@@ -817,7 +817,7 @@ describe('Struct', () => {
       buf: [0xc0, 0xde],
       date: foo.date.toJSON(),
       bu64: bigint64(bu64),
-      abu64: [bigint64(abu64)]
+      abu64: [bigint64(abu64)],
     });
   });
   test('string', () => {
@@ -845,7 +845,7 @@ describe('Struct', () => {
     }).toThrow('String is too long');
     const StringLiteral = new Struct('StringLiteral')
       .String('value', {
-        literal: 'Lorem ipsum'
+        literal: 'Lorem ipsum',
       })
       .compile();
     const literal = new StringLiteral();
@@ -866,7 +866,7 @@ describe('Struct', () => {
     const Text = new Struct('Text')
       .StringArray('lines', {
         length: 20,
-        lines: 5
+        lines: 5,
       })
       .compile();
     expect(Text.baseSize).toBe(100);
@@ -936,10 +936,15 @@ describe('Struct', () => {
 `
     );
     const colored = (str: string): string => `\\x1b\\[.+;1m${str}\\x1b\\[0m`;
-    const chunks = [['01', 'ce-ca-23-00-00-00-00-00', 'ff-ff-ff-ff-ff-ff'], ['00', '00-00-00-00-00-00-00-00', '00-00-00-00-00-00']];
-    const re = new RegExp(colored(chunks.map(item => item.map(colored).join('=')).join(colored('='))));
+    const chunks = [
+      ['01', 'ce-ca-23-00-00-00-00-00', 'ff-ff-ff-ff-ff-ff'],
+      ['00', '00-00-00-00-00-00-00-00', '00-00-00-00-00-00'],
+    ];
+    const re = new RegExp(
+      colored(chunks.map(item => item.map(colored).join('=')).join(colored('=')))
+    );
     expect(`${root}`).toMatch(re);
-    console.log(`${root.models[0]}`)
+    console.log(`${root.models[0]}`);
     jest.resetModules(); // unload debug
     const { default: S } = await import('./struct');
     const M = new S('Model').UInt8('foo').BigInt64LE('bar').Buffer('baz', 6).compile();

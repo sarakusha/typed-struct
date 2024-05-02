@@ -35,7 +35,9 @@ let colors: number[] = [0];
 
 import('debug')
   .then(debug => {
-    colors = debug.colors.map(color => typeof color === 'string' ? parseInt(color.slice(1), 16) : color);
+    colors = debug.colors.map(color =>
+      typeof color === 'string' ? parseInt(color.slice(1), 16) : color
+    );
     useColors = debug.useColors() && colors && colors.length > 1;
   })
   .catch(
@@ -77,24 +79,24 @@ type ReplaceDistributive<Base, Condition, Target> = Base extends any
   ? Base extends Condition
     ? Target
     : Base extends Record<PropertyKey, unknown>
-    ? Id<ReplaceRecursively<Base, Condition, Target>>
-    : Base extends string
-    ? string
-    : Base extends Iterable<unknown>
-    ? Id<ReplaceDistributive<IteratorType<Base>, Condition, Target>>[]
-    : Base
+      ? Id<ReplaceRecursively<Base, Condition, Target>>
+      : Base extends string
+        ? string
+        : Base extends Iterable<unknown>
+          ? Id<ReplaceDistributive<IteratorType<Base>, Condition, Target>>[]
+          : Base
   : never;
 
 type ReplaceDistributiveNot<Base, Condition, Target> = Base extends any
   ? Base extends Condition
     ? Base
     : Base extends Record<PropertyKey, unknown>
-    ? Id<ReplaceRecursivelyNot<Base, Condition, Target>>
-    : Base extends string
-    ? string
-    : Base extends Iterable<unknown>
-    ? Id<ReplaceDistributiveNot<IteratorType<Base>, Condition, Target>>[]
-    : Target
+      ? Id<ReplaceRecursivelyNot<Base, Condition, Target>>
+      : Base extends string
+        ? string
+        : Base extends Iterable<unknown>
+          ? Id<ReplaceDistributiveNot<IteratorType<Base>, Condition, Target>>[]
+          : Target
   : never;
 
 type IteratorType<T> = T extends Iterable<infer E> ? E : never;
@@ -218,14 +220,14 @@ type AssignableTypes = number | boolean | string | Date | bigint;
 type NativeType<T extends PropType | string> = T extends BigIntTypes
   ? bigint
   : T extends NumericTypes
-  ? number
-  : T extends BooleanTypes
-  ? boolean
-  : T extends PropType.String
-  ? string
-  : T extends PropType.Buffer
-  ? Buffer
-  : any;
+    ? number
+    : T extends BooleanTypes
+      ? boolean
+      : T extends PropType.String
+        ? string
+        : T extends PropType.Buffer
+          ? Buffer
+          : any;
 
 /**
  * Getter for custom types. Should return the property value, or `undefined` if the type is
@@ -704,7 +706,7 @@ type ExtendStruct<
   N extends string,
   R,
   HasCRC extends boolean = false,
-  Readonly = R extends AssignableTypes ? false : true
+  Readonly = R extends AssignableTypes ? false : true,
 > = Struct<
   T & (Readonly extends false ? { [P in N]: R } : { readonly [P in N]: R }),
   ClassName,
@@ -714,24 +716,24 @@ type ExtendStruct<
 type TypedArrayType<T extends NumericTypes> = T extends PropType.Int8
   ? Int8Array
   : T extends PropType.UInt8
-  ? Uint8Array
-  : T extends PropType.Int16
-  ? Int16Array
-  : T extends PropType.UInt16
-  ? Uint16Array
-  : T extends PropType.Int32
-  ? Int32Array
-  : T extends PropType.UInt32
-  ? Uint32Array
-  : T extends PropType.Float32
-  ? Float32Array
-  : T extends PropType.Float64
-  ? Float64Array
-  : T extends PropType.BigInt64
-  ? BigInt64Array
-  : T extends PropType.BigUInt64
-  ? BigUint64Array
-  : never;
+    ? Uint8Array
+    : T extends PropType.Int16
+      ? Int16Array
+      : T extends PropType.UInt16
+        ? Uint16Array
+        : T extends PropType.Int32
+          ? Int32Array
+          : T extends PropType.UInt32
+            ? Uint32Array
+            : T extends PropType.Float32
+              ? Float32Array
+              : T extends PropType.Float64
+                ? Float64Array
+                : T extends PropType.BigInt64
+                  ? BigInt64Array
+                  : T extends PropType.BigUInt64
+                    ? BigUint64Array
+                    : never;
 
 const isCrc = (info: {
   len?: number;
@@ -781,7 +783,7 @@ export type WithCRC<T extends Constructable, HasCRC extends boolean> = Condition
 
 const selectColor = (name: string): number =>
   colors[
-    Math.abs([...name].reduce((hash, ch) => (((hash << 5) - hash + ch.charCodeAt(0))) | 0, 0)) %
+    Math.abs([...name].reduce((hash, ch) => ((hash << 5) - hash + ch.charCodeAt(0)) | 0, 0)) %
       (colors.length || 1)
   ];
 
@@ -887,7 +889,7 @@ const nameIt = <C extends Constructable>(name: string, superClass: C) =>
         super(...args);
       }
     },
-  }[name]);
+  })[name];
 
 const printBuffer = (data: Buffer): string =>
   [...data].map(byte => byte.toString(16).padStart(2, '0')).join('-');
@@ -1007,7 +1009,7 @@ export default class Struct<
   // eslint-disable-next-line @typescript-eslint/ban-types
   T = {},
   ClassName extends string = 'Structure',
-  HasCRC extends boolean = false
+  HasCRC extends boolean = false,
 > {
   /** @hidden */
   private props: Map<keyof T, PropDesc> = new Map(); // Record<keyof T, PropDesc> = {} as never;
@@ -1026,6 +1028,7 @@ export default class Struct<
    * changed when calling the method [[default.compile]]
    * @param defaultClassName
    */
+  // eslint-disable-next-line no-empty-function
   constructor(private defaultClassName?: ClassName) {}
 
   /** @hidden */
@@ -1997,7 +2000,10 @@ export default class Struct<
                 const value = (this as any)[name];
                 if (prop.len === undefined) chunks.push([name, `${value}`]);
                 else if (Array.isArray(value))
-                  chunks.push([name, value.map(v => `${v}`).join(useColors ? colorPrint(2, '=') : '=')]);
+                  chunks.push([
+                    name,
+                    value.map(v => `${v}`).join(useColors ? colorPrint(2, '=') : '='),
+                  ]);
                 break;
               }
               default: {
@@ -2063,7 +2069,7 @@ export default class Struct<
   /** @hidden */
   protected swap = (name: keyof T, raw: Buffer): Buffer => {
     const prop = this.props.get(name);
-    if (!prop) throw new TypeError(`Unknown property name "${name}"`);
+    if (!prop) throw new TypeError(`Unknown property name "${String(name)}"`);
     const { type, offset, len = 1 } = prop;
     const itemSize = getSize(type) ?? 1;
     const end = offset + itemSize * len;
@@ -2079,7 +2085,7 @@ export default class Struct<
       /* istanbul ignore next */
       default:
         throw new TypeError(
-          `Invalid type ${typeof type === 'number' ? PropType[type] : type} for field ${name}`
+          `Invalid type ${typeof type === 'number' ? PropType[type] : type} for field ${String(name)}`
         );
     }
   };
@@ -2089,7 +2095,7 @@ export default class Struct<
     N extends string,
     Y extends PropType | string,
     R = NativeType<Y>,
-    S extends ExtendStruct<T, ClassName, N, R, boolean> = ExtendStruct<T, ClassName, N, R>
+    S extends ExtendStruct<T, ClassName, N, R, boolean> = ExtendStruct<T, ClassName, N, R>,
   >(nameOrAliases: N | N[], info: Omit<PropDesc<Y, R>, 'offset'>): S {
     const self = this as unknown as S;
     const names: N[] = Array.isArray(nameOrAliases) ? nameOrAliases : [nameOrAliases];
@@ -2129,7 +2135,7 @@ export default class Struct<
     N extends string,
     Y extends NumericTypes,
     A = TypedArrayType<Y>,
-    S extends ExtendStruct<T, ClassName, N, A> = ExtendStruct<T, ClassName, N, A>
+    S extends ExtendStruct<T, ClassName, N, A> = ExtendStruct<T, ClassName, N, A>,
   >(
     name: N | N[],
     type: Y,
@@ -2145,7 +2151,7 @@ export default class Struct<
   private createBitFields<
     N extends string,
     Y extends Exclude<UnsignedIntegerTypes, BigIntTypes>,
-    S extends ExtendStruct<T, ClassName, N, number> = ExtendStruct<T, ClassName, N, number>
+    S extends ExtendStruct<T, ClassName, N, number> = ExtendStruct<T, ClassName, N, number>,
   >(type: Y, fields: Record<N, BitMask>): S {
     const self = this as unknown as S;
     Object.entries<BitMask>(fields).forEach(([name, mask]) => {
