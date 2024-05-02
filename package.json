@@ -119,8 +119,8 @@
     "testEnvironment": "node",
     "collectCoverage": true,
     "coverageReporters": [
-      "lcov",
-      "html"
+      "text",
+      "cobertura"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
