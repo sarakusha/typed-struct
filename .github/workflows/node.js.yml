@@ -48,12 +48,13 @@ jobs:
       run: pnpm install
 
     - run: pnpm run build
-    - run: pnpm add -D debug
-    - run: pnpm run test
-    - uses: codecov/codecov-action@v4
+    - name: Run tests and collect coverage
+      run: pnpm run test
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
       with:
         fail_ci_if_error: true # optional (default = false)
-        files: ./coverage1.xml,./coverage2.xml # optional
+        # files: ./coverage1.xml,./coverage2.xml # optional
         flags: unittests # optional
         name: codecov-umbrella # optional
         token: ${{ secrets.CODECOV_TOKEN }} # required
