@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/sarakusha/typed-struct/compare/v2.3.1...v2.4.0) (2024-08-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* default export replaced with named export
+
+### Features
+
+* browser support ([be6c900](https://github.com/sarakusha/typed-struct/commit/be6c9003c0a910ce58b78e8ada3a3b37554d5516))
+
+
+* named export ([56dbf74](https://github.com/sarakusha/typed-struct/commit/56dbf74ec2b2ee9f00d38d4c3fffc564ec60144c))
+
 ### [2.3.1](https://github.com/sarakusha/typed-struct/compare/v2.3.0...v2.3.1) (2024-05-02)
 
 ## [2.3.0](https://github.com/sarakusha/typed-struct/compare/v2.2.0...v2.3.0) (2022-05-25)
