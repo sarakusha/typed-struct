@@ -1,4 +1,4 @@
-/* eslint-disable no-bitwise,max-classes-per-file,no-use-before-define,object-shorthand,@typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { decode as Decode, encode as Encode } from 'iconv-lite';
 
 export type ExtractType<C, clear extends boolean = true> = C extends new () => infer T
@@ -12,7 +12,7 @@ let iconvEncode: typeof Encode | undefined;
 let inspect: (((...args: any[]) => string) & { custom: symbol }) | undefined;
 
 if (typeof process !== 'undefined' && typeof process.versions.node !== 'undefined') {
-  import('util').then(util => {
+  void import('util').then(util => {
     inspect = util.inspect;
   });
 }
@@ -60,19 +60,16 @@ type ConditionalExtend<Base, Extender, Condition extends boolean> = Condition ex
   ? Base & Extender
   : Base;
 
-type StructGuard<ClassName extends string> = {
+interface StructGuard<ClassName extends string> {
   /**
    * fake field `__struct` is only used as a type guard and should not be used
    */
   readonly __struct: ClassName;
-};
-
-interface Constructable {
-  new (...args: any[]): any;
 }
 
+type Constructable = new (...args: any[]) => any;
+
 /** Cosmetic use only, makes the tooltips expand the type, can be removed */
-// eslint-disable-next-line @typescript-eslint/ban-types
 type Id<T> = {} & { [P in keyof T]: T[P] };
 
 type ReplaceDistributive<Base, Condition, Target> = Base extends any
@@ -134,7 +131,7 @@ type POJO<T> = Id<
   DeepWriteable<
     ReplaceRecursivelyNot<
       ReplaceRecursively<
-        // eslint-disable-next-line @typescript-eslint/ban-types
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
         OmitTypeRecursively<T, Function | undefined>,
         Date | bigint,
         string
@@ -250,7 +247,7 @@ const isSimpleType = (desc: PropDesc): desc is PropDesc<SimpleTypes, number | bo
 /**
  * Property description type
  */
-type PropDesc<T extends PropType | string = PropType | string, R = NativeType<T>> = {
+interface PropDesc<T extends PropType | string = PropType | string, R = NativeType<T>> {
   /** predefined property type or custom type */
   type: T;
   /** offset in bytes from the beginning of the buffer */
@@ -281,7 +278,7 @@ type PropDesc<T extends PropType | string = PropType | string, R = NativeType<T>
   initial?: number;
   /** Zero-based index at which to start calculation. Default 0 */
   start?: number;
-};
+}
 
 type PropertyMap<T> = Map<keyof Required<T>, PropDesc>;
 
@@ -433,7 +430,7 @@ const setValue = <T extends SimpleTypes>(
   /* istanbul ignore next */
   if ((len && len > 0) || tail) throw new TypeError('Array not allowed');
 
-  const encode = <V extends number | boolean | bigint>(val: V, size: BitMaskSize): number => {
+  const encode = (val: number | boolean | bigint, size: BitMaskSize): number => {
     const numValue = Number(val);
     // if (Number.isNaN(numValue)) throw new TypeError('Numeric value expected');
     return encodeMaskedValue(getValue(other, data) as number, numValue, size, mask);
@@ -523,7 +520,7 @@ const setValue = <T extends SimpleTypes>(
  */
 function defineProps<T>(obj: unknown, props: PropertyMap<T>, data: Buffer): T {
   [...props.entries()].forEach(([name, info]) => {
-    Object.defineProperty(obj, name, createPropDesc(info as PropDesc, data));
+    Object.defineProperty(obj, name, createPropDesc(info, data));
   });
   return obj as T;
 }
@@ -598,7 +595,7 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
     const { len, getter, setter, offset, type, tail } = info;
     const buf = data.subarray(offset, tail ? undefined : offset + (len ?? 0));
     if (getter) {
-      desc.get = () => getter(type, buf) ?? throwUnknownType(type);
+      desc.get = () => (getter(type, buf) as unknown) ?? throwUnknownType(type);
     }
     if (setter) {
       desc.set = (value: any) => setter(type, buf, value) || throwUnknownType(type);
@@ -617,9 +614,9 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
       const len = info.len ?? Math.floor((data.length - info.offset) / getSize(info.type));
       desc.value = new TypedArray(data.buffer, data.byteOffset + info.offset, len);
     } else {
-      info.literal === undefined || setValue(info, data, info.literal); // initialize
+      if (info.literal !== undefined) setValue(info, data, info.literal); // initialize
       desc.get = () => getValue(info, data); // ?? throwUnknownType(info.type);
-      desc.set = value => {
+      desc.set = (value: number | bigint | boolean) => {
         if (info.literal !== undefined && value !== info.literal)
           throw new TypeError(`Invalid value, expected ${info.literal}`);
         else setValue(info, data, value); // || throwUnknownType(info.type);
@@ -647,8 +644,8 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
     if (typeof info.literal === 'string') setString(buf, encoding, info.literal);
     desc.get = () => getString(buf, encoding);
     desc.set = (newValue: string) => {
-      if (literal !== undefined && newValue !== literal)
-        throw new TypeError(`Invalid value, expected "${literal}"`);
+      if (typeof info.literal === 'string' && newValue !== info.literal)
+        throw new TypeError(`Invalid value, expected "${info.literal}"`);
       setString(buf, encoding, newValue);
     };
   } else if (info.type === PropType.StringArray) {
@@ -664,9 +661,10 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
       throw RangeError(`The argument must be between 0 and ${len - 1}`);
     };
     const getter = (index: number): string => getString(getBuf(index), encoding);
-    const setter = (index: number, value: string): void =>
+    const setter = (index: number, value: string): void => {
       setString(getBuf(index), encoding, value);
-    const target = [...Array(len)];
+    };
+    const target = [...Array<never>(len)];
     Object.defineProperties(target, {
       length: { value: len },
       ...(inspect && {
@@ -686,10 +684,12 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
         },
       },
     });
-    [...Array(len)].forEach((_, index) => {
+    [...Array<never>(len)].forEach((_, index) => {
       Object.defineProperty(target, index.toString(), {
         get: () => getter(index),
-        set: value => setter(index, value),
+        set: (value: string) => {
+          setter(index, value);
+        },
         enumerable: true,
         configurable: false,
       });
@@ -759,14 +759,14 @@ export type CRCCalc = (buf: Buffer, previous?: number) => number;
 /**
  * CRC field options
  */
-export type CRCOpts = {
+export interface CRCOpts {
   /** Checksum function */
   calc: CRCCalc;
   /** Initial value. Default 0 */
   initial?: number;
   /** Zero-based index at which to start calculation. Default 0 */
   start?: number;
-};
+}
 
 export interface CRC<T extends Constructable> {
   /**
@@ -871,13 +871,15 @@ const toPOJO = (value: any): any => {
     return Object.entries(value).reduce(
       (acc, [name, val]) => ({
         ...acc,
-        [name]: toPOJO(val),
+        [name]: toPOJO(val) as unknown,
       }),
       {}
     );
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     return typeof value.toJSON === 'function' ? value.toJSON() : JSON.stringify(value);
   } catch {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return value.toString();
   }
 };
@@ -885,9 +887,9 @@ const toPOJO = (value: any): any => {
 const nameIt = <C extends Constructable>(name: string, superClass: C) =>
   ({
     [name]: class extends superClass {
-      constructor(...args: any[]) {
-        super(...args);
-      }
+      // constructor(...args: any[]) {
+      //   super(...args);
+      // }
     },
   })[name];
 
@@ -959,7 +961,7 @@ type Prepend<A, Prefix> = A extends unknown[]
 
 type PrependNextNum<A extends unknown[]> = A['length'] extends infer T ? Prepend<A, T> : never;
 
-type EnumerateInternal<A extends Array<unknown>, N extends number> = {
+type EnumerateInternal<A extends unknown[], N extends number> = {
   0: A;
   1: EnumerateInternal<PrependNextNum<A>, N>;
 }[N extends A['length'] ? 0 : 1];
@@ -1006,13 +1008,12 @@ type BitLength<N extends number> = Exclude<BitOffset<N>, 0> | N;
  * ```
  */
 export default class Struct<
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  T = {},
+  T = object,
   ClassName extends string = 'Structure',
   HasCRC extends boolean = false,
 > {
   /** @hidden */
-  private props: Map<keyof T, PropDesc> = new Map(); // Record<keyof T, PropDesc> = {} as never;
+  private props = new Map<keyof T, PropDesc>(); // Record<keyof T, PropDesc> = {} as never;
 
   /** @hidden */
   private size = 0;
@@ -1028,7 +1029,7 @@ export default class Struct<
    * changed when calling the method [[default.compile]]
    * @param defaultClassName
    */
-  // eslint-disable-next-line no-empty-function
+
   constructor(private defaultClassName?: ClassName) {}
 
   /** @hidden */
@@ -1046,7 +1047,7 @@ export default class Struct<
    * Returns the underlying buffer of the structure
    * @param structure
    */
-  static raw = <S extends StructGuard<string>>(structure: S): Buffer =>
+  static raw = (structure: StructGuard<string>): Buffer =>
     (structure as unknown as { $raw: Buffer }).$raw;
 
   /**
@@ -1895,7 +1896,7 @@ export default class Struct<
    * @see [[default.back]]
    * @param bytes
    */
-  seek(bytes: number): Struct<T, ClassName, HasCRC> {
+  seek(bytes: number): this {
     if (bytes === 0) this.position = this.size;
     else this.position += bytes;
     return this;
@@ -1907,7 +1908,7 @@ export default class Struct<
    * @param steps - the number of steps back, if the value is 0 then the pointer will point to the
    *   beginning of the buffer
    */
-  back(steps = 1): Struct<T, ClassName, HasCRC> {
+  back(steps = 1): this {
     if (steps < 0 || steps > this.props.size)
       throw new TypeError(`Invalid argument: back. Expected 0..${this.props.size}`);
     if (steps === 0) this.position = 0;
@@ -1921,7 +1922,7 @@ export default class Struct<
   /**
    * Align the current pointer to a two-byte boundary
    */
-  align2(): Struct<T, ClassName, HasCRC> {
+  align2(): this {
     this.position += this.position % 2;
     return this;
   }
@@ -1929,7 +1930,7 @@ export default class Struct<
   /**
    * Align the current pointer to a four-byte boundary
    */
-  align4(): Struct<T, ClassName, HasCRC> {
+  align4(): this {
     const remainder = this.position % 4;
     if (remainder) this.position += 4 - remainder;
     return this;
@@ -1938,7 +1939,7 @@ export default class Struct<
   /**
    * Align the current pointer to an eight-byte boundary
    */
-  align8(): Struct<T, ClassName, HasCRC> {
+  align8(): this {
     const remainder = this.position % 8;
     if (remainder) this.position += 8 - remainder;
     return this;
@@ -1972,7 +1973,7 @@ export default class Struct<
         const size =
           Buffer.isBuffer(rawOrSize) || Array.isArray(rawOrSize)
             ? rawOrSize.length
-            : rawOrSize ?? baseSize;
+            : (rawOrSize ?? baseSize);
         if (size < baseSize)
           throw TypeError(`[${className}]: Buffer size must be at least ${baseSize} (${size})`);
         let $raw: Buffer;
@@ -1997,6 +1998,7 @@ export default class Struct<
             const prop = props.get(name);
             switch (prop?.type) {
               case PropType.Struct: {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
                 const value = (this as any)[name];
                 if (prop.len === undefined) chunks.push([name, `${value}`]);
                 else if (Array.isArray(value))
@@ -2037,7 +2039,7 @@ export default class Struct<
       static raw = (instance: Instance): Buffer => Struct.raw(instance);
 
       toJSON(): POJO<T> {
-        return toPOJO(this);
+        return toPOJO(this) as POJO<T>;
       }
     }
 
@@ -2052,7 +2054,7 @@ export default class Struct<
           const size = getSize(info.type);
           const sum = calc(Structure.raw(instance).subarray(start, -size), initial);
           if (needUpdate && name) {
-            // eslint-disable-next-line no-param-reassign
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             instance[name] = sum as any;
           }
           return sum;

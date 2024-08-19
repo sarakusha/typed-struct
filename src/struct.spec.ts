@@ -1,5 +1,3 @@
-/* eslint-disable no-bitwise */
-
 import { inspect } from 'util';
 import { randomBytes } from 'crypto';
 import { Console } from 'console';
@@ -44,7 +42,6 @@ const bigintRnd = (): bigint => BigInt(`0x${randomBytes(8).toString('hex')}`);
 
 const randomize = (buffer: Buffer): Buffer => {
   buffer.forEach((_, index) => {
-    // eslint-disable-next-line no-param-reassign
     buffer[index] = byteRnd();
   });
   return buffer;
@@ -143,7 +140,7 @@ describe('Struct', () => {
       test('should thrown when assigning an object', () => {
         const nested = new Nested();
         expect(() => {
-          // @ts-ignore
+          // @ts-expect-error: should thrown
           nested.model1 = model;
         }).toThrow();
       });
@@ -382,7 +379,6 @@ describe('Struct', () => {
       .compile();
     const custom = new Custom();
     expect(() => custom.unknown).toThrow(new TypeError('Unknown type "unknown"'));
-    // @ts-ignore
     expect(() => (custom.unknown = undefined)).toThrow(new TypeError('Unknown type "unknown"'));
   });
   // test('empty custom', () => {
@@ -553,7 +549,8 @@ describe('Struct', () => {
     expect(header.value).toBe(value);
     expect(Header.raw(header)).toEqual(Buffer.from([0x12, 0x34]));
     expect(() => {
-      header.value = 0 as any;
+      // @ts-expect-error: should thrown
+      header.value = 0;
     }).toThrow(new TypeError(`Invalid value, expected ${value}`));
   });
   test('buffer length', () => {
@@ -637,7 +634,8 @@ describe('Struct', () => {
     });
     test('throws "Invalid params"', () => {
       expect(() => {
-        new Struct('BitFields').Bits8({ a: [0, 12 as any] });
+        // @ts-expect-error: should thrown
+        new Struct('BitFields').Bits8({ a: [0, 12] });
       });
     });
     test('throws "Property a already exists"', () => {
@@ -729,8 +727,8 @@ describe('Struct', () => {
     expect(() => {
       const Test = new Struct('Test').UInt32LE('a').compile();
       const test = new Test();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      Test.swap(test, 'test' as any);
+      // @ts-expect-error: should thrown
+      Test.swap(test, 'test');
     }).toThrow('Unknown property name "test"');
   });
   test('Property already exists', () => {
@@ -758,7 +756,7 @@ describe('Struct', () => {
     expect(new Struct().UInt32LE('data').getSize()).toBe(4);
   });
   test('Undefined offset', () => {
-    expect(new Struct().Int8('bar').getOffsetOf('foo' as any)).toBeUndefined();
+    expect(new Struct().Int8('bar').getOffsetOf('foo' as 'bar')).toBeUndefined();
   });
   test('JSON', () => {
     const getter = (type: string, buf: Buffer): Date => new Date(buf.readDoubleLE() * 1000);
@@ -851,7 +849,8 @@ describe('Struct', () => {
     const literal = new StringLiteral();
     expect(literal.value).toBe('Lorem ipsum');
     expect(() => {
-      (literal.value as any) = 'Bla-bla';
+      // @ts-expect-error: should thrown
+      literal.value = 'Bla-bla';
     }).toThrow(new TypeError('Invalid value, expected "Lorem ipsum"'));
     expect(() => {
       literal.value = 'Lorem ipsum';
@@ -892,7 +891,7 @@ describe('Struct', () => {
     expect(lines).toEqual(expected);
     expect(lines).toBe(text.lines);
     expect(() => {
-      (text.lines as any)[6] = 'Lorem ipsum';
+      text.lines[6] = 'Lorem ipsum';
     }).toThrow(new TypeError('Cannot add property 6, object is not extensible'));
     expect(Object.isExtensible(text.lines)).toBe(false);
     expect(inspect(expected)).toBe(inspect(text.lines));
@@ -922,6 +921,7 @@ describe('Struct', () => {
       expect.arrayContaining([Symbol.toPrimitive, inspect.custom])
     );
     const stream = new PassThrough();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const mockWrite = jest.fn((_: string) => true);
     stream.write = mockWrite;
     const cons = new Console(stream);
@@ -944,12 +944,14 @@ describe('Struct', () => {
       const re = new RegExp(
         colored(chunks.map(item => item.map(colored).join('=')).join(colored('=')))
       );
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
       expect(`${root}`).toMatch(re);
-      console.log(`${root.models[0]}`);
+      // console.log(`${root.models[0]}`);
     }
     jest.resetModules(); // unload debug
     const { default: S } = await import('./struct');
     const M = new S('Model').UInt8('foo').BigInt64LE('bar').Buffer('baz', 6).compile();
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
     expect(`${new M()}`).toBe('00=00-00-00-00-00-00-00-00=00-00-00-00-00-00');
   });
 });
