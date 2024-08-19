@@ -1,52 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { decode as Decode, encode as Encode } from 'iconv-lite';
-
 export type ExtractType<C, clear extends boolean = true> = C extends new () => infer T
   ? clear extends true
     ? Omit<T, '__struct' | 'toJSON'>
     : T
   : never;
 
-let iconvDecode: typeof Decode | undefined;
-let iconvEncode: typeof Encode | undefined;
-let inspect: (((...args: any[]) => string) & { custom: symbol }) | undefined;
+type GetString = (buf: Buffer, encoding: string) => string;
+type SetString = (buf: Buffer, encoding: string, value: string) => void;
+type Inspect = (((...args: any[]) => string) & { custom: symbol }) | undefined;
+type ColorPrint = (c: number | string, msg: string) => string;
 
-if (typeof process !== 'undefined' && typeof process.versions.node !== 'undefined') {
-  void import('util').then(util => {
-    inspect = util.inspect;
-  });
-}
+let getString: GetString;
+let setString: SetString;
+let inspect: Inspect;
+let colorPrint: ColorPrint = (_, msg) => msg;
+let Buffer: typeof globalThis.Buffer;
 
-import('iconv-lite')
-  .then(({ encode, decode }) => {
-    iconvEncode = encode;
-    iconvDecode = decode;
-  })
-  .catch(
-    /* istanbul ignore next */
-    () => {
-      iconvEncode = undefined;
-      iconvDecode = undefined;
-    }
-  );
+export const initializeAPI = (api: {
+  getString: GetString;
+  setString: SetString;
+  inspect: Inspect;
+  colorPrint: ColorPrint;
+}) => {
+  getString = api.getString;
+  setString = api.setString;
+  inspect = api.inspect;
+  colorPrint = api.colorPrint;
+};
 
-let useColors = false;
-let colors: number[] = [0];
-
-import('debug')
-  .then(debug => {
-    colors = debug.colors.map(color =>
-      typeof color === 'string' ? parseInt(color.slice(1), 16) : color
-    );
-    useColors = debug.useColors() && colors && colors.length > 1;
-  })
-  .catch(
-    /* istanbul ignore next */
-    () => {
-      useColors = false;
-      colors.length = 1;
-    }
-  );
+export const initializeBuffer = (value: typeof globalThis.Buffer) => {
+  Buffer = value;
+};
 
 type FilterFlags<Base, Condition> = {
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
@@ -571,22 +555,6 @@ const getTypedArrayConstructor = (
   }
 };
 
-const getString = (buf: Buffer, encoding: string): string => {
-  let end: number | undefined = buf.indexOf(0);
-  if (end < 0) end = buf.length;
-  return iconvDecode
-    ? iconvDecode(buf.subarray(0, end), encoding)
-    : buf.toString(encoding as BufferEncoding, 0, end);
-};
-
-const setString = (buf: Buffer, encoding: string, value: string): void => {
-  const encoded = iconvEncode
-    ? iconvEncode(value, encoding)
-    : Buffer.from(value, encoding as BufferEncoding);
-  if (encoded.length > buf.length) throw new TypeError(`String is too long`);
-  encoded.copy(buf);
-  buf.fill(0, encoded.length);
-};
 
 const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
   const desc: PropertyDescriptor = { enumerable: true };
@@ -781,12 +749,6 @@ export type WithCRC<T extends Constructable, HasCRC extends boolean> = Condition
   HasCRC
 >;
 
-const selectColor = (name: string): number =>
-  colors[
-    Math.abs([...name].reduce((hash, ch) => ((hash << 5) - hash + ch.charCodeAt(0)) | 0, 0)) %
-      (colors.length || 1)
-  ];
-
 /**
  * A ready-made constructor with static methods for a custom structure
  */
@@ -895,11 +857,6 @@ const nameIt = <C extends Constructable>(name: string, superClass: C) =>
 
 const printBuffer = (data: Buffer): string =>
   [...data].map(byte => byte.toString(16).padStart(2, '0')).join('-');
-
-const colorPrint = (c: number, msg: string): string => {
-  const colorCode = `\u001B[3${c < 8 ? c : `8;5;${c}`}`;
-  return `${colorCode};1m${msg}\u001B[0m`;
-};
 
 /**
  * Use this function to specify the type of the numeric field
@@ -2002,10 +1959,7 @@ export class Struct<
                 const value = (this as any)[name];
                 if (prop.len === undefined) chunks.push([name, `${value}`]);
                 else if (Array.isArray(value))
-                  chunks.push([
-                    name,
-                    value.map(v => `${v}`).join(useColors ? colorPrint(2, '=') : '='),
-                  ]);
+                  chunks.push([name, value.map(v => `${v}`).join(colorPrint(2, '='))]);
                 break;
               }
               default: {
@@ -2015,11 +1969,7 @@ export class Struct<
               }
             }
           }
-          return chunks
-            .map(([name, value]) =>
-              useColors ? colorPrint(selectColor(name.toString()), value) : value
-            )
-            .join('=');
+          return chunks.map(([name, value]) => colorPrint(name.toString(), value)).join('=');
         };
         Object.defineProperties(this, {
           $raw: { value: $raw },
