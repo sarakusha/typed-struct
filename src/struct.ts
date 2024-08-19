@@ -1007,7 +1007,7 @@ type BitLength<N extends number> = Exclude<BitOffset<N>, 0> | N;
  * export default class Struct
  * ```
  */
-export default class Struct<
+export class Struct<
   T = object,
   ClassName extends string = 'Structure',
   HasCRC extends boolean = false,
