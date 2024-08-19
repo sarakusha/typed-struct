@@ -369,7 +369,7 @@ const getValue = <T extends SimpleTypes>(
   switch (type) {
     case PropType.UInt8:
       // offset may be negative
-      return decodeMaskedValue(data.slice(offset).readUInt8(), 8, mask);
+      return decodeMaskedValue(data.subarray(offset).readUInt8(), 8, mask);
     case PropType.Int8:
       /* istanbul ignore next */
       if (mask !== undefined) throw new TypeError('Signed types do not support bit masks');
@@ -377,7 +377,7 @@ const getValue = <T extends SimpleTypes>(
     case PropType.UInt16:
       // offset may be negative
       return decodeMaskedValue(
-        be ? data.slice(offset).readUInt16BE() : data.slice(offset).readUInt16LE(),
+        be ? data.subarray(offset).readUInt16BE() : data.subarray(offset).readUInt16LE(),
         16,
         mask
       );
@@ -388,7 +388,7 @@ const getValue = <T extends SimpleTypes>(
     case PropType.UInt32:
       // offset may be negative
       return decodeMaskedValue(
-        be ? data.slice(offset).readUInt32BE() : data.slice(offset).readUInt32LE(),
+        be ? data.subarray(offset).readUInt32BE() : data.subarray(offset).readUInt32LE(),
         32,
         mask
       );
@@ -441,7 +441,7 @@ const setValue = <T extends SimpleTypes>(
   switch (type) {
     case PropType.UInt8:
       // offset may be negative
-      data.slice(offset).writeUInt8(encode(value, 8));
+      data.subarray(offset).writeUInt8(encode(value, 8));
       return true;
     case PropType.Int8:
       /* istanbul ignore next */
@@ -450,8 +450,8 @@ const setValue = <T extends SimpleTypes>(
       return true;
     case PropType.UInt16:
       // offset may be negative
-      if (be) data.slice(offset).writeUInt16BE(encode(value, 16));
-      else data.slice(offset).writeUInt16LE(encode(value, 16));
+      if (be) data.subarray(offset).writeUInt16BE(encode(value, 16));
+      else data.subarray(offset).writeUInt16LE(encode(value, 16));
       return true;
     case PropType.Int16:
       /* istanbul ignore next */
@@ -461,8 +461,8 @@ const setValue = <T extends SimpleTypes>(
       return true;
     case PropType.UInt32:
       // offset may be negative
-      if (be) data.slice(offset).writeUInt32BE(encode(value, 32));
-      else data.slice(offset).writeUInt32LE(encode(value, 32));
+      if (be) data.subarray(offset).writeUInt32BE(encode(value, 32));
+      else data.subarray(offset).writeUInt32LE(encode(value, 32));
       return true;
     case PropType.Int32:
       /* istanbul ignore next */
@@ -578,7 +578,7 @@ const getString = (buf: Buffer, encoding: string): string => {
   let end: number | undefined = buf.indexOf(0);
   if (end < 0) end = buf.length;
   return iconvDecode
-    ? iconvDecode(buf.slice(0, end), encoding)
+    ? iconvDecode(buf.subarray(0, end), encoding)
     : buf.toString(encoding as BufferEncoding, 0, end);
 };
 
@@ -596,7 +596,7 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
 
   if (typeof info.type === 'string') {
     const { len, getter, setter, offset, type, tail } = info;
-    const buf = data.slice(offset, tail ? undefined : offset + (len ?? 0));
+    const buf = data.subarray(offset, tail ? undefined : offset + (len ?? 0));
     if (getter) {
       desc.get = () => getter(type, buf) ?? throwUnknownType(type);
     }
@@ -607,7 +607,7 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
       desc.value = buf;
     }
   } else if (info.type === PropType.Buffer) {
-    desc.value = data.slice(
+    desc.value = data.subarray(
       info.offset,
       info.len && info.len > 0 ? info.offset + info.len : info.len
     );
@@ -634,17 +634,17 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
       const count = len ?? Math.floor((data.length - offset) / S.baseSize);
       for (let i = 0; i < count; i += 1) {
         const start = offset + S.baseSize * i;
-        (value as unknown[]).push(new S(data.slice(start, start + S.baseSize)));
+        (value as unknown[]).push(new S(data.subarray(start, start + S.baseSize)));
       }
       Object.freeze(value);
     } else {
-      value = new S(data.slice(offset, offset + S.baseSize));
+      value = new S(data.subarray(offset, offset + S.baseSize));
     }
     desc.value = value;
   } else if (info.type === PropType.String) {
-    const { len, offset, encoding = 'utf-8', literal } = info;
-    const buf = data.slice(offset, len && len > 0 ? offset + len : len);
-    literal === undefined || setString(buf, encoding, literal);
+    const { len, offset, encoding = 'utf-8' } = info;
+    const buf = data.subarray(offset, len && len > 0 ? offset + len : len);
+    if (typeof info.literal === 'string') setString(buf, encoding, info.literal);
     desc.get = () => getString(buf, encoding);
     desc.set = (newValue: string) => {
       if (literal !== undefined && newValue !== literal)
@@ -658,7 +658,7 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
     const getBuf = (index: number): Buffer => {
       if (Number.isInteger(index) && index >= 0 && index < len) {
         const start = offset + index * size;
-        return data.slice(start, start + size);
+        return data.subarray(start, start + size);
       }
       /* istanbul ignore next */
       throw RangeError(`The argument must be between 0 and ${len - 1}`);
@@ -2008,7 +2008,7 @@ export default class Struct<
               }
               default: {
                 const [, end] = i + 1 < offsets.length ? offsets[i + 1] : [];
-                const buf = $raw.slice(start, end);
+                const buf = $raw.subarray(start, end);
                 if (buf.length > 0) chunks.push([name, printBuffer(buf)]);
               }
             }
@@ -2050,7 +2050,7 @@ export default class Struct<
           needUpdate = false
         ): number => {
           const size = getSize(info.type);
-          const sum = calc(Structure.raw(instance).slice(start, -size), initial);
+          const sum = calc(Structure.raw(instance).subarray(start, -size), initial);
           if (needUpdate && name) {
             // eslint-disable-next-line no-param-reassign
             instance[name] = sum as any;
@@ -2075,13 +2075,13 @@ export default class Struct<
     const end = offset + itemSize * len;
     switch (itemSize) {
       case 1:
-        return raw.slice(offset, end);
+        return raw.subarray(offset, end);
       case 2:
-        return raw.slice(offset, end).swap16();
+        return raw.subarray(offset, end).swap16();
       case 4:
-        return raw.slice(offset, end).swap32();
+        return raw.subarray(offset, end).swap32();
       case 8:
-        return raw.slice(offset, end).swap64();
+        return raw.subarray(offset, end).swap64();
       /* istanbul ignore next */
       default:
         throw new TypeError(
