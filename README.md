@@ -8,20 +8,22 @@ similar to structures in C.
 [![NPM version](https://img.shields.io/npm/dm/typed-struct.svg)](https://www.npmjs.com/package/typed-struct)
 [![codecov](https://codecov.io/gh/sarakusha/typed-struct/branch/main/graph/badge.svg?token=6F26I7FO73)](https://codecov.io/gh/sarakusha/typed-struct)
 [![CircleCI](https://circleci.com/gh/sarakusha/typed-struct.svg?style=shield)](https://circleci.com/gh/sarakusha/typed-struct)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/sarakusha/typed-struct.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/sarakusha/typed-struct/context:javascript)
-[![NPM](https://nodei.co/npm/typed-struct.png?downloads=true)](https://nodei.co/npm/typed-struct/)
 
 ## Getting started
 
 Using npm:
 
 ```bash
-$ npm install --save typed-struct
+$ npm install typed-struct
 ```
 or yarn:
 
 ```bash
 $ yarn add typed-struct
+```
+To use the module in a browser environment, add the [buffer](https://github.com/feross/buffer) package to the dependencies.
+```bash
+npm install buffer
 ```
 
 ## Features
@@ -37,6 +39,7 @@ The following types are supported:
 - Buffer
 - String (with [iconv-lite](https://github.com/ashtuchkin/iconv-lite) encodings)  
 - Custom type (requires custom getter/setter)
+- Works in node.js and the browser (requires [buffer](https://github.com/feross/buffer) for the browser)
 
 Fixed values, endianness, nested types and arrays are also supported.
 
@@ -51,9 +54,9 @@ to validate that your code is working correctly.
 ### Create a data structure by chaining the appropriate method calls
 
 ```ts
-const Struct = require('typed-struct').default;
+const { Struct } = require('typed-struct');
 // or
-import Struct from 'typed-struct';
+import { Struct } from 'typed-struct';
 
 const MyStructure = new Struct('MyStructure') // give a name to the constructor
   .Int8('foo')        // signed 8-bit integer field `foo`
@@ -88,7 +91,7 @@ expect(item2.bar).toBe(0x3322);
 ```
 ### Typed arrays
 ```ts
-import Struct from 'typed-struct';
+import { Struct } from 'typed-struct';
 
 const Foo = new Struct('Foo')
   .UInt16Array('items', 10)
@@ -237,7 +240,7 @@ req.header = 0xDEADBEEF;
 ### Enumerated fields (Typescript)
 
 ```ts
-import Struct, { typed } from 'typed-struct';
+import { Struct, typed } from 'typed-struct';
 
 enum ErrorType {
   Success,
@@ -512,7 +515,7 @@ depending on the field name.
 Package.ts
 
 ```ts
-import Struct, { typed, ExtractType } from 'typed-struct';
+import { Struct, typed, type ExtractType } from 'typed-struct';
 import { crc16 } from 'crc';
 
 export enum Command {
