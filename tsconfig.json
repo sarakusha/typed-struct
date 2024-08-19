@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "incremental": true,
+    "importHelpers": true,
+    // "incremental": true,
     "target": "es2020",
-    "outDir": "build/main",
+    "outDir": "build",
     "rootDir": "src",
     "baseUrl": "./",
-    "moduleResolution": "node",
+    // "moduleResolution": "node",
     "module": "commonjs",
     "removeComments": true,
     "declaration": true,
@@ -40,13 +41,14 @@
     // "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     // "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
 
-    "lib": ["es2020"],
+    "lib": ["esnext"],
     "types": ["node", "jest"],
     "paths": {
       "debug": ["@types/debug"]
-    }
+    },
+    "noEmit": true
   },
   "include": ["src/**/*.ts", "@types/*.ts"],
-  "exclude": ["node_modules/**", "src/**/*.spec.ts"],
+  "exclude": ["node_modules/**"],
   "compileOnSave": false
 }
