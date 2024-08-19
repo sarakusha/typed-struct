@@ -2,7 +2,7 @@ import { inspect } from 'util';
 import { randomBytes } from 'crypto';
 import { Console } from 'console';
 import { PassThrough } from 'stream';
-import Struct, { ExtractType, getMask, PropType, typed } from './struct';
+import { Struct, ExtractType, getMask, PropType, typed } from './node';
 
 const random = (offset: number, length: number): number =>
   Math.floor(Math.random() * length) + offset;
@@ -949,7 +949,7 @@ describe('Struct', () => {
       // console.log(`${root.models[0]}`);
     }
     jest.resetModules(); // unload debug
-    const { default: S } = await import('./struct');
+    const { Struct: S } = await import('./node');
     const M = new S('Model').UInt8('foo').BigInt64LE('bar').Buffer('baz', 6).compile();
     // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
     expect(`${new M()}`).toBe('00=00-00-00-00-00-00-00-00=00-00-00-00-00-00');
