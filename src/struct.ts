@@ -555,7 +555,6 @@ const getTypedArrayConstructor = (
   }
 };
 
-
 const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
   const desc: PropertyDescriptor = { enumerable: true };
 
