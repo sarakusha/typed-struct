@@ -103,6 +103,7 @@
   },
   "files": [
     "build/*",
+    "!build/docs",
     "!**/*.spec.*",
     "!**/*.json",
     "CHANGELOG.md",
