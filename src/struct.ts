@@ -809,6 +809,13 @@ export interface StructConstructor<T, ClassName extends string> {
    */
   raw(instance: StructInstance<T, ClassName>): Buffer;
   raw(instance: POJO<T>): Buffer | undefined;
+
+  /**
+   * Safely assigns values to the specified instance from a partial object.
+   * @param instance - the object to assign values to
+   * @param value - the partial object containing the values to assign
+   */
+  safeAssign(instance: StructInstance<T, ClassName>, value: DeepPartial<T>): StructInstance<T, ClassName>;
 }
 
 const isSimpleOrString = (value: unknown): value is number | boolean | string | null | undefined =>
@@ -843,6 +850,38 @@ const toPOJO = (value: any): any => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return value.toString();
   }
+};
+
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+};
+
+const safeAssign = <T extends object>(instance: T, value: DeepPartial<T>): void => {
+  if (typeof value !== 'object' || value === null)
+    throw new TypeError('Source must be an object');
+  Object.entries(value).forEach(([key, val]) => {
+    if (key in instance) {
+      const current = (instance as Record<string, unknown>)[key];
+      if (isSimpleOrString(current)) {
+        (instance as Record<string, unknown>)[key] = val;
+      } else if (Array.isArray(current) && Array.isArray(val)) {
+        val.forEach((el, index) => {
+          if (index >= current.length) throw new RangeError(`Index ${index} is out of range`);
+          if (isSimpleOrString(current[index]) && isSimpleOrString(el)) {
+            current[index] = el;
+          } else if (isObject(current[index]) && isObject(el)) {
+            safeAssign(current[index], el);
+          } else {
+            throw new TypeError(`Invalid value of array element at index ${index}`);
+          }
+        });
+      } else if (isObject(current) && isObject(val)) {
+        safeAssign(current, val);
+      } else {
+        throw new TypeError(`Invalid value of property "${key}"`);
+      }
+    }
+  });
 };
 
 const nameIt = <C extends Constructable>(name: string, superClass: C) =>
@@ -1986,6 +2025,11 @@ export class Struct<
       static swap = (instance: Instance, name: keyof T): Buffer => swap(name, Struct.raw(instance));
 
       static raw = (instance: Instance): Buffer => Struct.raw(instance);
+      
+      static safeAssign = (target: Instance, source: DeepPartial<T>): Instance => {
+        safeAssign(target, source);
+        return target;
+      }
 
       toJSON(): POJO<T> {
         return toPOJO(this) as POJO<T>;
