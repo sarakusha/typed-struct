@@ -579,7 +579,7 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
     if (!isCrc(info) && (info.len || info.tail)) {
       const TypedArray = getTypedArrayConstructor(info.type);
       const len = info.len ?? Math.floor((data.length - info.offset) / getSize(info.type));
-      desc.value = new TypedArray(data.buffer, data.byteOffset + info.offset, len);
+      desc.value = new TypedArray(data.buffer as ArrayBuffer, data.byteOffset + info.offset, len);
     } else {
       if (info.literal !== undefined) setValue(info, data, info.literal); // initialize
       desc.get = () => getValue(info, data); // ?? throwUnknownType(info.type);
@@ -1936,7 +1936,7 @@ export class Struct<
         if (typeof rawOrSize === 'number' || rawOrSize === undefined) {
           $raw = Buffer.alloc(size);
         } else {
-          $raw = clone || Array.isArray(rawOrSize) ? Buffer.from(rawOrSize) : rawOrSize;
+          $raw = clone || !Buffer.isBuffer(rawOrSize) ? Buffer.from(rawOrSize as number[]) : rawOrSize;
         }
         defineProps(this, props, $raw);
         const toString = () => {
