@@ -103,6 +103,7 @@
   },
   "files": [
     "build/*",
+    "src/struct.ts",
     "!build/docs",
     "!**/*.spec.*",
     "!**/*.json",
