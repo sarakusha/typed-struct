@@ -1,7 +1,8 @@
-import { inspect } from 'util';
-import { randomBytes } from 'crypto';
-import { Console } from 'console';
-import { PassThrough } from 'stream';
+import { inspect } from 'node:util';
+import { randomBytes } from 'node:crypto';
+import { Console } from 'node:console';
+import { PassThrough } from 'node:stream';
+import { Buffer } from 'node:buffer';
 import { Struct, ExtractType, getMask, PropType, typed } from './node';
 
 const random = (offset: number, length: number): number =>
@@ -130,8 +131,8 @@ describe('Struct', () => {
       const Nested = new Struct('Nested').Struct('model1', Model).Struct('model2', Model).compile();
       test('props should be equal', () => {
         const rawNested = Buffer.alloc(rawModel.length * 2);
-        rawModel.copy(rawNested, 0);
-        rawModel.copy(rawNested, rawModel.length);
+        rawModel.copy(rawNested as Uint8Array, 0);
+        rawModel.copy(rawNested as Uint8Array, rawModel.length);
         expect(new Nested(rawNested)).toEqual({
           model1: model,
           model2: model,
@@ -694,6 +695,35 @@ describe('Struct', () => {
         ab: 5,
       });
     });
+    test('UserReferenceTimerStatus', () => {
+      const UserReferenceTimerStatus = new Struct('UserReferenceTimerStatus')
+        .UInt8('id', 38)
+        .Bits32({
+          alarm0: [7, 1],
+          alarm1: [6, 1],
+          alarm2: [5, 1],
+          alarm3: [4, 1],
+          alarm4: [3, 1],
+          alarm5: [2, 1],
+          alarm6: [1, 1],
+          alarm7: [0, 1],
+          overflow: [24, 1],
+        })
+        .compile();
+      const data = new UserReferenceTimerStatus(Buffer.from([0x26, 0x01, 0x00, 0x00, 0x80]));
+      expect(data.toJSON()).toEqual({
+        id: 38,
+        alarm0: 1,
+        alarm1: 0,
+        alarm2: 0,
+        alarm3: 0,
+        alarm4: 0,
+        alarm5: 0,
+        alarm6: 0,
+        alarm7: 0,
+        overflow: 1,
+      });
+    });
     test('Bits32', () => {
       const Bits32 = new Struct('Bits32')
         .Bits32({
@@ -858,7 +888,7 @@ describe('Struct', () => {
     const raw = StringLiteral.raw(literal);
     expect(raw).toHaveLength(11);
     const expected = Buffer.alloc(11);
-    Buffer.from('Lorem ipsum').copy(expected);
+    Buffer.from('Lorem ipsum').copy(expected as Uint8Array);
     expect(raw).toEqual(expected);
   });
   test('string array', () => {
@@ -953,5 +983,44 @@ describe('Struct', () => {
     const M = new S('Model').UInt8('foo').BigInt64LE('bar').Buffer('baz', 6).compile();
     // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
     expect(`${new M()}`).toBe('00=00-00-00-00-00-00-00-00=00-00-00-00-00-00');
+  });
+  test('assign', () => {
+    const Point = new Struct('Point').Int16LE('x').Int16LE('y').compile();
+    const Line = new Struct('Line').Struct('start', Point).Struct('end', Point).compile();
+    const line = new Line();
+    Line.safeAssign(line, { start: { x: 10, y: 20 }, end: { x: 30, y: 40 } });
+    expect(line).toEqual({ start: { x: 10, y: 20 }, end: { x: 30, y: 40 } });
+    const Polygon = new Struct('Polygon').StructArray('vertices', Point).compile();
+    const polygon = new Polygon(3 * Point.baseSize);
+    Polygon.safeAssign(polygon, {
+      vertices: [
+        { x: 10, y: 20 },
+        { x: 30, y: 40 },
+        { x: 50, y: 60 },
+      ],
+    });
+    expect(polygon.vertices).toHaveLength(3);
+    expect(polygon).toEqual({
+      vertices: [
+        { x: 10, y: 20 },
+        { x: 30, y: 40 },
+        { x: 50, y: 60 },
+      ],
+    });
+    
+    Line.safeAssign(line, { end: { x: 80 } });
+    expect(line).toEqual({
+      start: { x: 10, y: 20 },
+      end: { x: 80, y: 40 }, 
+    });
+    // eslint-disable-next-line no-sparse-arrays
+    Polygon.safeAssign(polygon, { vertices: [, { x: 3, y: 4 }, { x: 7, y: 8 }] });
+    expect(polygon).toEqual({
+      vertices: [
+        { x: 10, y: 20 },
+        { x: 3, y: 4 },
+        { x: 7, y: 8 },
+      ],
+    });
   });
 });
