@@ -44,9 +44,6 @@ Additional features:
 
 - Generated structures are strongly typed, providing better documentation and allowing TypeScript to validate your code.
 
-The generated structures will be strongly typed,
-which will provide better documentation and allow TypeScript
-to validate that your code is working correctly.
 
 ## [API](https://sarakusha.github.io/typed-struct/)
 
@@ -502,7 +499,7 @@ Since version 2.3.0 (Node.js only), `console.log(model)` automatically outputs t
 
 ### Initialization and Assignment
 
-If you need to initialize an object or update some of its properties—especially when it contains nested fields or arrays — direct assignment will fail due to readonly properties. For these cases, use the static method `safeAssign`.
+If you need to initialize an object or update some of its properties, especially when it contains nested fields or arrays, direct assignment will fail due to readonly properties. For these cases, use the static method `safeAssign`.
 
 This method takes an instance and a partial object of your type. All provided properties will be updated, while others remain unchanged. You can also use sparse arrays for partial updates.
 
