@@ -1,0 +1,17 @@
+{
+  "biome.enabled": false,
+
+  "editor.defaultFormatter": "prettier.prettier-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "prettier.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "prettier.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+
+  "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
+}

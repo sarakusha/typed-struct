@@ -673,12 +673,8 @@ type ExtendStruct<
   N extends string,
   R,
   HasCRC extends boolean = false,
-  Readonly = R extends AssignableTypes ? false : true,
-> = Struct<
-  T & (Readonly extends false ? { [P in N]: R } : { readonly [P in N]: R }),
-  ClassName,
-  HasCRC
->;
+  RO = R extends AssignableTypes ? false : true,
+> = Struct<T & (RO extends false ? Record<N, R> : Readonly<Record<N, R>>), ClassName, HasCRC>;
 
 type TypedArrayType<T extends NumericTypes> = T extends PropType.Int8
   ? Int8Array
@@ -815,11 +811,16 @@ export interface StructConstructor<T, ClassName extends string> {
    * @param instance - the object to assign values to
    * @param value - the partial object containing the values to assign
    */
-  safeAssign(instance: StructInstance<T, ClassName>, value: DeepPartial<T>): StructInstance<T, ClassName>;
+  safeAssign(
+    instance: StructInstance<T, ClassName>,
+    value: DeepPartial<T>
+  ): StructInstance<T, ClassName>;
 }
 
 const isSimpleOrString = (value: unknown): value is number | boolean | string | null | undefined =>
-  value === undefined || value === null || ['number', 'bigint', 'boolean', 'string'].includes(typeof value);
+  value === undefined ||
+  value === null ||
+  ['number', 'bigint', 'boolean', 'string'].includes(typeof value);
 
 const isIterable = (arr: unknown): arr is Iterable<unknown> => Symbol.iterator in Object(arr);
 
@@ -857,8 +858,7 @@ type DeepPartial<T> = {
 };
 
 const safeAssign = <T extends object>(instance: T, value: DeepPartial<T>): void => {
-  if (typeof value !== 'object' || value === null)
-    throw new TypeError('Source must be an object');
+  if (typeof value !== 'object' || value === null) throw new TypeError('Source must be an object');
   Object.entries(value).forEach(([key, val]) => {
     if (key in instance) {
       const current = (instance as Record<string, unknown>)[key];
@@ -1975,7 +1975,8 @@ export class Struct<
         if (typeof rawOrSize === 'number' || rawOrSize === undefined) {
           $raw = Buffer.alloc(size);
         } else {
-          $raw = clone || !Buffer.isBuffer(rawOrSize) ? Buffer.from(rawOrSize as number[]) : rawOrSize;
+          $raw =
+            clone || !Buffer.isBuffer(rawOrSize) ? Buffer.from(rawOrSize as number[]) : rawOrSize;
         }
         defineProps(this, props, $raw);
         const toString = () => {
@@ -2025,11 +2026,11 @@ export class Struct<
       static swap = (instance: Instance, name: keyof T): Buffer => swap(name, Struct.raw(instance));
 
       static raw = (instance: Instance): Buffer => Struct.raw(instance);
-      
+
       static safeAssign = (target: Instance, source: DeepPartial<T>): Instance => {
         safeAssign(target, source);
         return target;
-      }
+      };
 
       toJSON(): POJO<T> {
         return toPOJO(this) as POJO<T>;

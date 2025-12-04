@@ -1007,11 +1007,11 @@ describe('Struct', () => {
         { x: 50, y: 60 },
       ],
     });
-    
+
     Line.safeAssign(line, { end: { x: 80 } });
     expect(line).toEqual({
       start: { x: 10, y: 20 },
-      end: { x: 80, y: 40 }, 
+      end: { x: 80, y: 40 },
     });
     // eslint-disable-next-line no-sparse-arrays
     Polygon.safeAssign(polygon, { vertices: [, { x: 3, y: 4 }, { x: 7, y: 8 }] });
