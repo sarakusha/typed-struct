@@ -819,7 +819,7 @@ export interface StructConstructor<T, ClassName extends string> {
 }
 
 const isSimpleOrString = (value: unknown): value is number | boolean | string | null | undefined =>
-  value === undefined || value === null || ['number', 'boolean', 'string'].includes(typeof value);
+  value === undefined || value === null || ['number', 'bigint', 'boolean', 'string'].includes(typeof value);
 
 const isIterable = (arr: unknown): arr is Iterable<unknown> => Symbol.iterator in Object(arr);
 
