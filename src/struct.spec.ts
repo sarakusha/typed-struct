@@ -389,12 +389,13 @@ describe('Struct', () => {
   //   expect(trivial.value).toBeInstanceOf(Buffer);
   // });
   test('BCD', () => {
-    const BCD = new Struct('BCD').BCD('value').compile();
-    expect(BCD.baseSize).toBe(1);
+    const BCD = new Struct('BCD').BCD('a').BCD('b').compile();
+    expect(BCD.baseSize).toBe(2);
     const bcd = new BCD();
-    bcd.value = 43;
-    expect(BCD.raw(bcd)).toEqual(Buffer.from([0x43]));
-    expect(new BCD(Buffer.from([0x56]))).toEqual({ value: 56 });
+    bcd.a = 43;
+    bcd.b = 56;
+    expect(BCD.raw(bcd)).toEqual(Buffer.from([0x43, 0x56]));
+    expect(new BCD(Buffer.from([0x56, 0x43]))).toEqual({ a: 56, b: 43 });
   });
   describe('CRC', () => {
     const len = 8;
