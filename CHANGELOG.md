@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.1](https://github.com/sarakusha/typed-struct/compare/v2.7.0...v2.7.1) (2025-12-10)
+
+
+### Bug Fixes
+
+* BCD decoding now reads from the proper byte instead of offset 0 ([d6d9740](https://github.com/sarakusha/typed-struct/commit/d6d97408cbbdfbcc65158258a5b4bf6d33edb05d))
+
 ## [2.7.0](https://github.com/sarakusha/typed-struct/compare/v2.6.0...v2.7.0) (2025-12-04)
 
 ## [2.6.0](https://github.com/sarakusha/typed-struct/compare/v2.5.2...v2.6.0) (2025-09-10)
