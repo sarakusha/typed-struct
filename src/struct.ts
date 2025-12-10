@@ -392,7 +392,7 @@ const getValue = <T extends SimpleTypes>(
     case PropType.Boolean32:
       return !!decodeMaskedValue(data.readUInt32LE(offset), 32, mask);
     case PropType.BCD:
-      return Math.floor(data[0] / 16) * 10 + (data[0] % 16);
+      return Math.floor(data[offset] / 16) * 10 + (data[offset] % 16);
     case PropType.BigInt64:
       return be ? data.readBigInt64BE(offset) : data.readBigInt64LE(offset);
     case PropType.BigUInt64:
