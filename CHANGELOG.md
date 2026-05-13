@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.2](https://github.com/sarakusha/typed-struct/compare/v2.7.1...v2.7.2) (2026-05-13)
+
+
+### Bug Fixes
+
+* **types:** resolve excessively deep type instantiation in TS 7 ([cb44639](https://github.com/sarakusha/typed-struct/commit/cb4463967357bce3068de748e8be7fd29a8d0691))
+
 ### [2.7.1](https://github.com/sarakusha/typed-struct/compare/v2.7.0...v2.7.1) (2025-12-10)
 
 
