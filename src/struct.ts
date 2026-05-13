@@ -62,11 +62,14 @@ type _POJONode<T> = T extends ((...args: any[]) => any) | undefined
 
 type Item<A> = A extends any ? (A extends readonly (infer T)[] ? T : A) : never;
 
-type POJO<T> = T extends Iterable<infer E>
-  ? _POJONode<E>[]
-  : Id<{
-      -readonly [K in keyof T as T[K] extends ((...args: any[]) => any) | undefined ? never : K]: _POJONode<T[K]>
-    }>;
+type POJO<T> =
+  T extends Iterable<infer E>
+    ? _POJONode<E>[]
+    : Id<{
+        -readonly [K in keyof T as T[K] extends ((...args: any[]) => any) | undefined
+          ? never
+          : K]: _POJONode<T[K]>;
+      }>;
 
 /**
  * Predefined property types
@@ -231,7 +234,7 @@ const setBits = (
   dest: number,
   [start, length]: BitMask,
   value: number,
-  size: BitMaskSize
+  size: BitMaskSize,
 ): number => {
   if (length === 32) return value >>> 0;
   const mask = getMask(start, length, size);
@@ -277,12 +280,12 @@ const encodeMaskedValue = (
   dest: number,
   value: number,
   size: BitMaskSize,
-  mask?: BitMask
+  mask?: BitMask,
 ): number => (mask ? setBits(dest, mask, value, size) : getUnsigned(value, size));
 
 const getValue = <T extends SimpleTypes>(
   info: PropDesc<T>,
-  data: Buffer
+  data: Buffer,
 ): NativeType<T> | bigint | number | boolean | undefined => {
   // if (!isSimpleType(info)) throw new TypeError('Invalid type');
   const { len, offset, type, mask, be, tail } = info;
@@ -302,7 +305,7 @@ const getValue = <T extends SimpleTypes>(
       return decodeMaskedValue(
         be ? data.subarray(offset).readUInt16BE() : data.subarray(offset).readUInt16LE(),
         16,
-        mask
+        mask,
       );
     case PropType.Int16:
       /* istanbul ignore next */
@@ -313,7 +316,7 @@ const getValue = <T extends SimpleTypes>(
       return decodeMaskedValue(
         be ? data.subarray(offset).readUInt32BE() : data.subarray(offset).readUInt32LE(),
         32,
-        mask
+        mask,
       );
     case PropType.Int32:
       /* istanbul ignore next */
@@ -348,7 +351,7 @@ const getValue = <T extends SimpleTypes>(
 const setValue = <T extends SimpleTypes>(
   info: PropDesc<T>,
   data: Buffer,
-  value: NativeType<T>
+  value: NativeType<T>,
 ): boolean => {
   // if (!isSimpleType(info)) throw new TypeError('Invalid type');
   const { mask, ...other } = info;
@@ -456,7 +459,7 @@ const throwUnknownType = (type: string) => {
 };
 
 const getTypedArrayConstructor = (
-  type: SimpleTypes
+  type: SimpleTypes,
 ):
   | Int8ArrayConstructor
   | Uint8ArrayConstructor
@@ -515,7 +518,7 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
   } else if (info.type === PropType.Buffer) {
     desc.value = data.subarray(
       info.offset,
-      info.len && info.len > 0 ? info.offset + info.len : info.len
+      info.len && info.len > 0 ? info.offset + info.len : info.len,
     );
   } else if (isSimpleType(info)) {
     if (!isCrc(info) && (info.len || info.tail)) {
@@ -581,7 +584,7 @@ const createPropDesc = (info: PropDesc, data: Buffer): PropertyDescriptor => {
           value: (...args: unknown[]) =>
             inspect?.(
               target.map((_, index) => getter(index)),
-              ...args.slice(1)
+              ...args.slice(1),
             ),
         },
       }),
@@ -755,7 +758,7 @@ export interface StructConstructor<T, ClassName extends string> {
    */
   safeAssign(
     instance: StructInstance<T, ClassName>,
-    value: DeepPartial<T>
+    value: DeepPartial<T>,
   ): StructInstance<T, ClassName>;
 }
 
@@ -784,7 +787,7 @@ const toPOJO = (value: any): any => {
         ...acc,
         [name]: toPOJO(val) as unknown,
       }),
-      {}
+      {},
     );
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -836,7 +839,7 @@ const nameIt = <C extends Constructable>(name: string, superClass: C) =>
   })[name];
 
 const printBuffer = (data: Buffer): string =>
-  [...data].map(byte => byte.toString(16).padStart(2, '0')).join('-');
+  [...data].map((byte) => byte.toString(16).padStart(2, '0')).join('-');
 
 /**
  * Use this function to specify the type of the numeric field
@@ -1003,7 +1006,7 @@ export class Struct<
    */
   getOffsets = (): Record<keyof T, number> =>
     Object.fromEntries(
-      [...this.props.entries()].map(([name, { offset }]) => [name, offset])
+      [...this.props.entries()].map(([name, { offset }]) => [name, offset]),
     ) as Record<keyof T, number>;
 
   /**
@@ -1013,7 +1016,7 @@ export class Struct<
    */
   Int8 = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       literal,
@@ -1027,7 +1030,7 @@ export class Struct<
    */
   UInt8 = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.UInt8,
@@ -1041,7 +1044,7 @@ export class Struct<
    */
   Int16LE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Int16,
@@ -1055,7 +1058,7 @@ export class Struct<
    */
   UInt16LE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.UInt16,
@@ -1069,7 +1072,7 @@ export class Struct<
    */
   Int32LE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Int32,
@@ -1083,7 +1086,7 @@ export class Struct<
    */
   UInt32LE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.UInt32,
@@ -1097,7 +1100,7 @@ export class Struct<
    */
   Int16BE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Int16,
@@ -1112,7 +1115,7 @@ export class Struct<
    */
   UInt16BE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.UInt16,
@@ -1127,7 +1130,7 @@ export class Struct<
    */
   Int32BE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Int32,
@@ -1142,7 +1145,7 @@ export class Struct<
    */
   UInt32BE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.UInt32,
@@ -1157,7 +1160,7 @@ export class Struct<
    */
   Float32LE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Float32,
@@ -1171,7 +1174,7 @@ export class Struct<
    */
   Float64LE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Float64,
@@ -1185,7 +1188,7 @@ export class Struct<
    */
   Float32BE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Float32,
@@ -1200,7 +1203,7 @@ export class Struct<
    */
   Float64BE = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Float64,
@@ -1215,7 +1218,7 @@ export class Struct<
    */
   BigInt64LE = <N extends string, R extends bigint>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.BigInt64,
@@ -1229,7 +1232,7 @@ export class Struct<
    */
   BigInt64BE = <N extends string, R extends bigint>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.BigInt64,
@@ -1244,7 +1247,7 @@ export class Struct<
    */
   BigUInt64LE = <N extends string, R extends bigint>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.BigUInt64,
@@ -1258,7 +1261,7 @@ export class Struct<
    */
   BigUInt64BE = <N extends string, R extends bigint>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.BigUInt64,
@@ -1273,7 +1276,7 @@ export class Struct<
    */
   Boolean8 = <N extends string, R extends boolean>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Boolean8,
@@ -1287,7 +1290,7 @@ export class Struct<
    */
   Boolean16 = <N extends string, R extends boolean>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Boolean16,
@@ -1301,7 +1304,7 @@ export class Struct<
    */
   Boolean32 = <N extends string, R extends boolean>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.Boolean32,
@@ -1315,7 +1318,7 @@ export class Struct<
    */
   BCD = <N extends string, R extends number>(
     name: N | N[],
-    literal?: R
+    literal?: R,
   ): ExtendStruct<T, ClassName, N, R> =>
     this.createProp(name, {
       type: PropType.BCD,
@@ -1329,7 +1332,7 @@ export class Struct<
    */
   Struct = <N extends string, S, StructClass extends string>(
     name: N | N[],
-    struct: StructConstructor<Item<S>, StructClass>
+    struct: StructConstructor<Item<S>, StructClass>,
   ): ExtendStruct<T, ClassName, N, S> =>
     this.createProp<N, PropType.Struct, S, ExtendStruct<T, ClassName, N, S>>(name, {
       type: PropType.Struct,
@@ -1341,7 +1344,7 @@ export class Struct<
    * @param fields - an object with the name of the fields and their [[BitMask]]
    */
   Bits8 = <N extends string>(
-    fields: Record<N, BitMaskN<8>>
+    fields: Record<N, BitMaskN<8>>,
   ): ExtendStruct<T, ClassName, N, number> => this.createBitFields(PropType.UInt8, fields);
 
   /**
@@ -1349,7 +1352,7 @@ export class Struct<
    * @param fields - an object with the name of the fields and their [[BitMask]]
    */
   Bits16 = <N extends string>(
-    fields: Record<N, BitMaskN<16>>
+    fields: Record<N, BitMaskN<16>>,
   ): ExtendStruct<T, ClassName, N, number> => this.createBitFields(PropType.UInt16, fields);
 
   /**
@@ -1357,7 +1360,7 @@ export class Struct<
    * @param fields - an object with the name of the fields and their [[BitMask]]
    */
   Bits32 = <N extends string>(
-    fields: Record<N, BitMaskN<32>>
+    fields: Record<N, BitMaskN<32>>,
   ): ExtendStruct<T, ClassName, N, number> => this.createBitFields(PropType.UInt32, fields);
 
   /**
@@ -1406,7 +1409,7 @@ export class Struct<
   String<N extends string>(
     name: N | N[],
     length: number,
-    encoding: string
+    encoding: string,
   ): ExtendStruct<T, ClassName, N, string>;
 
   /**
@@ -1420,7 +1423,7 @@ export class Struct<
   String<N extends string>(
     name: N | N[],
     encoding: string,
-    length: number
+    length: number,
   ): ExtendStruct<T, ClassName, N, string>;
 
   /**
@@ -1430,13 +1433,13 @@ export class Struct<
    */
   String<N extends string, R extends string>(
     name: N | N[],
-    opts: StringOpts<R>
+    opts: StringOpts<R>,
   ): ExtendStruct<T, ClassName, N, R>;
 
   String<N extends string, R extends string>(
     name: N | N[],
     arg1?: string | number | StringOpts<R>,
-    arg2?: string | number
+    arg2?: string | number,
   ): ExtendStruct<T, ClassName, N, R> {
     let length: number | undefined;
     let encoding: string | undefined;
@@ -1446,7 +1449,7 @@ export class Struct<
       encoding = arg1.encoding;
       literal = arg1.literal;
     } else {
-      [arg1, arg2].forEach(arg => {
+      [arg1, arg2].forEach((arg) => {
         if (typeof arg === 'number') length = arg;
         if (typeof arg === 'string') encoding = arg;
       });
@@ -1468,7 +1471,7 @@ export class Struct<
    */
   Int8Array = <N extends string>(
     name: N | N[],
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, Int8Array> => this.createTypedArray(name, PropType.Int8, length);
 
   /**
@@ -1478,7 +1481,7 @@ export class Struct<
    */
   UInt8Array = <N extends string>(
     name: N | N[],
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, Uint8Array> =>
     this.createTypedArray(name, PropType.UInt8, length);
 
@@ -1490,7 +1493,7 @@ export class Struct<
    */
   Int16Array = <N extends string>(
     name: N | N[],
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, Int16Array> =>
     this.createTypedArray(name, PropType.Int16, length);
 
@@ -1501,7 +1504,7 @@ export class Struct<
    */
   UInt16Array = <N extends string>(
     name: N | N[],
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, Uint16Array> =>
     this.createTypedArray(name, PropType.UInt16, length);
 
@@ -1513,7 +1516,7 @@ export class Struct<
    */
   Int32Array = <N extends string>(
     name: N | N[],
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, Int32Array> =>
     this.createTypedArray(name, PropType.Int32, length);
 
@@ -1524,7 +1527,7 @@ export class Struct<
    */
   UInt32Array = <N extends string>(
     name: N | N[],
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, Uint32Array> =>
     this.createTypedArray(name, PropType.UInt32, length);
 
@@ -1535,7 +1538,7 @@ export class Struct<
    */
   Float32Array = <N extends string>(
     name: N | N[],
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, Float32Array> =>
     this.createTypedArray(name, PropType.Float32, length);
 
@@ -1546,7 +1549,7 @@ export class Struct<
    */
   Float64Array = <N extends string>(
     name: N | N[],
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, Float64Array> =>
     this.createTypedArray(name, PropType.Float64, length);
 
@@ -1558,7 +1561,7 @@ export class Struct<
    */
   BigInt64Array = <N extends string>(
     name: N | N[],
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, BigInt64Array> =>
     this.createTypedArray(name, PropType.BigInt64, length);
 
@@ -1570,7 +1573,7 @@ export class Struct<
    */
   BigUInt64Array = <N extends string>(
     name: N | N[],
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, BigUint64Array> =>
     this.createTypedArray(name, PropType.BigUInt64, length);
 
@@ -1583,7 +1586,7 @@ export class Struct<
   StructArray = <N extends string, S, StructClass extends string>(
     name: N | N[],
     struct: StructConstructor<S, StructClass>,
-    length?: number
+    length?: number,
   ): ExtendStruct<T, ClassName, N, S[]> =>
     this.createProp<N, PropType.Struct, S[]>(name, {
       type: PropType.Struct,
@@ -1599,7 +1602,7 @@ export class Struct<
    */
   StringArray<N extends string>(
     name: N | N[],
-    opts: StringArrayOpts
+    opts: StringArrayOpts,
   ): ExtendStruct<T, ClassName, N, string[]> {
     return this.createProp<N, PropType.StringArray, string[]>(name, {
       type: PropType.StringArray,
@@ -1612,7 +1615,7 @@ export class Struct<
   Custom<N extends string, ReturnType>(
     name: N | N[],
     size: number | undefined,
-    getter: Getter<ReturnType>
+    getter: Getter<ReturnType>,
   ): ExtendStruct<T, ClassName, N, ReturnType, false, true>;
 
   /**
@@ -1628,14 +1631,14 @@ export class Struct<
     name: N | N[],
     size: number | undefined,
     getter: Getter<ReturnType>,
-    setter: Setter<ReturnType>
+    setter: Setter<ReturnType>,
   ): ExtendStruct<T, ClassName, N, ReturnType, false, false>;
 
   Custom<N extends string, ReturnType>(
     name: N | N[],
     size: number | undefined,
     getter: Getter<ReturnType>,
-    setter?: Setter<ReturnType>
+    setter?: Setter<ReturnType>,
   ): ExtendStruct<T, ClassName, N, ReturnType> {
     return this.createProp(name, {
       type: Array.isArray(name) ? name[0] : name,
@@ -1663,7 +1666,7 @@ export class Struct<
   CRC8<N extends string>(
     name: N | N[],
     calc: CRCCalc,
-    initial?: number
+    initial?: number,
   ): ExtendStruct<T, ClassName, N, number, true>;
 
   /**
@@ -1677,7 +1680,7 @@ export class Struct<
   CRC8<N extends string>(
     name: N | N[],
     arg1?: CRCCalc | CRCOpts,
-    arg2?: number
+    arg2?: number,
   ): ExtendStruct<T, ClassName, N, number, boolean> {
     return this.createCRCProp(name, PropType.UInt8, false, arg1, arg2);
   }
@@ -1699,7 +1702,7 @@ export class Struct<
   CRC16LE<N extends string>(
     name: N | N[],
     calc: CRCCalc,
-    initial?: number
+    initial?: number,
   ): ExtendStruct<T, ClassName, N, number, true>;
 
   /**
@@ -1713,7 +1716,7 @@ export class Struct<
   CRC16LE<N extends string>(
     name: N | N[],
     arg1?: CRCCalc | CRCOpts,
-    arg2?: number
+    arg2?: number,
   ): ExtendStruct<T, ClassName, N, number, boolean> {
     return this.createCRCProp(name, PropType.UInt16, false, arg1, arg2);
   }
@@ -1735,7 +1738,7 @@ export class Struct<
   CRC16BE<N extends string>(
     name: N | N[],
     calc: CRCCalc,
-    initial?: number
+    initial?: number,
   ): ExtendStruct<T, ClassName, N, number, true>;
 
   /**
@@ -1749,7 +1752,7 @@ export class Struct<
   CRC16BE<N extends string>(
     name: N | N[],
     arg1?: CRCCalc | CRCOpts,
-    arg2?: number
+    arg2?: number,
   ): ExtendStruct<T, ClassName, N, number, boolean> {
     return this.createCRCProp(name, PropType.UInt16, true, arg1, arg2);
   }
@@ -1771,7 +1774,7 @@ export class Struct<
   CRC32LE<N extends string>(
     name: N | N[],
     calc: CRCCalc,
-    initial?: number
+    initial?: number,
   ): ExtendStruct<T, ClassName, N, number, true>;
 
   /**
@@ -1785,7 +1788,7 @@ export class Struct<
   CRC32LE<N extends string>(
     name: N | N[],
     arg1?: CRCCalc | CRCOpts,
-    arg2?: number
+    arg2?: number,
   ): ExtendStruct<T, ClassName, N, number, boolean> {
     return this.createCRCProp(name, PropType.UInt32, false, arg1, arg2);
   }
@@ -1807,7 +1810,7 @@ export class Struct<
   CRC32BE<N extends string>(
     name: N | N[],
     calc: CRCCalc,
-    initial?: number
+    initial?: number,
   ): ExtendStruct<T, ClassName, N, number, true>;
 
   /**
@@ -1821,7 +1824,7 @@ export class Struct<
   CRC32BE<N extends string>(
     name: N | N[],
     arg1?: CRCCalc | CRCOpts,
-    arg2?: number
+    arg2?: number,
   ): ExtendStruct<T, ClassName, N, number, boolean> {
     return this.createCRCProp(name, PropType.UInt32, true, arg1, arg2);
   }
@@ -1887,7 +1890,7 @@ export class Struct<
    * @param className - The constructor name
    */
   compile(
-    className: string | undefined = this.defaultClassName
+    className: string | undefined = this.defaultClassName,
   ): WithCRC<StructConstructor<Id<T>, ClassName>, HasCRC> {
     const { size: baseSize, props, getOffsetOf, getOffsets, swap } = this;
     type Instance = StructInstance<T, ClassName>;
@@ -1940,7 +1943,7 @@ export class Struct<
                 const value = (this as any)[name];
                 if (prop.len === undefined) chunks.push([name, `${value}`]);
                 else if (Array.isArray(value))
-                  chunks.push([name, value.map(v => `${v}`).join(colorPrint(2, '='))]);
+                  chunks.push([name, value.map((v) => `${v}`).join(colorPrint(2, '='))]);
                 break;
               }
               default: {
@@ -1985,7 +1988,7 @@ export class Struct<
       if (calc) {
         (Structure as WithCRC<StructConstructor<T, ClassName>, true>).crc = (
           instance: Instance,
-          needUpdate = false
+          needUpdate = false,
         ): number => {
           const size = getSize(info.type);
           const sum = calc(Structure.raw(instance).subarray(start, -size), initial);
@@ -2023,7 +2026,7 @@ export class Struct<
       /* istanbul ignore next */
       default:
         throw new TypeError(
-          `Invalid type ${typeof type === 'number' ? PropType[type] : type} for field ${String(name)}`
+          `Invalid type ${typeof type === 'number' ? PropType[type] : type} for field ${String(name)}`,
         );
     }
   };
@@ -2037,7 +2040,7 @@ export class Struct<
   >(nameOrAliases: N | N[], info: Omit<PropDesc<Y, R>, 'offset'>): S {
     const self = this as unknown as S;
     const names: N[] = Array.isArray(nameOrAliases) ? nameOrAliases : [nameOrAliases];
-    const [exists] = names.filter(name => self.props.has(name));
+    const [exists] = names.filter((name) => self.props.has(name));
     if (exists !== undefined) throw TypeError(`Property "${exists}" already exists`);
     if (this.tailed && !isCrc(info) && !info.tail)
       throw TypeError(`Invalid property "${names[0]}". The tail buffer already created`);
@@ -2055,14 +2058,14 @@ export class Struct<
         return self;
       }
     }
-    names.forEach(name => {
+    names.forEach((name) => {
       self.props.set(name, { offset: isCrc(info) ? -itemSize : this.position, ...info });
     });
     const size =
       Math.abs(
         info.len ??
           // (this.position === 0 || info ? 1 : 0)
-          (info.type === PropType.Buffer || info.tail ? 0 : 1)
+          (info.type === PropType.Buffer || info.tail ? 0 : 1),
       ) * itemSize;
     this.position += size;
     return self;
@@ -2077,7 +2080,7 @@ export class Struct<
   >(
     name: N | N[],
     type: Y,
-    length?: number
+    length?: number,
   ): S =>
     this.createProp<N, Y, A, S>(name, {
       type,
@@ -2111,7 +2114,7 @@ export class Struct<
     type: Exclude<UnsignedIntegerTypes, BigIntTypes>,
     be: boolean,
     arg1?: CRCCalc | CRCOpts,
-    arg2?: number
+    arg2?: number,
   ): ExtendStruct<T, ClassName, N, number, true> {
     let calc;
     let initial;

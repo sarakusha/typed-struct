@@ -110,7 +110,7 @@ describe('Struct', () => {
     // noinspection SpellCheckingInspection
     const rawModel = Buffer.from(
       '12ff67459cff2345fea77856341260a4ffff23456789ff98684b66e6f642c42995c3295c8fc2f5887c40c0539d2f1a9fbe7740e2010000000000000000000006f85506120f0000000000000000000009fbf1',
-      'hex'
+      'hex',
     );
     const item = new Model(rawModel, true);
     test('baseSize', () => {
@@ -344,18 +344,18 @@ describe('Struct', () => {
     expect(vector).toEqual({ points: [new Point([-1, 20]), new Point([30, -2])] });
     expect(polygon.vertices).toHaveLength(5);
     expect(() => (vector.points[0] = new Point([1, 2]))).toThrow(
-      "Cannot assign to read only property '0' of object '[object Array]'"
+      "Cannot assign to read only property '0' of object '[object Array]'",
     );
     expect(() => vector.points.push(new Point([1, 2]))).toThrow(
-      new TypeError('Cannot add property 2, object is not extensible')
+      new TypeError('Cannot add property 2, object is not extensible'),
     );
   });
   test('custom type', () => {
     const getter = jest.fn(
-      (type: string, buf: Buffer): Date => new Date(buf.readDoubleLE() * 1000)
+      (type: string, buf: Buffer): Date => new Date(buf.readDoubleLE() * 1000),
     );
     const setter = jest.fn(
-      (type: string, buf: Buffer, value: Date) => buf.writeDoubleLE(value.getTime() / 1000) > 0
+      (type: string, buf: Buffer, value: Date) => buf.writeDoubleLE(value.getTime() / 1000) > 0,
     );
     const Custom = new Struct('DateHolder').Custom(['date', 'value'], 8, getter, setter).compile();
     const custom = new Custom();
@@ -375,7 +375,7 @@ describe('Struct', () => {
         'unknown',
         1,
         () => undefined,
-        () => false
+        () => false,
       )
       .compile();
     const custom = new Custom();
@@ -861,7 +861,7 @@ describe('Struct', () => {
     expect(text.title).toHaveLength(11);
     expect(text.author).toHaveLength(6);
     expect(Text.raw(text)).toEqual(
-      Buffer.from('cff0e8e2e5f22055736572000000000000000000416e6472656900000000', 'hex')
+      Buffer.from('cff0e8e2e5f22055736572000000000000000000416e6472656900000000', 'hex'),
     );
     expect(text.title).toBe('Привет User');
     text.title = 'A'.repeat(20);
@@ -949,7 +949,7 @@ describe('Struct', () => {
     root.models[0].bar = 2345678n;
     root.models[0].baz.fill(0xff);
     expect(Object.getOwnPropertySymbols(root)).toEqual(
-      expect.arrayContaining([Symbol.toPrimitive, inspect.custom])
+      expect.arrayContaining([Symbol.toPrimitive, inspect.custom]),
     );
     const stream = new PassThrough();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -964,7 +964,7 @@ describe('Struct', () => {
     { foo: 0, bar: 0n, baz: <Buffer 00 00 00 00 00 00> }
   ]
 }
-`
+`,
     );
     if (process.stdout.isTTY) {
       const colored = (str: string): string => `\\x1b\\[.+;1m${str}\\x1b\\[0m`;
@@ -973,7 +973,7 @@ describe('Struct', () => {
         ['00', '00-00-00-00-00-00-00-00', '00-00-00-00-00-00'],
       ];
       const re = new RegExp(
-        colored(chunks.map(item => item.map(colored).join('=')).join(colored('=')))
+        colored(chunks.map((item) => item.map(colored).join('=')).join(colored('='))),
       );
       // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
       expect(`${root}`).toMatch(re);

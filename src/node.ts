@@ -28,8 +28,8 @@ void Promise.allSettled([import('debug'), import('iconv-lite')]).then(([debug, i
     inspect,
     colorPrint: (c, msg) => {
       if (debug.status === 'rejected') return msg;
-      const colors = debug.value.colors.map(color =>
-        typeof color === 'string' ? parseInt(color.slice(1), 16) : color
+      const colors = debug.value.colors.map((color) =>
+        typeof color === 'string' ? parseInt(color.slice(1), 16) : color,
       );
       const selectColor = (name: string): number =>
         colors[
