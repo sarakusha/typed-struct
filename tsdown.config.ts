@@ -11,7 +11,7 @@ const nodeConfig: UserConfig = {
   outDir: 'build',
   // replaceNodeEnv: true,
   // splitting: false,
-  target: 'es2020',
+  target: 'es2022',
   treeshake: true,
   sourcemap: true,
 };
@@ -26,9 +26,11 @@ const browserConfig: UserConfig = {
   minify: false,
   outDir: 'build',
   // replaceNodeEnv: true,
-  skipNodeModulesBundle: true,
+  deps: {
+    skipNodeModulesBundle: true,
+  },
   // splitting: false,
-  target: 'es2020',
+  target: 'es2022',
   treeshake: true,
   sourcemap: true,
 };

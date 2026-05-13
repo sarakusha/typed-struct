@@ -19,6 +19,6 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    ignores: ['node_modules/**', 'build/**', 'eslint.config.mjs', '.prettierrc.cjs', 'tsup.config.ts'],
+    ignores: ['node_modules/**', 'build/**', 'eslint.config.mjs', '.prettierrc.cjs', 'tsdown.config.ts'],
   }
 );
