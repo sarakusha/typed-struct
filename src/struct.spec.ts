@@ -131,8 +131,8 @@ describe('Struct', () => {
       const Nested = new Struct('Nested').Struct('model1', Model).Struct('model2', Model).compile();
       test('props should be equal', () => {
         const rawNested = Buffer.alloc(rawModel.length * 2);
-        rawModel.copy(rawNested as Uint8Array, 0);
-        rawModel.copy(rawNested as Uint8Array, rawModel.length);
+        rawModel.copy(rawNested, 0);
+        rawModel.copy(rawNested, rawModel.length);
         expect(new Nested(rawNested)).toEqual({
           model1: model,
           model2: model,
@@ -889,7 +889,7 @@ describe('Struct', () => {
     const raw = StringLiteral.raw(literal);
     expect(raw).toHaveLength(11);
     const expected = Buffer.alloc(11);
-    Buffer.from('Lorem ipsum').copy(expected as Uint8Array);
+    Buffer.from('Lorem ipsum').copy(expected);
     expect(raw).toEqual(expected);
   });
   test('string array', () => {
