@@ -32,14 +32,6 @@ export const initializeBuffer = (value: typeof globalThis.Buffer) => {
   Buffer = value;
 };
 
-type FilterFlags<Base, Condition> = {
-  [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
-};
-
-type FilterNames<Base, Condition> = FilterFlags<Base, Condition>[keyof Base];
-
-type OmitType<Base, Condition> = Omit<Base, FilterNames<Base, Condition>>;
-
 type ConditionalExtend<Base, Extender, Condition extends boolean> = Condition extends true
   ? Base & Extender
   : Base;
@@ -56,75 +48,25 @@ type Constructable = new (...args: any[]) => any;
 /** Cosmetic use only, makes the tooltips expand the type, can be removed */
 type Id<T> = {} & { [P in keyof T]: T[P] };
 
-type ReplaceDistributive<Base, Condition, Target> = Base extends any
-  ? Base extends Condition
-    ? Target
-    : Base extends Record<PropertyKey, unknown>
-      ? Id<ReplaceRecursively<Base, Condition, Target>>
-      : Base extends string
-        ? string
-        : Base extends Iterable<unknown>
-          ? Id<ReplaceDistributive<IteratorType<Base>, Condition, Target>>[]
-          : Base
-  : never;
-
-type ReplaceDistributiveNot<Base, Condition, Target> = Base extends any
-  ? Base extends Condition
-    ? Base
-    : Base extends Record<PropertyKey, unknown>
-      ? Id<ReplaceRecursivelyNot<Base, Condition, Target>>
-      : Base extends string
-        ? string
-        : Base extends Iterable<unknown>
-          ? Id<ReplaceDistributiveNot<IteratorType<Base>, Condition, Target>>[]
-          : Target
-  : never;
-
-type IteratorType<T> = T extends Iterable<infer E> ? E : never;
-
-type ReplaceRecursively<Base, Condition, Target> = {
-  [P in keyof Base]: ReplaceDistributive<Base[P], Condition, Target>;
-};
-
-type ReplaceRecursivelyNot<Base, Condition, Target> = {
-  [P in keyof Base]: ReplaceDistributiveNot<Base[P], Condition, Target>;
-};
-
-type OmitTypeDistributive<Base, Condition> = Base extends any
-  ? Base extends Record<PropertyKey, unknown>
-    ? Id<OmitTypeRecursively<Base, Condition>>
-    : Base
-  : never;
-
-type OmitTypeRecursively<Base, Condition> = OmitType<
-  {
-    [P in keyof Base]: OmitTypeDistributive<Base[P], Condition>;
-  },
-  Condition
->;
+type _POJONode<T> = T extends ((...args: any[]) => any) | undefined
+  ? never
+  : T extends Date | bigint
+    ? string
+    : T extends string | number | boolean | null
+      ? T
+      : T extends Iterable<infer E>
+        ? _POJONode<E>[]
+        : T extends Record<PropertyKey, unknown>
+          ? POJO<T>
+          : unknown;
 
 type Item<A> = A extends any ? (A extends readonly (infer T)[] ? T : A) : never;
 
-type DeepWriteable<T> = {
-  -readonly [P in keyof T]: T[P] extends Record<PropertyKey, unknown>
-    ? Id<DeepWriteable<T[P]>>
-    : T[P];
-};
-
-type POJO<T> = Id<
-  DeepWriteable<
-    ReplaceRecursivelyNot<
-      ReplaceRecursively<
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-        OmitTypeRecursively<T, Function | undefined>,
-        Date | bigint,
-        string
-      >,
-      string | number | boolean | null,
-      unknown
-    >
-  >
->;
+type POJO<T> = T extends Iterable<infer E>
+  ? _POJONode<E>[]
+  : Id<{
+      -readonly [K in keyof T as T[K] extends ((...args: any[]) => any) | undefined ? never : K]: _POJONode<T[K]>
+    }>;
 
 /**
  * Predefined property types
