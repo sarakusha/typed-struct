@@ -1,6 +1,6 @@
-import { defineConfig, type Options } from 'tsup';
+import { defineConfig, type UserConfig } from 'tsdown';
 
-const nodeConfig: Options = {
+const nodeConfig: UserConfig = {
   name: 'node',
   platform: 'node',
   entry: ['src/node.ts'],
@@ -9,14 +9,14 @@ const nodeConfig: Options = {
   format: ['cjs', 'esm'],
   minify: false,
   outDir: 'build',
-  replaceNodeEnv: true,
-  splitting: false,
+  // replaceNodeEnv: true,
+  // splitting: false,
   target: 'es2020',
   treeshake: true,
   sourcemap: true,
 };
 
-const browserConfig: Options = {
+const browserConfig: UserConfig = {
   name: 'browser',
   platform: 'browser',
   entry: ['src/browser.ts'],
@@ -25,9 +25,9 @@ const browserConfig: Options = {
   format: 'esm',
   minify: false,
   outDir: 'build',
-  replaceNodeEnv: true,
+  // replaceNodeEnv: true,
   skipNodeModulesBundle: true,
-  splitting: false,
+  // splitting: false,
   target: 'es2020',
   treeshake: true,
   sourcemap: true,
