@@ -1,11 +1,11 @@
 version: 2.1
 orbs:
-  node: circleci/node@5.0.0
+  node: circleci/node@6.1.0
 jobs:
   test-and-cov:
     executor:
       name: node/default
-      tag: '16.13'
+      tag: "22"
     steps:
       - checkout
       - node/install-packages:
@@ -16,4 +16,3 @@ workflows:
   test-app:
     jobs:
       - test-and-cov
-

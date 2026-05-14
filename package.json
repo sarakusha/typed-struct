@@ -98,7 +98,8 @@
     "typedoc": "^0.28.19",
     "typedoc-plugin-rename-defaults": "^0.7.3",
     "typescript": "npm:@typescript/typescript6@^6.0.1",
-    "typescript-eslint": "^8.59.3"
+    "typescript-eslint": "^8.59.3",
+    "unrun": "^0.3.0"
   },
   "files": [
     "build/*",
