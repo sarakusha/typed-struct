@@ -17,13 +17,14 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
         name: Install pnpm
         with:
+          version: 10
           run_install: false
       - name: Use Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: "pnpm"
@@ -31,7 +32,7 @@ jobs:
       #     shell: bash
       #     run: |
       #       echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
+      #    - uses: actions/cache@v4
       #    - uses: actions/cache@v4
       #      name: Setup pnpm cache
       #      with:
@@ -39,10 +40,8 @@ jobs:
       #        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
       #        restore-keys: |
       #          ${{ runner.os }}-pnpm-store-
-
       - name: Install dependencies
         run: pnpm install
-
       - run: pnpm run build
       - name: Run tests and collect coverage
         run: pnpm run test
